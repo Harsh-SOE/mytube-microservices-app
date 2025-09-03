@@ -506,6 +506,27 @@ services:
     networks:
       - app
 
+  aggregator:
+    container_name: aggregator
+    build:
+      context: .
+      dockerfile: apps/aggregator/Dockerfile
+      target: development
+    image: youtube-aggregator:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    env_file:
+      - apps/aggregator/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: yarn start:dev aggregator
+    networks:
+      - app
+
 volumes:
   users-development-database-volume: {}
   videos-development-database-volume: {}

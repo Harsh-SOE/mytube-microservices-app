@@ -42,7 +42,8 @@
       "@users/*": ["apps/users/src/*"],
       "@videos/*": ["apps/videos/src/*"],
       "@aggregator/*": ["apps/aggregator/src/*"],
-      "@likes/*": ["apps/likes/src/*"]
+      "@likes/*": ["apps/likes/src/*"],
+      "@gateway/*": ["apps/api-gateway/src/*"]
     }
   }
 }
