@@ -1,1 +1,2 @@
-export * from './client-grpc/client-grpc-like-status.enum.mapper';
+export * from './client-grpc';
+export * from './grpc-client';

@@ -4,7 +4,7 @@ import { PersistanceService } from '@aggregator/infrastructure/persistance/persi
 import { LikePersistanceACL } from '@aggregator/infrastructure/anti-corruption/like-persistance.acl';
 import { DatabaseFilter } from '@app/infrastructure';
 import { Prisma, VideoLikes } from '@peristance/aggregator';
-import { LikeDomainStatus } from '@aggregator/domain/enum';
+import { LikeDomainStatus } from '@aggregator/domain/domain-enums';
 
 export class LikeRepository
   implements ILikeRepository<LikeAggregate, DatabaseFilter<VideoLikes>>

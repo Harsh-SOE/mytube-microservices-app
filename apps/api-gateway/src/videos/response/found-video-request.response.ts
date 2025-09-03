@@ -1,8 +1,13 @@
+import {
+  VideoRequestPublishStatus,
+  VideoRequestVisibilityStatus,
+} from '../enums';
+
 export class FoundVideoRequestResponse {
   id: string;
   title: string;
   videoFileUrl: string;
   description?: string | undefined;
-  videoPublishStatus: number;
-  videoVisibilityStatus: number;
+  videoPublishStatus: VideoRequestPublishStatus;
+  videoVisibilityStatus: VideoRequestVisibilityStatus;
 }

@@ -1,2 +1,2 @@
-export * from './client-grpc/client-grpc-video-visibility.enum.mapper';
-export * from './client-grpc/client-grpc-video-publish.enum.mapper';
+export * from './client-grpc';
+export * from './grpc-client';

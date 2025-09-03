@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LikeDomainStatus } from '../../enum';
+import { LikeDomainStatus } from '../../domain-enums';
 
 export class LikeStatus {
   private static VideoStatusValidationSchema = z.enum(LikeDomainStatus);

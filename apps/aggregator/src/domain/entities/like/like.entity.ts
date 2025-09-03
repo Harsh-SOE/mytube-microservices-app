@@ -1,4 +1,4 @@
-import { LikeDomainStatus } from '../../enum';
+import { LikeDomainStatus } from '../../domain-enums';
 import { LikeStatus, UserId, VideoId } from '../../value-objects';
 
 export class LikeEntity {

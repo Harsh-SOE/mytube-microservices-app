@@ -19,6 +19,8 @@ import { REQUESTS_COUNTER } from '../measure/custom/constants';
 import {
   ClientGrpcVideoPublishEnumMapper,
   ClientGrpcVideoVisibilityEnumMapper,
+  GrpcClientVideoPublishEnumMapper,
+  GrpcClientVideoVisibilityEnumMapper,
 } from './mappers';
 
 @Injectable()
@@ -71,7 +73,23 @@ export class VideoService implements OnModuleInit {
 
     this.counter.inc();
     const response$ = this.videoService.findOne({ id });
-    return await firstValueFrom(response$);
+    const response = await firstValueFrom(response$);
+    const videoPublishStatusResponse = GrpcClientVideoPublishEnumMapper.get(
+      response.videoPublishStatus,
+    );
+    const videoVisibilityStatusResponse =
+      GrpcClientVideoVisibilityEnumMapper.get(response.videoVisibilityStatus);
+
+    if (!videoPublishStatusResponse || !videoVisibilityStatusResponse) {
+      throw new Error(
+        `Invalid Response from service: ${JSON.stringify(response)}`,
+      );
+    }
+    return {
+      ...response,
+      videoPublishStatus: videoPublishStatusResponse,
+      videoVisibilityStatus: videoVisibilityStatusResponse,
+    };
   }
 
   async updateOneVideo(

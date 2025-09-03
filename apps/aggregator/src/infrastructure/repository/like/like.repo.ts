@@ -1,4 +1,4 @@
-import { LikeDomainStatus } from '@aggregator/domain/enum';
+import { LikeDomainStatus } from '@aggregator/domain/domain-enums';
 import { AggregateRoot } from '@nestjs/cqrs';
 
 export interface ILikeRepository<TAggregate extends AggregateRoot, TFilter> {
