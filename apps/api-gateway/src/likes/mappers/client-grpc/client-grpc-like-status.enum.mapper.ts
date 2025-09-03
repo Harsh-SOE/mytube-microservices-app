@@ -1,23 +1,26 @@
-import { LikeStatus } from '@app/contracts/likes';
+import { LikeTransportStatus } from '@app/contracts/likes';
 import { LikeRequestStatus } from '../../enums';
 
-const ClientGrpcLikeStatusEnumMapper = new Map<LikeRequestStatus, LikeStatus>();
+const ClientGrpcLikeStatusEnumMapper = new Map<
+  LikeRequestStatus,
+  LikeTransportStatus
+>();
 
 ClientGrpcLikeStatusEnumMapper.set(
   LikeRequestStatus.LIKE,
-  LikeStatus.LIKE_STATUS_LIKE,
+  LikeTransportStatus.TRANSPORT_LIKE,
 );
 ClientGrpcLikeStatusEnumMapper.set(
   LikeRequestStatus.UNLIKE,
-  LikeStatus.LIKE_STATUS_UNLIKE,
+  LikeTransportStatus.TRANSPORT_UNLIKE,
 );
 ClientGrpcLikeStatusEnumMapper.set(
   LikeRequestStatus.DISLIKE,
-  LikeStatus.LIKE_STATUS_DISLIKE,
+  LikeTransportStatus.TRANSPORT_DISLIKE,
 );
 ClientGrpcLikeStatusEnumMapper.set(
   LikeRequestStatus.UNDISKLIKE,
-  LikeStatus.LIKE_STATUS_UNDISLIKE,
+  LikeTransportStatus.TRANSPORT_UNDISLIKE,
 );
 
 export { ClientGrpcLikeStatusEnumMapper };

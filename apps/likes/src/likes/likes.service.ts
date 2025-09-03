@@ -1,7 +1,8 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import winston from 'winston';
-import Redis from 'ioredis';
+
+import { CacheService } from '@likes/cache';
 
 import {
   DislikesFindCountForAVideoDto,
@@ -11,7 +12,7 @@ import {
   LikesFindCountForAVideoDto,
   LikesFindCountForAVideoResponse,
   LikesFindForUserForVideoDto,
-  LikeStatus,
+  LikeTransportStatus,
   ModifyLikeStatusForVideoDto,
 } from '@app/contracts/likes';
 import { getShardFor } from '@app/counters';
@@ -23,8 +24,7 @@ export class LikeService implements OnModuleInit {
 
   constructor(
     @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
-    @Inject('LIKES_CACHE_CLIENT')
-    private readonly redis: Redis,
+    private readonly cacheService: CacheService,
     @Inject(CLIENT_PROVIDER.AGGREGATOR)
     private readonly messageBroker: ClientKafka,
   ) {}
@@ -64,9 +64,9 @@ export class LikeService implements OnModuleInit {
       shardNum,
     );
     switch (true) {
-      case likeStatus === LikeStatus.LIKE_STATUS_LIKE: {
+      case likeStatus === LikeTransportStatus.TRANSPORT_LIKE: {
         // like the video here...
-        const res = await this.redis.videoLikesCountIncr(
+        const res = await this.cacheService.videoLikesCountIncr(
           videoLikesSetKey,
           videoDislikesSetKey,
           videoLikesCounterKey,
@@ -89,9 +89,9 @@ export class LikeService implements OnModuleInit {
         }
         break;
       }
-      case likeStatus === LikeStatus.LIKE_STATUS_UNLIKE: {
+      case likeStatus === LikeTransportStatus.TRANSPORT_UNLIKE: {
         // unlike the video here...
-        const res = await this.redis.videoLikesCountDecr(
+        const res = await this.cacheService.videoLikesCountDecr(
           videoLikesSetKey,
           videoLikesCounterKey,
           userId,
@@ -114,9 +114,9 @@ export class LikeService implements OnModuleInit {
         }
         break;
       }
-      case likeStatus === LikeStatus.LIKE_STATUS_DISLIKE: {
+      case likeStatus === LikeTransportStatus.TRANSPORT_DISLIKE: {
         // dislike video here
-        const res = await this.redis.videoDislikesCountIncr(
+        const res = await this.cacheService.videoDislikesCountIncr(
           videoDislikesSetKey,
           videoLikesSetKey,
           videoDislikeCounterKey,
@@ -141,9 +141,9 @@ export class LikeService implements OnModuleInit {
         }
         break;
       }
-      case likeStatus === LikeStatus.LIKE_STATUS_UNDISLIKE: {
+      case likeStatus === LikeTransportStatus.TRANSPORT_UNDISLIKE: {
         // unlike the video here
-        const res = await this.redis.videoDislikesCountDecr(
+        const res = await this.cacheService.videoDislikesCountDecr(
           videoDislikesSetKey,
           videoDislikeCounterKey,
           userId,
@@ -180,7 +180,7 @@ export class LikeService implements OnModuleInit {
     const allShardedKeys = Array.from({ length: LikeService.SHARDS }, (_, i) =>
       this.videoLikesCounterKey(videoId, i),
     );
-    const values = await this.redis.mget(...allShardedKeys);
+    const values = await this.cacheService.mget(...allShardedKeys);
     const totalLikes = values.reduce(
       (sum, currentValue) =>
         sum + (currentValue ? parseInt(currentValue, 10) : 0),
@@ -196,7 +196,7 @@ export class LikeService implements OnModuleInit {
     const allShardedKeys = Array.from({ length: LikeService.SHARDS }, (_, i) =>
       this.videoDislikeCounterKey(videoId, i),
     );
-    const values = await this.redis.mget(...allShardedKeys);
+    const values = await this.cacheService.mget(...allShardedKeys);
     const totalDislikes = values.reduce(
       (sum, currentValue) =>
         sum + (currentValue ? parseInt(currentValue, 10) : 0),

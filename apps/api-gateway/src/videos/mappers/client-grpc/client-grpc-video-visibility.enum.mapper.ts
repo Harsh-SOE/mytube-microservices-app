@@ -1,22 +1,22 @@
-import { VideoVisibilityStatus } from '@app/contracts/videos';
+import { VideoTransportVisibilityStatus } from '@app/contracts/videos';
 import { VideoRequestVisibilityStatus } from '../../enums';
 
 const ClientGrpcVideoVisibilityEnumMapper = new Map<
   VideoRequestVisibilityStatus,
-  VideoVisibilityStatus
+  VideoTransportVisibilityStatus
 >();
 
 ClientGrpcVideoVisibilityEnumMapper.set(
   VideoRequestVisibilityStatus.PRIVATE,
-  VideoVisibilityStatus.PRIVATE,
+  VideoTransportVisibilityStatus.TRANSPORT_PRIVATE,
 );
 ClientGrpcVideoVisibilityEnumMapper.set(
   VideoRequestVisibilityStatus.PUBLIC,
-  VideoVisibilityStatus.PUBLIC,
+  VideoTransportVisibilityStatus.TRANSPORT_PUBLIC,
 );
 ClientGrpcVideoVisibilityEnumMapper.set(
   VideoRequestVisibilityStatus.UNLISTED,
-  VideoVisibilityStatus.UNLISTED,
+  VideoTransportVisibilityStatus.TRANSPORT_UNLISTED,
 );
 
 export { ClientGrpcVideoVisibilityEnumMapper };

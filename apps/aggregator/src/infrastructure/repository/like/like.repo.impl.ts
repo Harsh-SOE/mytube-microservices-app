@@ -1,11 +1,17 @@
+import { Injectable } from '@nestjs/common';
+
+import { DatabaseFilter } from '@app/infrastructure';
+
 import { LikeAggregate } from '@aggregator/domain/aggregates';
-import { ILikeRepository } from './like.repo';
+import { LikeDomainStatus } from '@aggregator/domain/domain-enums';
 import { PersistanceService } from '@aggregator/infrastructure/persistance/persistance.service';
 import { LikePersistanceACL } from '@aggregator/infrastructure/anti-corruption/like-persistance.acl';
-import { DatabaseFilter } from '@app/infrastructure';
-import { Prisma, VideoLikes } from '@peristance/aggregator';
-import { LikeDomainStatus } from '@aggregator/domain/domain-enums';
 
+import { Prisma, VideoLikes } from '@peristance/aggregator';
+
+import { ILikeRepository } from './like.repo';
+
+@Injectable()
 export class LikeRepository
   implements ILikeRepository<LikeAggregate, DatabaseFilter<VideoLikes>>
 {

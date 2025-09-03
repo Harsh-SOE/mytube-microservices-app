@@ -25,6 +25,6 @@ import { GrpcHealthController } from './grpc-health.controller';
       },
     ]),
   ],
-  providers: [LikeService],
+  providers: [LikeService, AppConfigService],
 })
 export class LikesModule {}

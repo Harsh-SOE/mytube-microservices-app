@@ -1,5 +1,5 @@
-import { LikeDomainStatus } from '@aggregator/domain/domain-enums';
 import { AggregateRoot } from '@nestjs/cqrs';
+import { LikeDomainStatus } from '@aggregator/domain/domain-enums';
 
 export interface ILikeRepository<TAggregate extends AggregateRoot, TFilter> {
   interactVideo(model: TAggregate): Promise<TAggregate>;

@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs';
+
 import { LikeEntity } from '../../entities/like/like.entity';
 
 export class LikeAggregate extends AggregateRoot {

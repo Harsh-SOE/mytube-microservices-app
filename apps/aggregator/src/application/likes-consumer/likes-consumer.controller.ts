@@ -1,8 +1,9 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import { KafkaMessage } from '@nestjs/microservices/external/kafka.interface';
-import { LikesConsumerService } from './likes-consumer.service';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { KafkaLikeMessage } from '@aggregator/types';
+
+import { LikesConsumerService } from './likes-consumer.service';
 
 @Controller('likes-consumer')
 export class LikesConsumerController {

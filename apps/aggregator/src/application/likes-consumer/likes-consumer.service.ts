@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { LikeAggregateFactory } from '@aggregator/domain/factories';
 import { LikeRepository } from '@aggregator/infrastructure/repository';
 import { KafkaLikeMessage } from '@aggregator/types';
