@@ -1,8 +1,8 @@
-import { VideoPublishStatus } from '@app/contracts/videos';
+import { VideoTransportPublishStatus } from '@app/contracts/videos';
 import { VideoPersistancePublishStatus } from '@peristance/videos';
 
 const GrpcToPersistancePublishEnumMapper = new Map<
-  VideoPublishStatus,
+  VideoTransportPublishStatus,
   VideoPersistancePublishStatus
 >();
 

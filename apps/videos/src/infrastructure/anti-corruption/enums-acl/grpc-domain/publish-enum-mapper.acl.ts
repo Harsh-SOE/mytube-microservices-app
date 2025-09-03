@@ -1,8 +1,8 @@
-import { VideoPublishStatus } from '@app/contracts/videos';
+import { VideoTransportPublishStatus } from '@app/contracts/videos';
 import { VideoDomainPublishStatus } from '@videos/domain/enums';
 
 const GrpcToDomainPublishEnumMapper = new Map<
-  VideoPublishStatus,
+  VideoTransportPublishStatus,
   VideoDomainPublishStatus
 >();
 

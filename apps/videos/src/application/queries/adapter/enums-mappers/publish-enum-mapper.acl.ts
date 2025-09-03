@@ -1,30 +1,30 @@
-import { VideoPublishStatus } from '@app/contracts/videos';
+import { VideoTransportPublishStatus } from '@app/contracts/videos';
 import { VideoPersistancePublishStatus } from '@peristance/videos';
 
 const PublishPersistanceToGrpcEnumMapper = new Map<
   VideoPersistancePublishStatus,
-  VideoPublishStatus
+  VideoTransportPublishStatus
 >();
 
 PublishPersistanceToGrpcEnumMapper.set(
   VideoPersistancePublishStatus.PENDING,
-  VideoPublishStatus.VIDEO_PUBLISH_STATUS_PENDING,
+  VideoTransportPublishStatus.TRANSPORT_PENDING,
 );
 PublishPersistanceToGrpcEnumMapper.set(
   VideoPersistancePublishStatus.PROCESSING,
-  VideoPublishStatus.VIDEO_PUBLISH_STATUS_PROCESSING,
+  VideoTransportPublishStatus.TRANSPORT_PROCESSING,
 );
 PublishPersistanceToGrpcEnumMapper.set(
   VideoPersistancePublishStatus.PROCESSED,
-  VideoPublishStatus.VIDEO_PUBLISH_STATUS_PROCESSED,
+  VideoTransportPublishStatus.TRANSPORT_PROCESSED,
 );
 PublishPersistanceToGrpcEnumMapper.set(
   VideoPersistancePublishStatus.PUBLISHED,
-  VideoPublishStatus.VIDEO_PUBLISH_STATUS_PUBLISHED,
+  VideoTransportPublishStatus.TRANSPORT_PUBLISHED,
 );
 PublishPersistanceToGrpcEnumMapper.set(
   VideoPersistancePublishStatus.FAILED,
-  VideoPublishStatus.VIDEO_PUBLISH_STATUS_FAILED,
+  VideoTransportPublishStatus.TRANSPORT_FAILED,
 );
 
-export { PublishPersistanceToGrpcEnumMapper as PublishPeristanceToGrpcEnum };
+export { PublishPersistanceToGrpcEnumMapper };

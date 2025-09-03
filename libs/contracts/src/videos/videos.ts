@@ -10,19 +10,19 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "Video";
 
-export enum VideoPublishStatus {
-  PENDING = 0,
-  PROCESSING = 1,
-  PROCESSED = 2,
-  PUBLISHED = 3,
-  FAILED = 4,
+export enum VideoTransportPublishStatus {
+  TRANSPORT_PENDING = 0,
+  TRANSPORT_PROCESSING = 1,
+  TRANSPORT_PROCESSED = 2,
+  TRANSPORT_PUBLISHED = 3,
+  TRANSPORT_FAILED = 4,
   UNRECOGNIZED = -1,
 }
 
-export enum VideoVisibilityStatus {
-  PRIVATE = 0,
-  PUBLIC = 1,
-  UNLISTED = 2,
+export enum VideoTransportVisibilityStatus {
+  TRANSPORT_PRIVATE = 0,
+  TRANSPORT_PUBLIC = 1,
+  TRANSPORT_UNLISTED = 2,
   UNRECOGNIZED = -1,
 }
 
@@ -31,8 +31,8 @@ export interface VideoCreateDto {
   title: string;
   videoFileUrl: string;
   description?: string | undefined;
-  videoPublishStatus: VideoPublishStatus;
-  videoVisibilityStatus: VideoVisibilityStatus;
+  videoPublishStatus: VideoTransportPublishStatus;
+  videoVisibilityStatus: VideoTransportVisibilityStatus;
 }
 
 export interface VideoFindDto {
@@ -44,8 +44,8 @@ export interface VideoUpdateDto {
   title?: string | undefined;
   videoFileUrl?: string | undefined;
   description?: string | undefined;
-  videoPublishStatus?: VideoPublishStatus | undefined;
-  videoVisibilityStatus?: VideoVisibilityStatus | undefined;
+  videoPublishStatus?: VideoTransportPublishStatus | undefined;
+  videoVisibilityStatus?: VideoTransportVisibilityStatus | undefined;
 }
 
 export interface VideoPublishedResponse {
@@ -58,8 +58,8 @@ export interface VideoFoundResponse {
   title: string;
   videoFileUrl: string;
   description?: string | undefined;
-  videoPublishStatus: VideoPublishStatus;
-  videoVisibilityStatus: VideoVisibilityStatus;
+  videoPublishStatus: VideoTransportPublishStatus;
+  videoVisibilityStatus: VideoTransportVisibilityStatus;
 }
 
 export interface VideosFoundResponse {

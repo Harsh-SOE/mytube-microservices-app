@@ -10,18 +10,18 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "Like";
 
-export enum LikeStatus {
-  LIKE_STATUS_LIKE = 0,
-  LIKE_STATUS_UNLIKE = 1,
-  LIKE_STATUS_DISLIKE = 2,
-  LIKE_STATUS_UNDISLIKE = 3,
+export enum LikeTransportStatus {
+  TRANSPORT_LIKE = 0,
+  TRANSPORT_UNLIKE = 1,
+  TRANSPORT_DISLIKE = 2,
+  TRANSPORT_UNDISLIKE = 3,
   UNRECOGNIZED = -1,
 }
 
 export interface ModifyLikeStatusForVideoDto {
   userId: string;
   videoId: string;
-  likeStatus: LikeStatus;
+  likeStatus: LikeTransportStatus;
 }
 
 export interface LikesFindForUserForVideoDto {
@@ -45,7 +45,7 @@ export interface LikeFoundForVideoResponse {
   id: string;
   userId: string;
   videoId: string;
-  likeStatus: LikeStatus;
+  likeStatus: LikeTransportStatus;
 }
 
 export interface LikesFoundResponse {

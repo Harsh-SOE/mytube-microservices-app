@@ -2,18 +2,18 @@ syntax = "proto3";
 
 package Video;
 
-enum VideoPublishStatus {
-  PENDING = 0;
-  PROCESSING = 1;
-  PROCESSED = 2;
-  PUBLISHED = 3;
-  FAILED = 4;
+enum VideoTransportPublishStatus {
+  TRANSPORT_PENDING = 0;
+  TRANSPORT_PROCESSING = 1;
+  TRANSPORT_PROCESSED = 2;
+  TRANSPORT_PUBLISHED = 3;
+  TRANSPORT_FAILED = 4;
 }
 
-enum VideoVisibilityStatus {
-  PRIVATE = 0;
-  PUBLIC = 1;
-  UNLISTED = 2;
+enum VideoTransportVisibilityStatus {
+  TRANSPORT_PRIVATE = 0;
+  TRANSPORT_PUBLIC = 1;
+  TRANSPORT_UNLISTED = 2;
 }
 
 
@@ -22,8 +22,8 @@ message VideoCreateDto {
   string title = 3;
   string videoFileUrl = 4;
   optional string description = 5;
-  VideoPublishStatus videoPublishStatus = 6;
-  VideoVisibilityStatus videoVisibilityStatus = 7;
+  VideoTransportPublishStatus videoPublishStatus = 6;
+  VideoTransportVisibilityStatus videoVisibilityStatus = 7;
 }
 
 message VideoFindDto {
@@ -35,8 +35,8 @@ message VideoUpdateDto {
   optional string title = 3;
   optional string videoFileUrl = 4;
   optional string description = 5;
-  optional VideoPublishStatus videoPublishStatus = 6;
-  optional VideoVisibilityStatus videoVisibilityStatus = 7;
+  optional VideoTransportPublishStatus videoPublishStatus = 6;
+  optional VideoTransportVisibilityStatus videoVisibilityStatus = 7;
 }
 
 message VideoPublishedResponse {
@@ -49,8 +49,8 @@ message VideoFoundResponse {
   string title = 2;
   string videoFileUrl = 3;
   optional string description = 4;
-  VideoPublishStatus videoPublishStatus = 5;
-  VideoVisibilityStatus videoVisibilityStatus = 6;
+  VideoTransportPublishStatus videoPublishStatus = 5;
+  VideoTransportVisibilityStatus videoVisibilityStatus = 6;
 }
 
 message VideosFoundResponse {

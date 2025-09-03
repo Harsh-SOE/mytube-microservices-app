@@ -25,7 +25,7 @@ export class PublishVideoHandler
       title,
       ownerId,
       description,
-      videoVisibiltyStatus,
+      videoVisibilityStatus,
       videoFileUrl,
       videoPublishStatus,
     } = videoCreateDto;
@@ -37,7 +37,7 @@ export class PublishVideoHandler
         ownerId,
         videoFileUrl,
         videoPublishStatus,
-        videoVisibiltyStatus,
+        videoVisibilityStatus,
         description ?? undefined,
       ),
     );

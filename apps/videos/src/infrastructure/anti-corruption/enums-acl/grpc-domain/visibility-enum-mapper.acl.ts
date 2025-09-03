@@ -1,8 +1,8 @@
-import { VideoVisibilityStatus } from '@app/contracts/videos';
+import { VideoTransportVisibilityStatus } from '@app/contracts/videos';
 import { VideoDomainVisibiltyStatus } from '@videos/domain/enums';
 
 const GrpcToDomainVisibilityEnumMapper = new Map<
-  VideoVisibilityStatus,
+  VideoTransportVisibilityStatus,
   VideoDomainVisibiltyStatus
 >();
 

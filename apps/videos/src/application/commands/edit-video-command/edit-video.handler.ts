@@ -17,13 +17,18 @@ export class EditVideoHandler implements ICommandHandler<EditVideoCommand> {
   async execute({
     updateVideoDto,
   }: EditVideoCommand): Promise<VideoUpdatedResponse> {
-    const { id, title, description, videoPublishStatus, videoVisibiltyStatus } =
-      updateVideoDto;
+    const {
+      id,
+      title,
+      description,
+      videoPublishStatus,
+      videoVisibilityStatus,
+    } = updateVideoDto;
     const domainPublishStatus = videoPublishStatus
       ? GrpcToDomainPublishEnumMapper.get(videoPublishStatus)
       : undefined;
-    const domainVisibiltyStatus = videoVisibiltyStatus
-      ? GrpcToDomainVisibilityEnumMapper.get(videoVisibiltyStatus)
+    const domainVisibiltyStatus = videoVisibilityStatus
+      ? GrpcToDomainVisibilityEnumMapper.get(videoVisibilityStatus)
       : undefined;
     const videoAggregate = await this.video.findOneById(id);
     videoAggregate.updateVideo({

@@ -16,8 +16,8 @@ import {
   GrpcToDomainVisibilityEnumMapper,
 } from '@videos/infrastructure/anti-corruption';
 import {
-  VideoPublishStatus,
-  VideoVisibilityStatus,
+  VideoTransportPublishStatus,
+  VideoTransportVisibilityStatus,
 } from '@app/contracts/videos';
 
 @Injectable()
@@ -27,8 +27,8 @@ export class VideoAggregateFactory implements AggregateFactory<VideoAggregate> {
     title: string,
     ownerId: string,
     videoUrl: string,
-    publishStatus: VideoPublishStatus,
-    visibilityStatus: VideoVisibilityStatus,
+    publishStatus: VideoTransportPublishStatus,
+    visibilityStatus: VideoTransportVisibilityStatus,
     description?: string,
   ): VideoAggregate {
     const domainVisibiltyStatus =
