@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "./",
+  "entryFile": "src/main",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/api-gateway",
+  "projects": {
+    "aggregator": {
+      "type": "application",
+      "root": "apps/aggregator",
+      "entryFile": "main",
+      "sourceRoot": "apps/aggregator/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/aggregator/tsconfig.app.json"
+      }
+    },
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
+        "assets": [
+          "libs/proto/*.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "auth": {
+      "type": "application",
+      "root": "apps/auth",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth/tsconfig.app.json",
+        "assets": [
+          "libs/proto/auth.proto",
+          "libs/proto/users.proto",
+          "libs/proto/health.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "clients": {
+      "type": "library",
+      "root": "libs/clients",
+      "entryFile": "index",
+      "sourceRoot": "libs/clients/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/clients/tsconfig.lib.json"
+      }
+    },
+    "cloud": {
+      "type": "application",
+      "root": "apps/cloud",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/cloud/tsconfig.app.json",
+        "assets": [
+          "libs/proto/cloud.proto",
+          "libs/proto/health.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "contracts": {
+      "type": "library",
+      "root": "libs/contracts",
+      "entryFile": "index",
+      "sourceRoot": "libs/contracts/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/contracts/tsconfig.lib.json"
+      }
+    },
+    "counters": {
+      "type": "library",
+      "root": "libs/counters",
+      "entryFile": "index",
+      "sourceRoot": "libs/counters/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/counters/tsconfig.lib.json"
+      }
+    },
+    "email": {
+      "type": "application",
+      "root": "apps/email",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/email/tsconfig.app.json",
+        "assets": [
+          "libs/proto/email.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "errors": {
+      "type": "library",
+      "root": "libs/errors",
+      "entryFile": "index",
+      "sourceRoot": "libs/errors/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/errors/tsconfig.lib.json"
+      }
+    },
+    "infrastructure": {
+      "type": "library",
+      "root": "libs/infrastructure",
+      "entryFile": "index",
+      "sourceRoot": "libs/infrastructure/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/infrastructure/tsconfig.lib.json"
+      }
+    },
+    "likes": {
+      "type": "application",
+      "root": "apps/likes",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/likes/tsconfig.app.json",
+        "assets": [
+          "libs/proto/likes.proto",
+          "libs/proto/health.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "proto": {
+      "type": "library",
+      "root": "libs/proto",
+      "entryFile": "index",
+      "sourceRoot": "libs/proto/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/proto/tsconfig.lib.json"
+      }
+    },
+    "saga": {
+      "type": "application",
+      "root": "apps/saga",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/saga/tsconfig.app.json",
+        "assets": [
+          "libs/proto/saga.proto",
+          "libs/proto/auth.proto",
+          "libs/proto/users.proto",
+          "libs/proto/health.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "testing": {
+      "type": "library",
+      "root": "libs/testing",
+      "entryFile": "index",
+      "sourceRoot": "libs/testing/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/testing/tsconfig.lib.json"
+      }
+    },
+    "users": {
+      "type": "application",
+      "root": "apps/users",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users/tsconfig.app.json",
+        "assets": [
+          "libs/proto/users.proto",
+          "libs/proto/health.proto"
+        ],
+        "webpack": true,
+        "watchAssets": true
+      }
+    },
+    "utils": {
+      "type": "library",
+      "root": "libs/utils",
+      "entryFile": "index",
+      "sourceRoot": "libs/utils/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/utils/tsconfig.lib.json"
+      }
+    },
+    "video-transcoder": {
+      "type": "application",
+      "root": "apps/video-transcoder",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/video-transcoder/tsconfig.app.json",
+        "assets": [
+          "libs/proto/cloud.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "videos": {
+      "type": "application",
+      "root": "apps/videos",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/videos/tsconfig.app.json",
+        "assets": [
+          "libs/proto/videos.proto",
+          "libs/proto/health.proto"
+        ],
+        "watchAssets": true
+      }
+    }
+  }
+}

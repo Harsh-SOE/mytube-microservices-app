@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package Saga;
+
+message SagaSignupDto {
+  string userName = 2;
+  string email = 3;
+  string fullName = 4;
+  string password = 5;
+  string dob = 6;
+  string avatar = 7;
+  optional string coverImage = 8;
+}
+
+message SagaSignupResponse {
+  string response = 1;
+  string userId = 2;
+}
+
+message SagaHealthCheckRequest {
+  string service = 1;
+}
+
+message SagaHealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;
+  }
+  ServingStatus status = 1;
+}
+
+service SagaService {
+  rpc userSignupFlow(SagaSignupDto) returns (SagaSignupResponse) {}
+  rpc Check(SagaHealthCheckRequest) returns (SagaHealthCheckResponse) {}
+}

@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package User;
+
+message UserSignupDto {
+  string id = 1;
+  string userName = 2;
+  string email = 3;
+  string fullName = 4;
+  string dob = 5;
+  string avatar = 6;
+  optional string coverImage = 7;
+}
+
+message UserLoginDto {
+  string userName = 1;
+}
+
+message UserFindByIdDto {
+  string id = 1;
+}
+
+message UserUpdateDto {
+  string id = 1;
+  optional string email = 3;
+  optional string fullName = 4;
+  optional string dob = 5;
+}
+
+message UserSignupResponse {
+  string response = 1;
+  string userId = 2;
+}
+
+message UserLoginResponse {
+  string id = 1;
+  string userName = 2;
+  string email = 3;
+  string fullName = 4;
+  string dob = 5;
+  string avatar = 6;
+  optional string coverImage = 7;
+}
+
+message UserFoundResponse {
+  string id = 1;
+  string userName = 2;
+  string email = 3;
+  string fullName = 4;
+  string dob = 5;
+  string avatar = 6;
+  optional string coverImage = 7;
+}
+
+message UsersFoundResponse {
+  repeated UserFoundResponse userFoundResponse = 1;
+}
+
+message userUpdateProfileResponse {
+  string response = 1;
+  string userId = 2;
+}
+
+message Empty {}
+
+message UsersHealthCheckRequest {
+  string service = 1;
+}
+
+message UsersHealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;
+  }
+  ServingStatus status = 1;
+}
+
+
+service UserService {
+  rpc userSignup(UserSignupDto) returns (UserSignupResponse) {}
+  rpc login(UserLoginDto) returns (UserLoginResponse) {}
+  rpc findAllUsers(Empty) returns (UsersFoundResponse) {}
+  rpc findOneUserById(UserFindByIdDto) returns (UserFoundResponse) {}
+  rpc updateUserProfile(UserUpdateDto) returns (userUpdateProfileResponse) {}
+  rpc Check(UsersHealthCheckRequest) returns (UsersHealthCheckResponse) {}
+}

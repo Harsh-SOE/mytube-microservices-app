@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package Cloud;
+
+message FileChunk {
+  bytes data= 1;
+  int64 size = 2;
+  bool is_last = 3;
+}
+
+message CloudPresignedUrlDto {
+  string fileName = 1;
+  string mimeType = 2;
+  string dir = 3;
+}
+
+message CloudHealthCheckRequest {
+  string service = 1;
+}
+
+
+message GetFileAsNodeJSReadableStreamObservableDto {
+  string key = 1;
+}
+
+message CloudPreSignedUrlResponse {
+  optional string url = 1;
+  optional string key = 2;
+}
+
+message CloudHealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;
+  }
+  ServingStatus status = 1;
+}
+
+service CloudService {
+  rpc getPresignedUrl(CloudPresignedUrlDto) returns (CloudPreSignedUrlResponse) {}
+  rpc getFileAsNodeJSReadableStreamObservable(GetFileAsNodeJSReadableStreamObservableDto) returns (stream FileChunk) {}
+  rpc Check(CloudHealthCheckRequest) returns (CloudHealthCheckResponse) {}
+}

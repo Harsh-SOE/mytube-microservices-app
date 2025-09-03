@@ -1,0 +1,528 @@
+services:
+  users-development-database:
+    container_name: users-development-database
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: users
+    ports:
+      - 5433:5432
+    volumes:
+      - users-development-database-volume:/var/lib/postgresql/data
+    networks:
+      - users-development-database-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U harsh -d users']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  videos-development-database:
+    container_name: videos-development-database
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: videos
+    ports:
+      - 5434:5432
+    volumes:
+      - videos-development-database-volume:/var/lib/postgresql/data
+    networks:
+      - video-db-development-database-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U harsh -d videos']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  likes-development-database:
+    container_name: likes-development-database
+    image: bitnami/mongodb:latest
+    ports:
+      - '27020:27017'
+    volumes:
+      - likes-development-database-volume:/data/db
+    environment:
+      MONGODB_ROOT_USER: harsh
+      MONGODB_ROOT_PASSWORD: harsh123
+    networks:
+      - likes-development-database-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mongosh',
+          '-u',
+          'harsh',
+          '-p',
+          'harsh123',
+          '--eval',
+          "db.adminCommand('ping')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  auth-development-database:
+    container_name: auth-development-database
+    image: bitnami/mongodb:latest
+    ports:
+      - '27021:27017'
+    volumes:
+      - auth-development-database-volume:/bitnami/mongodb
+    environment:
+      MONGODB_ROOT_USER: harsh
+      MONGODB_ROOT_PASSWORD: harsh123
+    networks:
+      - auth-development-database-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mongosh',
+          '-u',
+          'harsh',
+          '-p',
+          'harsh123',
+          '--eval',
+          "db.adminCommand('ping')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  kafdrop:
+    container_name: kafdrop
+    image: obsidiandynamics/kafdrop
+    restart: 'no'
+    ports:
+      - '9999:9000'
+    environment:
+      KAFKA_BROKERCONNECT: 'kafka:29092'
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - app
+      - kafka_event_emitter
+
+  kafka:
+    container_name: kafka
+    image: obsidiandynamics/kafka
+    restart: 'no'
+    environment:
+      KAFKA_LISTENERS: 'INTERNAL://:29092'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: '6000'
+      KAFKA_RESTART_ATTEMPTS: '10'
+      KAFKA_RESTART_DELAY: '5'
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: '0'
+    networks:
+      - app
+      - kafka_event_emitter
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          '/opt/kafka_2.12-2.3.0/bin/kafka-topics.sh --bootstrap-server localhost:29092 --list > /dev/null 2>&1 || exit 1',
+        ]
+      interval: 15s
+      timeout: 30s
+      retries: 5
+      start_period: 120s
+
+  prom-server:
+    container_name: prom-server
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - metrics-and-logs-network
+      - app
+    depends_on:
+      users:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      cloud:
+        condition: service_healthy
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    ports:
+      - 5555:3000
+    networks:
+      - metrics-and-logs-network
+      - app
+      - users-development-database-network
+      - video-db-development-database-network
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+  grafana-loki:
+    image: grafana/loki
+    container_name: loki
+    ports:
+      - 3100:3100
+    networks:
+      - metrics-and-logs-network
+      - app
+
+  redis-cache:
+    container_name: redis-cache
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - cache:/usr/src/cache/data
+    networks:
+      - app
+
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    networks:
+      - openfga
+    ports:
+      - '5435:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    image: openfga/openfga:latest
+    container_name: migrate
+    command: migrate
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
+    networks:
+      - openfga
+
+  openfga:
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    image: openfga/openfga:latest
+    container_name: openfga
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
+      - OPENFGA_LOG_FORMAT=json
+    command: run
+    networks:
+      - openfga
+    ports:
+      # Needed for the http server
+      - '8080:8080'
+      # Needed for the grpc server (if used)
+      - '8081:8081'
+      # Needed for the playground (Do not enable in prod!)
+      - '3333:3000'
+
+  gateway:
+    container_name: gateway
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile
+      target: development
+    image: youtube-gateway:latest
+    command: yarn start:dev api-gateway
+    env_file:
+      - apps/api-gateway/.env
+    volumes:
+      - .:/usr/src/app # mounts the entire project inside the container [FROM . (Current root directory) to /usr/src/app]
+      - /usr/src/app/node_modules # do not mount the node_modules
+    ports:
+      - 3000:3000
+    networks:
+      - gateway-db
+      - app
+    depends_on:
+      auth:
+        condition: service_healthy
+      users:
+        condition: service_healthy
+      cloud:
+        condition: service_healthy
+      saga:
+        condition: service_healthy
+
+  users:
+    container_name: users
+    build:
+      context: .
+      dockerfile: apps/users/Dockerfile
+      target: development
+    image: youtube-user:latest
+    command: yarn start:dev users
+    env_file:
+      - apps/users/.env
+    depends_on:
+      users-development-database:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'grpc_health_probe', '-addr=:5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - users-development-database-network
+      - app
+
+  videos:
+    container_name: videos
+    build:
+      context: .
+      dockerfile: apps/videos/Dockerfile
+      target: development
+    image: youtube-video:latest
+    command: yarn start:dev videos
+    env_file:
+      - apps/videos/.env
+    depends_on:
+      videos-development-database:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'grpc_health_probe', '-addr=:5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - video-db-development-database-network
+      - app
+
+  auth:
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+      target: development
+    container_name: auth
+    image: youtube-auth:latest
+    command: yarn start:dev auth
+    env_file:
+      - apps/auth/.env
+    depends_on:
+      auth-development-database:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'grpc_health_probe', '-addr=:5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app
+      - auth-development-database-network
+
+  cloud:
+    container_name: cloud
+    build:
+      context: .
+      dockerfile: apps/cloud/Dockerfile
+      target: development
+    image: youtube-cloud:latest
+    env_file:
+      - apps/cloud/.env
+    command: yarn start:dev cloud
+    depends_on:
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'grpc_health_probe', '-addr=:5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app
+
+  email:
+    container_name: email
+    build:
+      context: .
+      dockerfile: apps/email/Dockerfile
+      target: development
+    image: youtube-email:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    env_file:
+      - apps/email/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: yarn start:dev email
+    networks:
+      - app
+
+  likes:
+    container_name: likes
+    build:
+      context: .
+      dockerfile: apps/likes/Dockerfile
+      target: development
+    image: youtube-like:latest
+    command: yarn start:dev likes
+    env_file:
+      - apps/likes/.env
+    depends_on:
+      likes-development-database:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'grpc_health_probe', '-addr=:5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app
+      - likes-development-database-network
+
+  # ffmpeg-gpu:
+  #   image: jrottenberg/ffmpeg:5.1-nvidia
+  #   container_name: ffmpeg-gpu
+  # runtime: nvidia # Optional in newer Docker, gpus: all is enough
+  # environment:
+  #   - NVIDIA_VISIBLE_DEVICES=all
+  # deploy:
+  #   resources:
+  #     reservations:
+  #       devices:
+  #         - driver: nvidia
+  #           count: all
+  #           capabilities: [gpu]
+  #   command: tail -f /dev/null # Keeps the container running
+  #   volumes:
+  #     - ffmpeg-videos:/usr/src/data/videos
+  #   networks:
+  #     - app
+
+  video-transcoder:
+    container_name: video-transcoder
+    build:
+      context: .
+      dockerfile: apps/video-transcoder/Dockerfile
+      target: development
+    image: youtube-video-transcoder:latest
+    runtime: nvidia
+    command: yarn start:dev video-transcoder
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    entrypoint: ''
+    depends_on:
+      kafka:
+        condition: service_healthy
+    env_file:
+      - apps/video-transcoder/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - transcoder-volume:/usr/src/transcoded-videos
+    networks:
+      - app
+
+  saga:
+    container_name: saga
+    build:
+      context: .
+      dockerfile: apps/saga/Dockerfile
+      target: development
+    image: youtube-saga:latest
+    command: yarn start:dev saga
+    env_file:
+      - apps/saga/.env
+    depends_on:
+      auth:
+        condition: service_healthy
+      users:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'grpc_health_probe', '-addr=:5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app
+
+volumes:
+  users-development-database-volume: {}
+  videos-development-database-volume: {}
+  likes-development-database-volume: {}
+  auth-development-database-volume: {}
+  grafana-storage: {}
+  ffmpeg-videos: {}
+  transcoder-volume: {}
+  cache: {}
+
+networks:
+  users-development-database-network: {}
+  video-db-development-database-network: {}
+  likes-development-database-network: {}
+  auth-development-database-network: {}
+  openfga: {}
+  app: {}
+  gateway-db: {}
+  metrics-and-logs-network: {}
+  kafka_event_emitter: {}
