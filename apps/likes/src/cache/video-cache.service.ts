@@ -8,7 +8,7 @@ import { AppConfigService } from '@likes/config';
 import { RedisLikesOperations } from '@likes/types';
 
 @Injectable()
-export class CacheService extends Redis implements OnModuleInit {
+export class VideoCacheService extends Redis implements OnModuleInit {
   constructor(configService: AppConfigService) {
     super({
       host: configService.CACHE_HOST,
@@ -26,7 +26,7 @@ export class CacheService extends Redis implements OnModuleInit {
   }
   onModuleInit() {
     const likeScript = fs.readFileSync(
-      join(__dirname, '../scripts/like.lua'),
+      join(__dirname, './scripts/like.lua'),
       'utf8',
     );
 
@@ -36,7 +36,7 @@ export class CacheService extends Redis implements OnModuleInit {
     });
 
     const unlikeScript = fs.readFileSync(
-      join(__dirname, '../scripts/unlike.lua'),
+      join(__dirname, './scripts/unlike.lua'),
       'utf8',
     );
 
@@ -46,7 +46,7 @@ export class CacheService extends Redis implements OnModuleInit {
     });
 
     const dislikeScript = fs.readFileSync(
-      join(__dirname, '../scripts/dislike.lua'),
+      join(__dirname, './scripts/dislike.lua'),
       'utf8',
     );
 
@@ -56,7 +56,7 @@ export class CacheService extends Redis implements OnModuleInit {
     });
 
     const undislikeScript = fs.readFileSync(
-      join(__dirname, '../scripts/undislike.lua'),
+      join(__dirname, './scripts/undislike.lua'),
       'utf8',
     );
 
@@ -64,6 +64,8 @@ export class CacheService extends Redis implements OnModuleInit {
       numberOfKeys: 2,
       lua: undislikeScript,
     });
+
+    console.log('✅ Scripts intialized');
   }
 
   async videoLikesCountIncr(

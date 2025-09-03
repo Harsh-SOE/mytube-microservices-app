@@ -27,9 +27,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
-        "assets": [
-          "libs/proto/*.proto"
-        ],
+        "assets": ["libs/proto/*.proto"],
         "watchAssets": true
       }
     },
@@ -64,10 +62,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/cloud/tsconfig.app.json",
-        "assets": [
-          "libs/proto/cloud.proto",
-          "libs/proto/health.proto"
-        ],
+        "assets": ["libs/proto/cloud.proto", "libs/proto/health.proto"],
         "watchAssets": true
       }
     },
@@ -96,9 +91,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/email/tsconfig.app.json",
-        "assets": [
-          "libs/proto/email.proto"
-        ],
+        "assets": ["libs/proto/email.proto"],
         "watchAssets": true
       }
     },
@@ -129,7 +122,11 @@
         "tsConfigPath": "apps/likes/tsconfig.app.json",
         "assets": [
           "libs/proto/likes.proto",
-          "libs/proto/health.proto"
+          "libs/proto/health.proto",
+          {
+            "include": "apps/likes/src/scripts/*.lua",
+            "outDir": "dist/apps"
+          }
         ],
         "watchAssets": true
       }
@@ -175,10 +172,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/users/tsconfig.app.json",
-        "assets": [
-          "libs/proto/users.proto",
-          "libs/proto/health.proto"
-        ],
+        "assets": ["libs/proto/users.proto", "libs/proto/health.proto"],
         "webpack": true,
         "watchAssets": true
       }
@@ -199,9 +193,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/video-transcoder/tsconfig.app.json",
-        "assets": [
-          "libs/proto/cloud.proto"
-        ],
+        "assets": ["libs/proto/cloud.proto"],
         "watchAssets": true
       }
     },
@@ -212,10 +204,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/videos/tsconfig.app.json",
-        "assets": [
-          "libs/proto/videos.proto",
-          "libs/proto/health.proto"
-        ],
+        "assets": ["libs/proto/videos.proto", "libs/proto/health.proto"],
         "watchAssets": true
       }
     }

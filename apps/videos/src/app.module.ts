@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { VideosModule } from '@videos/application/videos';
 import { PersistanceModule } from '@videos/infrastructure/persistance';
 import { AppConfigModule } from '@videos/config';
@@ -9,9 +10,9 @@ import { LogsModule } from '@videos/infrastructure/logs';
   imports: [
     VideosModule,
     PersistanceModule,
-    AppConfigModule,
     MeasureModule,
     LogsModule,
+    AppConfigModule,
   ],
 })
 export class AppModule {}

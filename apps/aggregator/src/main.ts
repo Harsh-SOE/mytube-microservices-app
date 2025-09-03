@@ -14,6 +14,7 @@ bootstrap()
   .then(() => {
     console.log(`Aggregator service started successfully`);
   })
-  .catch(() => {
+  .catch((error) => {
     console.log(`An error occured while starting the aggregator service`);
+    throw error;
   });

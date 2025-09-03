@@ -9,12 +9,14 @@ import { CLIENT_PROVIDER } from '@app/clients';
 import { LikesController } from './likes.controller';
 import { LikeService } from './likes.service';
 import { GrpcHealthController } from './grpc-health.controller';
+import { VideoCacheModule } from '@likes/cache';
 
 @Module({
   controllers: [LikesController, GrpcHealthController],
   imports: [
     LogsModule,
     AppConfigModule,
+    VideoCacheModule,
     ClientsModule.registerAsync([
       {
         name: CLIENT_PROVIDER.AGGREGATOR,

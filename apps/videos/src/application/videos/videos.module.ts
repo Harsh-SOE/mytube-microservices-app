@@ -1,30 +1,32 @@
 import { Module } from '@nestjs/common';
 
-import { VideoService as VideoService } from './videos.service';
-import { VideosController as VideosController } from './videos.controller';
-import { videoCommandHandlers } from '../commands';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ClientsModule } from '@nestjs/microservices';
 import { CLIENT_PROVIDER } from '@app/clients';
-import { GrpcHealthController } from './grpc-health.controller';
 import {
   VideoCommandRepository,
   VideoQueryRepository,
 } from '@videos/infrastructure/repository';
-import { VideoAggregateFactory } from '@videos/domain/factories/video-aggregate.factory.impl';
+import { VideoAggregateFactory } from '@videos/domain/factories';
 import { VideoAggregatePersistanceACL } from '@videos/infrastructure/anti-corruption';
-import { videoQueryHandler } from '../queries';
-import { LogsModule } from '@users/infrastructure/logs';
 import { AppConfigModule, AppConfigService } from '@videos/config';
+import { LogsModule } from '@videos/infrastructure/logs';
+
+import { VideosService } from './videos.service';
+import { VideosController } from './videos.controller';
+import { GrpcHealthController } from './grpc-health.controller';
+import { videoQueryHandler, QueryModelResponseMapper } from '../queries';
+import { videoCommandHandlers } from '../commands';
 
 @Module({
   controllers: [VideosController, GrpcHealthController],
   providers: [
-    VideoService,
+    VideosService,
     VideoCommandRepository,
     VideoAggregateFactory,
     VideoQueryRepository,
     VideoAggregatePersistanceACL,
+    QueryModelResponseMapper,
     ...videoCommandHandlers,
     ...videoQueryHandler,
   ],

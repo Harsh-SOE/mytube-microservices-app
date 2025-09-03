@@ -10,9 +10,9 @@ import {
 
 import { Prisma, Video } from '@peristance/videos';
 
-import { VideoQueryModel } from '@videos/application/queries';
+import { VideoQueryModel } from '@videos/application/queries/dto';
 import { PersistanceService } from '@videos/infrastructure/persistance';
-import { QueryModelResponseMapper } from '@videos/application/queries';
+import { QueryModelResponseMapper } from '@videos/application/queries/adapter';
 
 @Injectable()
 export class VideoQueryRepository

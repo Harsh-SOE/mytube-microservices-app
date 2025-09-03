@@ -16,13 +16,13 @@ import {
 } from '@app/contracts/videos';
 import { GrpcAppExceptionFilter } from '@app/utils';
 
-import { VideoService } from './videos.service';
+import { VideosService } from './videos.service';
 
 @UseFilters(GrpcAppExceptionFilter)
 @VideoServiceControllerMethods()
 @Controller()
 export class VideosController implements VideoServiceController {
-  constructor(private readonly videoService: VideoService) {}
+  constructor(private readonly videoService: VideosService) {}
 
   check(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

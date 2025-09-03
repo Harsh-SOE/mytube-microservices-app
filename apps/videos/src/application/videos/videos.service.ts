@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import winston from 'winston';
 
-import { EditVideoCommand, PublishVideoCommand } from '../commands';
 import {
   VideoCreateDto,
   VideoFindDto,
@@ -12,11 +12,12 @@ import {
   VideoUpdateDto,
 } from '@app/contracts/videos';
 import { WINSTON_LOGGER } from '@app/clients';
-import winston from 'winston';
+
 import { FindVideoQuery } from '../queries';
+import { EditVideoCommand, PublishVideoCommand } from '../commands';
 
 @Injectable()
-export class VideoService {
+export class VideosService {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,

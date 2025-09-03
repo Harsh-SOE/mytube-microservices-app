@@ -2,7 +2,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import winston from 'winston';
 
-import { CacheService } from '@likes/cache';
+import { VideoCacheService } from '@likes/cache';
 
 import {
   DislikesFindCountForAVideoDto,
@@ -24,7 +24,7 @@ export class LikeService implements OnModuleInit {
 
   constructor(
     @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
-    private readonly cacheService: CacheService,
+    private readonly cacheService: VideoCacheService,
     @Inject(CLIENT_PROVIDER.AGGREGATOR)
     private readonly messageBroker: ClientKafka,
   ) {}

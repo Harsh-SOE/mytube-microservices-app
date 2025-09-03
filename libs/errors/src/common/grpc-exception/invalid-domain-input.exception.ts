@@ -1,4 +1,5 @@
-import { BaseGrpcServiceException, ErrorPayload } from '..';
+import { BaseGrpcServiceException } from './base-grpc-service.exception';
+import { ErrorPayload } from './grpc-error.type';
 import { Metadata } from '@grpc/grpc-js';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import { HttpStatus } from '@nestjs/common';
