@@ -26,6 +26,10 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('AGGREGATOR_CONSUMER_ID');
   }
 
+  get DATABASE_URL() {
+    return this.configService.getOrThrow<string>('DATABASE_URL');
+  }
+
   get CLIENT_OPTIONS(): KafkaOptions {
     return {
       transport: Transport.KAFKA,
@@ -37,5 +41,25 @@ export class AppConfigService {
         consumer: { groupId: this.AGGREGATOR_CONSUMER_ID },
       },
     };
+  }
+
+  get GRAFANA_LOKI_URL() {
+    return this.configService.getOrThrow<string>('GRAFANA_LOKI_URL');
+  }
+
+  get CACHE_HOST() {
+    return this.configService.getOrThrow<string>('CACHE_HOST');
+  }
+
+  get CACHE_PORT() {
+    return this.configService.getOrThrow<number>('CACHE_PORT');
+  }
+
+  get CACHE_STREAM_KEY() {
+    return this.configService.getOrThrow<string>('CACHE_STREAM_KEY');
+  }
+
+  get CACHE_STREAM_GROUP_NAME() {
+    return this.configService.getOrThrow<string>('CACHE_STREAM_GROUP_NAME');
   }
 }

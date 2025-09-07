@@ -79,6 +79,7 @@ export class LikeService implements OnModuleInit {
           this.messageBroker.emit('video.like', {
             videoId,
             userId,
+            likeStatus,
             delta: +1,
             ts: Date.now(),
           });
@@ -103,6 +104,7 @@ export class LikeService implements OnModuleInit {
             videoId,
             userId,
             delta: -1,
+            likeStatus,
             ts: Date.now(),
           });
           return { response: `video was unliked successfully` };
@@ -129,6 +131,7 @@ export class LikeService implements OnModuleInit {
           this.messageBroker.emit('video.dislike', {
             videoId,
             userId,
+            likeStatus,
             delta: +1,
             ts: Date.now(),
           });
@@ -154,6 +157,7 @@ export class LikeService implements OnModuleInit {
           this.messageBroker.emit('video.dislike', {
             videoId,
             userId,
+            likeStatus,
             delta: -1,
             ts: Date.now(),
           });

@@ -16,7 +16,10 @@ export class QueryModelResponseMapper {
       persistance.videoPublishStatus,
     );
 
-    if (!videoPublishStatus || !videoVisibilityStatus) {
+    if (
+      videoPublishStatus === undefined ||
+      videoVisibilityStatus === undefined
+    ) {
       throw new Error(`Invalid status for publish or visibility`);
     }
 

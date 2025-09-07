@@ -18,6 +18,7 @@ export async function handlePrismaPersistanceOperation<T>(
   try {
     return await databaseOperation();
   } catch (error) {
+    console.error(error);
     if (error instanceof PrismaClientKnownRequestError) {
       switch (error.code) {
         case 'P2002': {

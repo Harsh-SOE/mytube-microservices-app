@@ -5,7 +5,6 @@ export class UserName {
   private static UserNameValidationSchema = z
     .string()
     .trim()
-    .toLowerCase()
     .min(5, 'Username should have atleast 5 characters')
     .max(12, 'Username cannot have more than 12 characters')
     .regex(

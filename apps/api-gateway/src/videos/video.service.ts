@@ -53,10 +53,12 @@ export class VideoService implements OnModuleInit {
       video.status,
     );
 
-    if (!videoServiceVisibilityStatus || !videoServicePublishStatus) {
+    if (
+      videoServiceVisibilityStatus === undefined ||
+      videoServicePublishStatus === undefined
+    ) {
       throw new Error(`Invalid Video visibility or publish status`);
     }
-
     this.counter.inc();
     const response$ = this.videoService.create({
       ownerId: user.id,

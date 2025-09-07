@@ -37,6 +37,7 @@ export class EditVideoHandler implements ICommandHandler<EditVideoCommand> {
       newPublishStatus: domainPublishStatus,
       newVisibilityStatus: domainVisibiltyStatus,
     });
+    console.log(videoAggregate);
     await this.video.updateOneById(id, videoAggregate);
     return { response: 'updated', videoId: id };
   }

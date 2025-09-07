@@ -1,4 +1,11 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 
 import { JwtUserPayload } from '@app/contracts/jwt';
 
@@ -20,7 +27,7 @@ export class LikesController {
   @Post(LIKE_API.LIKE_VIDEO)
   likeVideo(
     @User() loggedInUser: JwtUserPayload,
-    @Param('videoId') videoId: string,
+    @Query('videoId') videoId: string,
     @Body() likeStatus: VideoLikeStatusCreatedDto,
   ): Promise<VideoLikedStatusCreatedRequestResponse> {
     return this.likeService.modifyLikeStatus(

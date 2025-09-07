@@ -47,7 +47,7 @@ export class LikesService implements OnModuleInit {
       videoLikeStatusCreatedDto.likeStatus,
     );
 
-    if (!likeStatusForService) {
+    if (likeStatusForService === undefined) {
       throw new Error(`Invalid like status`);
     }
 

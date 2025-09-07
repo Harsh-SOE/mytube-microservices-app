@@ -64,19 +64,19 @@ export class VideoEntity {
   }
 
   // updates
-  public updateTitle(newTitle: string): VideoTitle {
-    return VideoTitle.create(newTitle);
+  public updateTitle(newTitle: string): void {
+    this.title = VideoTitle.create(newTitle);
   }
 
-  public updateDescription(newDescription: string): VideoDescription {
-    return VideoDescription.create(newDescription);
+  public updateDescription(newDescription: string): void {
+    this.description = VideoDescription.create(newDescription);
   }
 
-  public updatePublishStatus(newStatus: string): VideoPublish {
-    return VideoPublish.create(newStatus);
+  public updatePublishStatus(newStatus: string): void {
+    this.publishStatus = VideoPublish.create(newStatus);
   }
 
-  public updateVisibiltyStatus(newVisibiltyStatus: string): VideoVisibilty {
-    return VideoVisibilty.create(newVisibiltyStatus);
+  public updateVisibiltyStatus(newVisibiltyStatus: string): void {
+    this.visibilityStatus = VideoVisibilty.create(newVisibiltyStatus);
   }
 }

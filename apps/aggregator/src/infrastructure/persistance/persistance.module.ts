@@ -1,9 +1,12 @@
 import { Global, Module } from '@nestjs/common';
 import { PersistanceService } from './persistance.service';
+import { AppConfigService } from '@aggregator/config';
+import { LogsModule } from '../logs';
 
 @Global()
 @Module({
-  providers: [PersistanceService],
+  imports: [LogsModule],
+  providers: [PersistanceService, AppConfigService],
   exports: [PersistanceService],
 })
 export class PersistanceModule {}

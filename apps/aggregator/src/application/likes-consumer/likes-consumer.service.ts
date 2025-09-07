@@ -1,36 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
-import { LikeAggregateFactory } from '@aggregator/domain/factories';
-import { LikeRepository } from '@aggregator/infrastructure/repository';
 import { KafkaLikeMessage } from '@aggregator/types';
-
-const pending = new Set<KafkaLikeMessage>();
-let lastFlush = Date.now();
+import { WINSTON_LOGGER } from '@app/clients';
+import winston from 'winston';
+import { AggregatorCacheService } from '@aggregator/infrastructure/cache/aggregator-cache.service';
 
 @Injectable()
 export class LikesConsumerService {
   public constructor(
-    private likeRepo: LikeRepository,
-    private likeAggregateFactory: LikeAggregateFactory,
+    @Inject(WINSTON_LOGGER) private logger: winston.Logger,
+    private readonly cacheService: AggregatorCacheService,
   ) {}
 
-  private async flush() {
-    const messages = Array.from(pending.values());
-    pending.clear();
-    lastFlush = Date.now();
-
-    const models = messages.map((message) => {
-      const { id, likeStatus, userId, videoId } = message;
-      return this.likeAggregateFactory.create(id, userId, videoId, likeStatus);
-    });
-
-    const likesNum = await this.likeRepo.interactManyVideos(models);
-    console.log(`Likes saved: ${likesNum}`);
-  }
-
   async onLike(message: KafkaLikeMessage) {
-    pending.add(message);
-    const due = pending.size >= 500 || Date.now() - lastFlush > 2000;
-    if (due) await this.flush();
+    await this.cacheService.bufferLikeMessages(message);
   }
 }

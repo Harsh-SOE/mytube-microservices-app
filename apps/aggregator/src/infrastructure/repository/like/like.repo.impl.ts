@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import winston from 'winston';
 
-import { DatabaseFilter } from '@app/infrastructure';
+import {
+  DatabaseFilter,
+  handlePrismaPersistanceOperation,
+} from '@app/infrastructure';
 
 import { LikeAggregate } from '@aggregator/domain/aggregates';
 import { LikeDomainStatus } from '@aggregator/domain/domain-enums';
@@ -8,6 +12,8 @@ import { PersistanceService } from '@aggregator/infrastructure/persistance/persi
 import { LikePersistanceACL } from '@aggregator/infrastructure/anti-corruption/like-persistance.acl';
 
 import { Prisma, VideoLikes } from '@peristance/aggregator';
+
+import { WINSTON_LOGGER } from '@app/clients';
 
 import { ILikeRepository } from './like.repo';
 
@@ -18,6 +24,7 @@ export class LikeRepository
   constructor(
     private persistanceService: PersistanceService,
     private likePersistanceACL: LikePersistanceACL,
+    @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
   ) {}
 
   toPrismaFilter(
@@ -72,13 +79,28 @@ export class LikeRepository
   }
 
   async interactManyVideos(models: LikeAggregate[]): Promise<number> {
-    const createdEntities = await this.persistanceService.videoLikes.createMany(
-      {
+    // 1. Handle empty input to prevent unnecessary database calls.
+    if (!models || models.length === 0) {
+      return 0;
+    }
+
+    // 2. Map the data *once* and store it in a constant.
+    const dataToCreate = models.map((model) =>
+      this.likePersistanceACL.toPersistance(model),
+    );
+    this.logger.log(
+      'database',
+      `Saving: ${dataToCreate.length} documents into the database as a batch`,
+    );
+    const createdEntitiesFunc = async () =>
+      await this.persistanceService.videoLikes.createMany({
         data: models.map((model) =>
           this.likePersistanceACL.toPersistance(model),
         ),
-      },
-    );
+      });
+
+    const createdEntities =
+      await handlePrismaPersistanceOperation(createdEntitiesFunc);
     return createdEntities.count;
   }
 
