@@ -1,8 +1,8 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import winston from 'winston';
 
-import { VideoCacheService } from '@likes/cache';
+import { VideoCacheService } from '@likes/infrastructure/cache';
 
 import {
   DislikesFindCountForAVideoDto,
@@ -19,10 +19,10 @@ import { getShardFor } from '@app/counters';
 import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients';
 
 @Injectable()
-export class LikeService implements OnModuleInit {
+export class LikeService {
   private static SHARDS = 64;
 
-  constructor(
+  public constructor(
     @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
     private readonly cacheService: VideoCacheService,
     @Inject(CLIENT_PROVIDER.AGGREGATOR)
@@ -49,9 +49,7 @@ export class LikeService implements OnModuleInit {
     return `vdu:${videoId}`;
   }
 
-  async onModuleInit() {}
-
-  async modifyVideoLikeStatus(
+  public async modifyVideoLikeStatus(
     modifyLikeStatusForVideoDto: ModifyLikeStatusForVideoDto,
   ): Promise<LikeModifiedStatusForVideoResponse> {
     const { likeStatus, userId, videoId } = modifyLikeStatusForVideoDto;
@@ -177,7 +175,7 @@ export class LikeService implements OnModuleInit {
     return { response: 'something went wrong' };
   }
 
-  async getLikesCountForVideo(
+  public async getLikesCountForVideo(
     likesFindCountForAVideoDto: LikesFindCountForAVideoDto,
   ): Promise<LikesFindCountForAVideoResponse> {
     const { videoId } = likesFindCountForAVideoDto;

@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
+import winston from 'winston';
 
 import { KafkaLikeMessage } from '@aggregator/types';
+import { AggregatorCacheService } from '@aggregator/infrastructure/cache';
+
 import { WINSTON_LOGGER } from '@app/clients';
-import winston from 'winston';
-import { AggregatorCacheService } from '@aggregator/infrastructure/cache/aggregator-cache.service';
 
 @Injectable()
 export class LikesConsumerService {

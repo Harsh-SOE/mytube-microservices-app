@@ -1,5 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+
 import { KafkaLikeMessage } from '@aggregator/types';
 
 import { LikesConsumerService } from './likes-consumer.service';

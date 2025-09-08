@@ -7,10 +7,10 @@ import { LikeAggregateFactory } from '@aggregator/domain/factories';
 import { LikePersistanceACL } from '@aggregator/infrastructure/anti-corruption';
 import { LikeRepository } from '@aggregator/infrastructure/repository';
 import { LogsModule } from '@aggregator/infrastructure/logs';
+import { AggregatorCacheModule } from '@aggregator/infrastructure/cache';
 
 import { LikesConsumerService } from './likes-consumer.service';
 import { LikesConsumerController } from './likes-consumer.controller';
-import { AggregatorCacheModule } from '@aggregator/infrastructure/cache/aggregator-cache.module';
 
 @Module({
   controllers: [LikesConsumerController],

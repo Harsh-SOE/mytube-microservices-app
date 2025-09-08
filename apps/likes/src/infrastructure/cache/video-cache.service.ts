@@ -5,7 +5,7 @@ import { join } from 'path';
 
 import { AppConfigService } from '@likes/config';
 
-import { RedisLikesOperations } from '@likes/types';
+import { RedisLikesOperations } from '@likes/utils/types';
 
 @Injectable()
 export class VideoCacheService extends Redis implements OnModuleInit {

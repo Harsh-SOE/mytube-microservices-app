@@ -18,6 +18,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   videos-development-database:
     container_name: videos-development-database
@@ -38,114 +43,119 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
-  likes-development-database:
-    container_name: likes-development-database
-    image: docker.io/bitnami/mongodb:8.0
-    ports:
-      - '27020:27017'
-    volumes:
-      - likes-development-database-volume:/bitnami/mongodb
-    environment:
-      MONGODB_ADVERTISED_HOSTNAME: likes-development-database
-      MONGODB_ROOT_PASSWORD: harsh123
-      MONGODB_REPLICA_SET_MODE: primary
-      MONGODB_REPLICA_SET_NAME: rs0
-      MONGODB_REPLICA_SET_KEY: replicasetkey123
-    networks:
-      - likes-development-database-network
-    healthcheck:
-      test:
-        [
-          'CMD',
-          'mongosh',
-          '-u',
-          'root',
-          '-p',
-          'harsh123',
-          '--eval',
-          "db.adminCommand('ping')",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
+  # likes-development-database:
+  #   container_name: likes-development-database
+  #   image: docker.io/bitnami/mongodb:8.0
+  #   ports:
+  #     - '27020:27017'
+  #   volumes:
+  #     - likes-development-database-volume:/bitnami/mongodb
+  #   environment:
+  #     MONGODB_ADVERTISED_HOSTNAME: likes-development-database
+  #     MONGODB_ROOT_PASSWORD: harsh123
+  #     MONGODB_REPLICA_SET_MODE: primary
+  #     MONGODB_REPLICA_SET_NAME: rs0
+  #     MONGODB_REPLICA_SET_KEY: replicasetkey123
+  #   networks:
+  #     - likes-development-database-network
+  #   healthcheck:
+  #     test:
+  #       [
+  #         'CMD',
+  #         'mongosh',
+  #         '-u',
+  #         'root',
+  #         '-p',
+  #         'harsh123',
+  #         '--eval',
+  #         "db.adminCommand('ping')",
+  #       ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 10s
 
-  likes-development-database-secondary:
-    container_name: likes-development-database-secondary
-    image: docker.io/bitnami/mongodb:8.0
-    ports:
-      - '27022:27017'
-    environment:
-      MONGODB_ADVERTISED_HOSTNAME: likes-development-database-secondary
-      MONGODB_INITIAL_PRIMARY_HOST: likes-development-database
-      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: harsh123
-      MONGODB_REPLICA_SET_NAME: rs0
-      MONGODB_REPLICA_SET_MODE: secondary
-      MONGODB_REPLICA_SET_KEY: replicasetkey123
-    networks:
-      - likes-development-database-network
-    healthcheck:
-      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    depends_on:
-      likes-development-database:
-        condition: service_healthy
+  # likes-development-database-secondary:
+  #   container_name: likes-development-database-secondary
+  #   image: docker.io/bitnami/mongodb:8.0
+  #   ports:
+  #     - '27022:27017'
+  #   environment:
+  #     MONGODB_ADVERTISED_HOSTNAME: likes-development-database-secondary
+  #     MONGODB_INITIAL_PRIMARY_HOST: likes-development-database
+  #     MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: harsh123
+  #     MONGODB_REPLICA_SET_NAME: rs0
+  #     MONGODB_REPLICA_SET_MODE: secondary
+  #     MONGODB_REPLICA_SET_KEY: replicasetkey123
+  #   networks:
+  #     - likes-development-database-network
+  #   healthcheck:
+  #     test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 10s
+  #   depends_on:
+  #     likes-development-database:
+  #       condition: service_healthy
 
-  likes-development-database-arbiter:
-    container_name: likes-development-database-arbiter
-    image: docker.io/bitnami/mongodb:8.0
-    ports:
-      - '27023:27017'
-    environment:
-      MONGODB_ADVERTISED_HOSTNAME: likes-development-database-arbiter
-      MONGODB_INITIAL_PRIMARY_HOST: likes-development-database
-      MONGODB_REPLICA_SET_MODE: arbiter
-      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: harsh123
-      MONGODB_REPLICA_SET_NAME: rs0
-      MONGODB_REPLICA_SET_KEY: replicasetkey123
-    networks:
-      - likes-development-database-network
-    healthcheck:
-      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    depends_on:
-      likes-development-database:
-        condition: service_healthy
+  # likes-development-database-arbiter:
+  #   container_name: likes-development-database-arbiter
+  #   image: docker.io/bitnami/mongodb:8.0
+  #   ports:
+  #     - '27023:27017'
+  #   environment:
+  #     MONGODB_ADVERTISED_HOSTNAME: likes-development-database-arbiter
+  #     MONGODB_INITIAL_PRIMARY_HOST: likes-development-database
+  #     MONGODB_REPLICA_SET_MODE: arbiter
+  #     MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: harsh123
+  #     MONGODB_REPLICA_SET_NAME: rs0
+  #     MONGODB_REPLICA_SET_KEY: replicasetkey123
+  #   networks:
+  #     - likes-development-database-network
+  #   healthcheck:
+  #     test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 10s
+  #   depends_on:
+  #     likes-development-database:
+  #       condition: service_healthy
 
-  likes-development-database-init:
-    container_name: likes-development-database-init
-    image: docker.io/bitnami/mongodb:8.0
-    networks:
-      - likes-development-database-network
-    depends_on:
-      likes-development-database:
-        condition: service_healthy
-    command: >
-      sh -c "
-        sleep 10;
-        mongosh --host likes-development-database:27017 --username root --password harsh123 --authenticationDatabase admin --eval '
-          var cfg = {
-            _id: \"rs0\",
-            members: [
-              { _id: 0, host: \"likes-development-database:27017\" },
-              { _id: 1, host: \"likes-development-database-secondary:27017\" },
-              { _id: 2, host: \"likes-development-database-arbiter:27017\", arbiterOnly: true }
-            ]
-          };
-          rs.initiate(cfg);
-        '
-      "
+  # likes-development-database-init:
+  #   container_name: likes-development-database-init
+  #   image: docker.io/bitnami/mongodb:8.0
+  #   networks:
+  #     - likes-development-database-network
+  #   depends_on:
+  #     likes-development-database:
+  #       condition: service_healthy
+  #   command: >
+  #     sh -c "
+  #       sleep 10;
+  #       mongosh --host likes-development-database:27017 --username root --password harsh123 --authenticationDatabase admin --eval '
+  #         var cfg = {
+  #           _id: \"rs0\",
+  #           members: [
+  #             { _id: 0, host: \"likes-development-database:27017\" },
+  #             { _id: 1, host: \"likes-development-database-secondary:27017\" },
+  #             { _id: 2, host: \"likes-development-database-arbiter:27017\", arbiterOnly: true }
+  #           ]
+  #         };
+  #         rs.initiate(cfg);
+  #       '
+  #     "
 
   auth-development-database:
     container_name: auth-development-database
-    image: bitnami/mongodb:latest
+    image: docker.io/bitnami/mongodb:8.0
     ports:
       - '27021:27017'
     volumes:
@@ -172,6 +182,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   kafdrop:
     container_name: kafdrop
@@ -187,6 +202,11 @@ services:
     networks:
       - app
       - kafka_event_emitter
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   kafka:
     container_name: kafka
@@ -218,6 +238,11 @@ services:
       timeout: 30s
       retries: 5
       start_period: 120s
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   prom-server:
     container_name: prom-server
@@ -236,6 +261,11 @@ services:
         condition: service_healthy
       cloud:
         condition: service_healthy
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   grafana:
     image: grafana/grafana-oss
@@ -249,6 +279,11 @@ services:
       - video-db-development-database-network
     volumes:
       - grafana-storage:/var/lib/grafana
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   grafana-loki:
     image: grafana/loki
@@ -258,6 +293,11 @@ services:
     networks:
       - metrics-and-logs-network
       - app
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   redis-cache:
     container_name: redis-cache
@@ -268,6 +308,11 @@ services:
       - cache:/usr/src/cache/data
     networks:
       - app
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   postgres:
     image: postgres:17
@@ -284,6 +329,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   migrate:
     depends_on:
@@ -297,6 +347,11 @@ services:
       - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
     networks:
       - openfga
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   openfga:
     depends_on:
@@ -318,6 +373,11 @@ services:
       - '8081:8081'
       # Needed for the playground (Do not enable in prod!)
       - '3333:3000'
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   gateway:
     container_name: gateway
@@ -488,7 +548,7 @@ services:
     env_file:
       - apps/likes/.env
     depends_on:
-      likes-development-database:
+      kafka:
         condition: service_healthy
     healthcheck:
       test: ['CMD', 'grpc_health_probe', '-addr=:5000']
@@ -591,8 +651,6 @@ services:
     image: youtube-aggregator:latest
     depends_on:
       kafka:
-        condition: service_healthy
-      likes-development-database:
         condition: service_healthy
     environment:
       - KAFKAJS_NO_PARTITIONER_WARNING=1

@@ -18,7 +18,8 @@ export class ResponseTimeMiddleware implements NestMiddleware {
     private readonly metric: Histogram<'method' | 'route' | 'status_code'>,
   ) {
     this.handler = responseTime((req: Request, res: Response, time: number) => {
-      const route = req.url;
+      const route = req.baseUrl + req.path;
+      console.log(`Request: ${req.method} ${route} Status: ${res.statusCode}`);
       this.metric
         .labels(req.method, route, res.statusCode.toString())
         .observe(time);

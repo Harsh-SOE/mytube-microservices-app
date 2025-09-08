@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 
-import { LogsModule } from '@likes/logs';
+import { LogsModule } from '@likes/infrastructure/logs';
+import { VideoCacheModule } from '@likes/infrastructure/cache';
 import { AppConfigService, AppConfigModule } from '@likes/config';
 
 import { CLIENT_PROVIDER } from '@app/clients';
@@ -9,7 +10,6 @@ import { CLIENT_PROVIDER } from '@app/clients';
 import { LikesController } from './likes.controller';
 import { LikeService } from './likes.service';
 import { GrpcHealthController } from './grpc-health.controller';
-import { VideoCacheModule } from '@likes/cache';
 
 @Module({
   controllers: [LikesController, GrpcHealthController],
