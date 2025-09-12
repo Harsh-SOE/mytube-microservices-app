@@ -1,4 +1,5 @@
 import { Controller, UseFilters } from '@nestjs/common';
+import { Observable } from 'rxjs';
 
 import { JwtUserPayload } from '@app/contracts/jwt';
 import {
@@ -14,13 +15,12 @@ import {
   AuthHealthCheckRequest,
   AuthHealthCheckResponse,
 } from '@app/contracts/auth';
+import { GrpcAppExceptionFilter } from '@app/utils';
 
 import { AuthService } from './auth.service';
-import { AuthExceptionFilter } from '../filter/auth.filter';
-import { Observable } from 'rxjs';
 
 @Controller()
-@UseFilters(AuthExceptionFilter)
+@UseFilters(GrpcAppExceptionFilter)
 @AuthServiceControllerMethods()
 export class AuthController implements AuthServiceController {
   constructor(private readonly authService: AuthService) {}

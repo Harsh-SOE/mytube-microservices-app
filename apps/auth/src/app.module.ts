@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 
-import { AuthModule } from './auth/auth.module';
-import { OpenfgaModule } from './openfga/openfga.module';
-import { AppConfigModule } from './config/config.module';
-import { LogsModule } from './logs/logs.module';
-import { MeasureModule } from './measure/measure.module';
-import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './application/auth/auth.module';
+import { AppConfigModule } from '@auth/config';
+import { LogsModule } from '@auth/infrastructure/logs';
+import { MeasureModule } from '@auth/infrastructure/measure';
+import { OpenfgaModule } from '@auth/infrastructure/openfga';
+import { PersistanceModule } from '@auth/infrastructure/persistance';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { DatabaseModule } from './database/database.module';
     AppConfigModule,
     LogsModule,
     MeasureModule,
-    DatabaseModule,
+    PersistanceModule,
   ],
 })
 export class AppModule {}

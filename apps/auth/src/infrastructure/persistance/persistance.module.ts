@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { AppConfigModule } from '../config/config.module';
-import { AppConfigService } from '../config/config.service';
+import { AppConfigModule, AppConfigService } from '@auth/config';
 
 @Module({
   imports: [
@@ -19,4 +18,4 @@ import { AppConfigService } from '../config/config.service';
     }),
   ],
 })
-export class DatabaseModule {}
+export class PersistanceModule {}

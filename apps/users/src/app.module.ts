@@ -5,6 +5,7 @@ import { LogsModule } from '@users/infrastructure/logs';
 import { MeasureModule } from '@users/infrastructure/measure';
 import { AppConfigModule } from '@users/config';
 import { UserModule } from './application/users/user.module';
+import { MessageBrokerModule } from './infrastructure/message-broker/message-broker.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UserModule } from './application/users/user.module';
     MeasureModule,
     LogsModule,
     AppConfigModule,
+    MessageBrokerModule,
   ],
 })
 export class AppModule {}

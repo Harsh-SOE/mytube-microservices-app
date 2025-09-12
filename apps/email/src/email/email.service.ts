@@ -13,6 +13,6 @@ export class EmailService {
       'info',
       `EMAIL::SEND_MAIL Request recieved: ${JSON.stringify(createdUserMessageDto)}`,
     );
-    console.log(`Email was sent successfully`, createdUserMessageDto);
+    console.log(`EMAIL :: Email was sent successfully`, createdUserMessageDto);
   }
 }

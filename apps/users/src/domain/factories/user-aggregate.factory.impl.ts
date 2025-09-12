@@ -31,7 +31,7 @@ export class UserAggregateFactory implements AggregateFactory<UserAggregate> {
       UserCoverImage.create(coverImage),
     );
     const userAggregate = new UserAggregate(user);
-    userAggregate.apply(new UserCreatedDomainEvent(userAggregate.getUser().id));
+    userAggregate.apply(new UserCreatedDomainEvent(user));
     return userAggregate;
   }
 }

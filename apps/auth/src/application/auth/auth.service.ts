@@ -23,9 +23,10 @@ import {
 } from '@app/contracts/users';
 import { JwtUserPayload } from '@app/contracts/jwt';
 import { LogExecutionTime } from '@app/utils';
-import { CLIENT_PROVIDER } from '@app/clients/constant';
+import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
 
-import { UserAuthRepository } from '../repository/user-auth.repository';
+import { UserAuthRepository } from '@auth/infrastructure/repository';
+
 import {
   IncorrectUserPasswordGrpcException,
   UserCredentialNotFoundGrpcException,
@@ -37,7 +38,7 @@ export class AuthService implements OnModuleInit {
 
   constructor(
     @Inject(CLIENT_PROVIDER.USER) private readonly userClient: ClientGrpc,
-    @Inject('WINSTON_LOGGER') private readonly logger: winston.Logger,
+    @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
     private readonly authUser: UserAuthRepository,
     private readonly jwtService: JwtService,
   ) {}

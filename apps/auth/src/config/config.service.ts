@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { AUTH_PACKAGE_NAME } from '@app/contracts/auth';
-import { GRPC_HEALTH_V1_PACKAGE_NAME } from '@app/contracts/health';
-import { USER_PACKAGE_NAME } from '@app/contracts/users';
-import { ReflectionService } from '@grpc/reflection';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GrpcOptions, Transport } from '@nestjs/microservices';
+import { ReflectionService } from '@grpc/reflection';
 import { join } from 'path';
+
+import { AUTH_PACKAGE_NAME } from '@app/contracts/auth';
+import { GRPC_HEALTH_V1_PACKAGE_NAME } from '@app/contracts/health';
+import { USER_PACKAGE_NAME } from '@app/contracts/users';
 
 @Injectable()
 export class AppConfigService {

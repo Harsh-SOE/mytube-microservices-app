@@ -4,14 +4,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { CLIENT_PROVIDER } from '@app/clients/constant';
 
+import { UserAuthRepository } from '@auth/infrastructure/repository';
+import { AppJwtModule } from '@auth/infrastructure/jwt';
+import { LogsModule } from '@auth/infrastructure/logs';
+import { AppConfigModule, AppConfigService } from '@auth/config';
+import { UserAuth, UserAuthSchema } from '@auth/infrastructure/persistance';
+
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { AppJwtModule } from '../jwt/jwt.module';
-import { LogsModule } from '../logs/logs.module';
-import { UserAuthRepository } from '../repository/user-auth.repository';
-import { UserAuth, UserAuthSchema } from '../database/schema/user-auth.schema';
-import { AppConfigModule } from '../config/config.module';
-import { AppConfigService } from '../config/config.service';
 import { GrpcHealthController } from './grpc-health.controller';
 
 @Module({

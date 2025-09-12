@@ -2,7 +2,8 @@ import { NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
-import { UserAuth } from '../database/schema/user-auth.schema';
+import { UserAuth } from '@auth/infrastructure/persistance';
+
 import { BaseEntityRepository } from './entity.repository';
 
 export class UserAuthRepository

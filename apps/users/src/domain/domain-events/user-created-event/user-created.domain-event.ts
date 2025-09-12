@@ -1,3 +1,5 @@
+import { UserEntity } from '@users/domain/entities';
+
 export class UserCreatedDomainEvent {
-  constructor(public readonly userId: string) {}
+  constructor(public readonly user: UserEntity) {}
 }

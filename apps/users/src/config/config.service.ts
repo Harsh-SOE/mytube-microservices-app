@@ -80,6 +80,38 @@ export class AppConfigService {
     return options;
   }
 
+  // get WATCH_CLIENT_ID() {
+  //   return this.configService.getOrThrow<string>('WATCH_CLIENT_ID');
+  // }
+
+  // get WATCH_CONSUMER_GROUP_ID() {
+  //   return this.configService.getOrThrow<string>('WATCH_CONSUMER_GROUP_ID');
+  // }
+
+  // get WATCH_SERVICE_PORT() {
+  //   return this.configService.getOrThrow<number>('WATCH_SERVICE_PORT');
+  // }
+
+  // get WATCH_SERVICE_HOST() {
+  //   return this.configService.getOrThrow<string>('WATCH_SERVICE_HOST');
+  // }
+
+  // get WATCH_SERVICE_OPTIONS() {
+  //   const options: KafkaOptions = {
+  //     transport: Transport.KAFKA,
+  //     options: {
+  //       client: {
+  //         clientId: this.WATCH_CLIENT_ID,
+  //         brokers: [`${this.WATCH_SERVICE_HOST}:${this.WATCH_SERVICE_PORT}`],
+  //       },
+  //       consumer: {
+  //         groupId: this.WATCH_CONSUMER_GROUP_ID,
+  //       },
+  //     },
+  //   };
+  //   return options;
+  // }
+
   get MAX_DB_CONNECTIONS() {
     return this.configService.getOrThrow<number>('MAX_DB_CONNECTIONS');
   }

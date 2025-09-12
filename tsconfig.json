@@ -38,11 +38,12 @@
       "@peristance/user": ["apps/users/generated/prisma"],
       "@peristance/videos": ["apps/videos/generated/prisma"],
       "@peristance/aggregator": ["apps/aggregator/generated/prisma"],
-      "@persistance/aggregator": ["apps/aggregator/generated/prisma"],
+      "@persistance/auth": ["apps/auth/generated/prisma"],
       "@users/*": ["apps/users/src/*"],
       "@videos/*": ["apps/videos/src/*"],
       "@aggregator/*": ["apps/aggregator/src/*"],
       "@likes/*": ["apps/likes/src/*"],
+      "@auth/*": ["apps/auth/src/*"],
       "@gateway/*": ["apps/api-gateway/src/*"]
     }
   }
