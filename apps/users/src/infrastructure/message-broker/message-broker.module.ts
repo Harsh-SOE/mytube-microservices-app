@@ -17,6 +17,13 @@ import { AppConfigModule, AppConfigService } from '@users/config';
         useFactory: (configService: AppConfigService) =>
           configService.EMAIL_SERVICE_OPTIONS,
       },
+      {
+        name: CLIENT_PROVIDER.WATCH,
+        imports: [AppConfigModule],
+        inject: [AppConfigService],
+        useFactory: (configService: AppConfigService) =>
+          configService.WATCH_SERVICE_OPTIONS,
+      },
     ]),
   ],
   exports: [MessageBrokerService],

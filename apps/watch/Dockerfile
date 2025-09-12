@@ -16,8 +16,8 @@ RUN apk add --no-cache curl tar && \
     curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe && \
     chmod +x /usr/local/bin/grpc_health_probe && \
     apk del curl tar
-    
-RUN yarn build auth
+
+RUN yarn build watch
 
 FROM node:alpine AS production
 
@@ -29,7 +29,8 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn install --production
 
-COPY --from=development /usr/src/app/dist/apps/auth ./dist
+COPY --from=development /usr/src/app/dist/apps/watch ./dist
 COPY --from=development /usr/local/bin/grpc_health_probe /usr/local/bin/grpc_health_probe
 
-RUN ["node", "dist/main"]
+CMD [ "node", "dist/main" ]
+

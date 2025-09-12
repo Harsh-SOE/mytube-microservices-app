@@ -6,7 +6,7 @@ import { EMAIL_CLIENT } from '@app/clients';
 
 import { EmailService } from './email.service';
 
-@Controller('email')
+@Controller()
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 

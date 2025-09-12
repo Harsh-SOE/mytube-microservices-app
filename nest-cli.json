@@ -207,6 +207,18 @@
         "assets": ["libs/proto/videos.proto", "libs/proto/health.proto"],
         "watchAssets": true
       }
+    },
+    "watch": {
+      "type": "application",
+      "root": "apps/watch",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/watch/tsconfig.app.json",
+        "assets": ["libs/proto/watch.proto", "libs/proto/health.proto"],
+        "webpack": true,
+        "watchAssets": true
+      }
     }
   }
 }

@@ -14,6 +14,10 @@ export enum EMAIL_CLIENT {
   USER_CREATED = 'email.user-created',
 }
 
+export enum WATCH_CLIENT {
+  USER_CREATED = 'watch.user-created',
+}
+
 export enum LIKE_PATTERN {
   CREATE_LIKE = 'like.create',
   FIND_ALL_LIKE = 'like.find-all',

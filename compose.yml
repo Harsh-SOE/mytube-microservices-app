@@ -663,6 +663,31 @@ services:
     networks:
       - app
 
+  watch:
+    container_name: watch
+    build:
+      context: .
+      dockerfile: apps/watch/Dockerfile
+      target: development
+    image: youtube-watch:latest
+    command: yarn start:dev watch
+    env_file:
+      - apps/watch/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'grpc_health_probe', '-addr=:5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app
+
 volumes:
   users-development-database-volume: {}
   videos-development-database-volume: {}

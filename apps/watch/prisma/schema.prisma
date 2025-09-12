@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  output        = "../generated/prisma"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model crdb_internal_region {
+
+  @@ignore
+}
+
+model Watch {
+  id        String   @id() @default(uuid())
+  userId    String
+  videoId   String
+  watchedAt DateTime @default(now())
+}
+
+model User {
+  id         String   @id @default(uuid())
+  userName   String   @unique
+  email      String   @unique
+  fullName   String
+  dob        DateTime
+  avatar     String
+  coverImage String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
