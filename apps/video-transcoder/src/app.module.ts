@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppConfigModule } from './config/config.module';
-import { VideoTranscoderModule } from './video-transcoder/video-transcoder.module';
-import { LogsModule } from './logs';
+
+import { VideoTranscoderModule } from '@transcoder/application';
+import { AppConfigModule } from '@transcoder/infrastructure/config';
+
+import { LogsModule } from './infrastructure/logs';
 
 @Module({
   imports: [AppConfigModule, VideoTranscoderModule, LogsModule],

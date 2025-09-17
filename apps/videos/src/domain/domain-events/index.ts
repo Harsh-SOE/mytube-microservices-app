@@ -1,6 +1,6 @@
-import { VideoCreatedHandler } from './video-created.handler';
+import { VideoCreatedDomainEventHandler } from './video-created.domain-handler';
 
-export const videoEventHandler = [VideoCreatedHandler];
+export const videoEventHandler = [VideoCreatedDomainEventHandler];
 
-export * from './video-created.event';
-export * from './video-created.handler';
+export * from './video-created.domain-event';
+export * from './video-created.domain-handler';

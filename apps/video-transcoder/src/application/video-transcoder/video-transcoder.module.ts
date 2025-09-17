@@ -1,11 +1,16 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule } from '@nestjs/microservices';
+
+import { CLIENT_PROVIDER } from '@app/clients/constant';
+
+import { LogsModule } from '@transcoder/infrastructure/logs';
+import {
+  AppConfigModule,
+  AppConfigService,
+} from '@transcoder/infrastructure/config';
+
 import { VideoTranscoderService } from './video-transcoder.service';
 import { VideoTranscoderController } from './video-transcoder.controller';
-import { ClientsModule } from '@nestjs/microservices';
-import { CLIENT_PROVIDER } from '@app/clients/constant';
-import { AppConfigModule } from '../config/config.module';
-import { AppConfigService } from '../config/config.service';
-import { LogsModule } from '../logs';
 
 @Module({
   controllers: [VideoTranscoderController],

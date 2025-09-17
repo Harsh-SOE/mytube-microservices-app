@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppConfigService } from './config.service';
 import { ConfigModule } from '@nestjs/config';
 import * as joi from 'joi';
 import { join } from 'path';
+
+import { AppConfigService } from '@transcoder/infrastructure/config/config.service';
 
 @Module({
   providers: [AppConfigService],

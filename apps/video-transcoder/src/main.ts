@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { AppConfigService } from './config/config.service';
 import { KafkaOptions } from '@nestjs/microservices';
+
+import { AppConfigService } from '@transcoder/infrastructure/config';
+
+import { AppModule } from './app.module';
 
 /* Make use of kafka transport here */
 async function bootstrap() {

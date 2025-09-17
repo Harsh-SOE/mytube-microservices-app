@@ -11,6 +11,7 @@ import { Observable } from "rxjs";
 export const protobufPackage = "Cloud";
 
 export interface FileChunk {
+  /** the actual stream data bits */
   data: Uint8Array;
   size: number;
   isLast: boolean;
@@ -47,6 +48,16 @@ export enum CloudHealthCheckResponse_ServingStatus {
   UNRECOGNIZED = -1,
 }
 
+export interface StreamFileToCloudDto {
+  fileStream: FileChunk | undefined;
+  fileKey: string;
+  contentType: string;
+}
+
+export interface StreamFileToCloudResponse {
+  upload: boolean;
+}
+
 export const CLOUD_PACKAGE_NAME = "Cloud";
 
 export interface CloudServiceClient {
@@ -55,6 +66,8 @@ export interface CloudServiceClient {
   getFileAsNodeJsReadableStreamObservable(request: GetFileAsNodeJSReadableStreamObservableDto): Observable<FileChunk>;
 
   check(request: CloudHealthCheckRequest): Observable<CloudHealthCheckResponse>;
+
+  streamToCloud(request: Observable<StreamFileToCloudDto>): Observable<StreamFileToCloudResponse>;
 }
 
 export interface CloudServiceController {
@@ -67,6 +80,10 @@ export interface CloudServiceController {
   check(
     request: CloudHealthCheckRequest,
   ): Promise<CloudHealthCheckResponse> | Observable<CloudHealthCheckResponse> | CloudHealthCheckResponse;
+
+  streamToCloud(
+    request: Observable<StreamFileToCloudDto>,
+  ): Promise<StreamFileToCloudResponse> | Observable<StreamFileToCloudResponse> | StreamFileToCloudResponse;
 }
 
 export function CloudServiceControllerMethods() {
@@ -76,7 +93,7 @@ export function CloudServiceControllerMethods() {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("CloudService", method)(constructor.prototype[method], method, descriptor);
     }
-    const grpcStreamMethods: string[] = [];
+    const grpcStreamMethods: string[] = ["streamToCloud"];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcStreamMethod("CloudService", method)(constructor.prototype[method], method, descriptor);

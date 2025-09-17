@@ -19,6 +19,7 @@ import {
   VideoTransportPublishStatus,
   VideoTransportVisibilityStatus,
 } from '@app/contracts/videos';
+import { VideoCreatedDomainEvent } from '../domain-events';
 
 @Injectable()
 export class VideoAggregateFactory implements AggregateFactory<VideoAggregate> {
@@ -50,6 +51,12 @@ export class VideoAggregateFactory implements AggregateFactory<VideoAggregate> {
     );
 
     const videoAggregate = new VideoAggregate(videoEntity);
+    videoAggregate.apply(
+      new VideoCreatedDomainEvent({
+        key: videoAggregate.getVideo().getVideoUrl(),
+        videoId: videoAggregate.getVideo().getId(),
+      }),
+    );
     return videoAggregate;
   }
 }

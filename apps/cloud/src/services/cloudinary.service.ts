@@ -1,12 +1,15 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 
-import { CloudPreSignedUrlResponse } from '@app/contracts/cloud';
+import {
+  CloudPreSignedUrlResponse,
+  StreamFileToCloudResponse,
+} from '@app/contracts/cloud';
 import { CloudinaryUploadParams } from '@app/contracts/cloud';
 
 import { CloudProviderService } from './cloud-provider-service';
 import { AppConfigService } from '../config/config.service';
-import { Readable } from 'stream';
+import Stream, { Readable } from 'stream';
 
 @Injectable()
 export class CloudinaryService
@@ -30,6 +33,14 @@ export class CloudinaryService
   }
 
   getFileAsNodeJSReadableStream(key: string): Promise<Readable> {
+    throw new Error('Method not implemented.');
+  }
+
+  streamFileToCloud(
+    key: string,
+    fileStream: Stream,
+    contentType: string,
+  ): Promise<StreamFileToCloudResponse> {
     throw new Error('Method not implemented.');
   }
 }

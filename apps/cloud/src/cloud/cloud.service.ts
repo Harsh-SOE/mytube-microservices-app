@@ -1,28 +1,31 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { from, mergeMap, Observable } from 'rxjs';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { from, mergeMap, Observable, share } from 'rxjs';
+import winston from 'winston';
+import { PassThrough } from 'stream';
 
 import {
   CloudPresignedUrlDto,
   CloudPreSignedUrlResponse,
   FileChunk,
   GetFileAsNodeJSReadableStreamObservableDto,
+  StreamFileToCloudDto,
+  StreamFileToCloudResponse,
 } from '@app/contracts/cloud';
+import { WINSTON_LOGGER } from '@app/clients';
 
 import { CloudProviderService } from '../services/cloud-provider-service';
 import { CloudParamsFactory } from '../factory/cloud-params.factory';
-import { WINSTON_LOGGER } from '@app/clients';
-import winston from 'winston';
 
 @Injectable()
 export class CloudService {
-  constructor(
+  public constructor(
     @Inject('CLOUD_UPLOAD_PARAMS') private readonly factory: CloudParamsFactory,
     @Inject('CLOUD_STRATEGY')
     private readonly cloudProvider: CloudProviderService<any>,
     @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
   ) {}
 
-  generatePreSignedUrl(
+  public generatePreSignedUrl(
     cloudPresignedUrlDto: CloudPresignedUrlDto,
   ): Promise<CloudPreSignedUrlResponse> {
     this.logger.log(
@@ -35,7 +38,7 @@ export class CloudService {
     return this.cloudProvider.getPreSignedUploadUrl(dto);
   }
 
-  getFileAsNodeJSReadableStreamForGrpc(
+  public getFileAsNodeJSReadableStreamForGrpc(
     getFileAsNodeJSReadableStreamObservableDto: GetFileAsNodeJSReadableStreamObservableDto,
   ): Observable<FileChunk> {
     this.logger.log(
@@ -43,50 +46,87 @@ export class CloudService {
       `CLOUD::GET_FILE_AS_NODEJS_READABLE_STREAM:: Request recieved: ${JSON.stringify(getFileAsNodeJSReadableStreamObservableDto)}`,
     );
 
-    // return an observable so that nestJS can transport the file over the transport layer (Grpc)
-    /*
-    return new Observable<FileChunk>((observer) => {
-      void (async () => {
-        const fileAsNodeJSReadableStream =
-          await this.cloudProvider.getFileAsNodeJSReadableStream(key);
-        fileAsNodeJSReadableStream.on('data', (chunk: Buffer) => {
-          observer.next({ data: chunk, size: chunk.length, isLast: false });
-        });
-
-        fileAsNodeJSReadableStream.on('end', () => {
-          observer.next({ data: Buffer.alloc(0), size: 0, isLast: true });
-          observer.complete();
-        });
-
-        fileAsNodeJSReadableStream.on('error', (error) => {
-          observer.error(error);
-        });
-      })();
-    });
-    */
-
     return from(
       this.cloudProvider.getFileAsNodeJSReadableStream(
         getFileAsNodeJSReadableStreamObservableDto.key,
-      ),
+      ), // INFO: returns the Stream Object that will now open the stream in pause mode...
     ).pipe(
+      // take the output from the function call and pipe to an Observable...
       mergeMap((fileAsNodeJSReadableStream) => {
+        // create a new observable of FileChunk type
         return new Observable<FileChunk>((observer) => {
-          fileAsNodeJSReadableStream.on('data', (chunk: Buffer) => {
-            observer.next({ data: chunk, size: chunk.length, isLast: false });
-          });
+          const onData = (chunk: Buffer) => {
+            observer.next({ data: chunk, size: chunk.length, isLast: false }); // make it an observable's value and call next so that subscribers can actually get the FileChunk Observable data from the stream...
+          };
 
-          fileAsNodeJSReadableStream.on('end', () => {
-            observer.next({ data: Buffer.alloc(0), size: 0, isLast: true });
-            observer.complete();
-          });
+          const onEnd = () => {
+            observer.next({ data: Buffer.alloc(0), size: 0, isLast: true }); // make it an observable's value and call next so that subscribers can actually get the FileChunk Observable data from the stream...
+            observer.complete(); // the observable completes here...
+          };
 
-          fileAsNodeJSReadableStream.on('error', (error) => {
+          const onError = (error: Error) => {
             observer.error(error);
-          });
+          };
+
+          fileAsNodeJSReadableStream.on('data', onData); // INFO: attach a nodeJsReadableStream 'data' event to make stream flow...
+          fileAsNodeJSReadableStream.on('end', onEnd);
+          fileAsNodeJSReadableStream.on('error', onError);
+
           // INFO: Cleanup when unsubscribing, else meomory leak will happen...
+
+          return () => {
+            fileAsNodeJSReadableStream.off('data', onData);
+            fileAsNodeJSReadableStream.off('end', onEnd);
+            fileAsNodeJSReadableStream.off('error', onError);
+
+            fileAsNodeJSReadableStream.destroy();
+          };
         });
       }),
     );
+  }
+
+  public streamFileToCloud(
+    streamFileToCloudDto: Observable<StreamFileToCloudDto>,
+  ): Promise<StreamFileToCloudResponse> {
+    return new Promise<StreamFileToCloudResponse>((resolve, reject) => {
+      const sharedStream$ = streamFileToCloudDto.pipe(share());
+
+      let isFirst = true;
+      let fileKey: string;
+      let contentType: string;
+
+      const inputStream = new PassThrough();
+
+      sharedStream$.subscribe({
+        next: (streamFileDto: StreamFileToCloudDto) => {
+          if (isFirst) {
+            fileKey = streamFileDto.fileKey;
+            contentType = streamFileDto.contentType;
+            isFirst = false;
+
+            this.cloudProvider
+              .streamFileToCloud(fileKey, inputStream, contentType)
+              .then(resolve)
+              .catch(reject);
+          }
+
+          inputStream.push(streamFileDto.fileStream?.data);
+          if (streamFileDto.fileStream?.isLast) {
+            inputStream.end();
+          }
+        },
+        error: (error: Error) => {
+          console.error('An error occurred while streaming the file', error);
+          inputStream.destroy(error);
+          reject(error);
+        },
+        complete: () => {
+          Logger.log(
+            `Source observable for ${fileKey} completed successfully.`,
+          );
+        },
+      });
+    });
   }
 }

@@ -17,6 +17,7 @@ import { VideosController } from './videos.controller';
 import { GrpcHealthController } from './grpc-health.controller';
 import { videoQueryHandler, QueryModelResponseMapper } from '../queries';
 import { videoCommandHandlers } from '../commands';
+import { videoEventHandler } from '@videos/domain/domain-events';
 
 @Module({
   controllers: [VideosController, GrpcHealthController],
@@ -29,6 +30,7 @@ import { videoCommandHandlers } from '../commands';
     QueryModelResponseMapper,
     ...videoCommandHandlers,
     ...videoQueryHandler,
+    ...videoEventHandler,
   ],
   imports: [
     LogsModule,

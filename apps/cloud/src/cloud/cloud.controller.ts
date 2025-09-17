@@ -10,6 +10,8 @@ import {
   CloudServiceControllerMethods,
   FileChunk,
   GetFileAsNodeJSReadableStreamObservableDto,
+  StreamFileToCloudDto,
+  StreamFileToCloudResponse,
 } from '@app/contracts/cloud';
 import { Observable } from 'rxjs';
 
@@ -40,5 +42,14 @@ export class CloudController implements CloudServiceController {
     return this.cloudService.getFileAsNodeJSReadableStreamForGrpc(
       getFileAsNodeJSReadableStreamObservableDto,
     );
+  }
+
+  streamToCloud(
+    streamFileToCloudDto: Observable<StreamFileToCloudDto>,
+  ):
+    | Promise<StreamFileToCloudResponse>
+    | Observable<StreamFileToCloudResponse>
+    | StreamFileToCloudResponse {
+    return this.cloudService.streamFileToCloud(streamFileToCloudDto);
   }
 }

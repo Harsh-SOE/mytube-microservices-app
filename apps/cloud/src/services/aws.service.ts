@@ -1,10 +1,14 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
+import { Upload } from '@aws-sdk/lib-storage';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import * as AWS from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 
-import { CloudPreSignedUrlResponse } from '@app/contracts/cloud';
+import {
+  CloudPreSignedUrlResponse,
+  StreamFileToCloudResponse,
+} from '@app/contracts/cloud';
 import { AwsUploadParams } from '@app/contracts/cloud';
 
 import { CloudProviderService } from './cloud-provider-service';
@@ -55,5 +59,36 @@ export class AwsCloudService
     }
 
     return data.Body as Readable;
+  }
+
+  async streamFileToCloud(
+    key: string,
+    fileStream: Readable,
+    contentType: string,
+  ): Promise<StreamFileToCloudResponse> {
+    console.log(`File: ${key} is streamed to S3`);
+    fileStream.on('data', (chunk: Buffer) => {
+      console.log(`File: ${key} chunk size is: ${chunk.length}`);
+    });
+
+    fileStream.on('end', () => {
+      console.log(`File: ${key} was streamed sucessfully`);
+    });
+
+    try {
+      await new Upload({
+        client: this.s3Client,
+        params: {
+          Bucket: this.configService.AWS_BUCKET,
+          Key: key,
+          Body: fileStream,
+          ContentType: contentType,
+        },
+      }).done();
+      Logger.log('Upload successful for', key);
+    } catch (error) {
+      Logger.error('Upload failed for', key, error);
+    }
+    return { upload: true };
   }
 }

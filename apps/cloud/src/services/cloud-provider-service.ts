@@ -1,6 +1,9 @@
-import { Readable } from 'stream';
+import Stream, { Readable } from 'stream';
 
-import { UploadToCloudDto } from '@app/contracts/cloud';
+import {
+  StreamFileToCloudResponse,
+  UploadToCloudDto,
+} from '@app/contracts/cloud';
 import { CloudPreSignedUrlResponse } from '@app/contracts/cloud';
 
 export interface CloudProviderService<UploadType extends UploadToCloudDto> {
@@ -12,4 +15,10 @@ export interface CloudProviderService<UploadType extends UploadToCloudDto> {
   getPreSignedUploadUrl(params: UploadType): Promise<CloudPreSignedUrlResponse>;
 
   getFileAsNodeJSReadableStream(key: string): Promise<Readable>;
+
+  streamFileToCloud(
+    key: string,
+    fileStream: Stream,
+    contentType: string,
+  ): Promise<StreamFileToCloudResponse>;
 }

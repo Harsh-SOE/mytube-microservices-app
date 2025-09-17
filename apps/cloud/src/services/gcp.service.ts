@@ -1,7 +1,10 @@
-import { GCPUploadParams } from '@app/contracts/cloud';
+import {
+  GCPUploadParams,
+  StreamFileToCloudResponse,
+} from '@app/contracts/cloud';
 
 import { CloudProviderService } from './cloud-provider-service';
-import { Readable } from 'stream';
+import Stream, { Readable } from 'stream';
 
 export class GCPService implements CloudProviderService<GCPUploadParams> {
   getPreSignedUploadUrl(
@@ -12,6 +15,14 @@ export class GCPService implements CloudProviderService<GCPUploadParams> {
   }
 
   getFileAsNodeJSReadableStream(key: string): Promise<Readable> {
+    throw new Error('Method not implemented.');
+  }
+
+  streamFileToCloud(
+    key: string,
+    fileStream: Stream,
+    contentType: string,
+  ): Promise<StreamFileToCloudResponse> {
     throw new Error('Method not implemented.');
   }
 }

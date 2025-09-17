@@ -3,7 +3,7 @@ syntax = "proto3";
 package Cloud;
 
 message FileChunk {
-  bytes data= 1;
+  bytes data= 1;  // the actual stream data bits
   int64 size = 2;
   bool is_last = 3;
 }
@@ -38,8 +38,19 @@ message CloudHealthCheckResponse {
   ServingStatus status = 1;
 }
 
+message StreamFileToCloudDto {
+  FileChunk fileStream = 1;
+  string fileKey = 2;
+  string contentType = 3;
+}
+
+message StreamFileToCloudResponse {
+  bool upload = 1;
+}
+
 service CloudService {
   rpc getPresignedUrl(CloudPresignedUrlDto) returns (CloudPreSignedUrlResponse) {}
   rpc getFileAsNodeJSReadableStreamObservable(GetFileAsNodeJSReadableStreamObservableDto) returns (stream FileChunk) {}
   rpc Check(CloudHealthCheckRequest) returns (CloudHealthCheckResponse) {}
+  rpc StreamToCloud(stream StreamFileToCloudDto) returns (StreamFileToCloudResponse) {}
 }

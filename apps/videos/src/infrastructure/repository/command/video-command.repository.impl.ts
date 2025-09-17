@@ -10,7 +10,7 @@ import {
 import { VideoAggregate } from '@videos/domain/aggregates';
 import { PersistanceService } from '@videos/infrastructure/persistance';
 import { VideoAggregatePersistanceACL } from '@videos/infrastructure/anti-corruption';
-import { VideoNotFoundGrpcException } from '@videos/errors';
+import { VideoNotFoundGrpcException } from '@videos/application/errors';
 
 import { Prisma, Video } from '@peristance/videos';
 
