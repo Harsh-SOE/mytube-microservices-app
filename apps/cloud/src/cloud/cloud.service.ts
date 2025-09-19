@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { from, mergeMap, Observable, share } from 'rxjs';
+import { from, mergeMap, Observable, tap } from 'rxjs';
 import winston from 'winston';
 import { PassThrough } from 'stream';
 
@@ -38,6 +38,23 @@ export class CloudService {
     return this.cloudProvider.getPreSignedUploadUrl(dto);
   }
 
+  private logObservable<T>(observable: Observable<T>) {
+    return observable.pipe(
+      tap({
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        next: (value) => {
+          console.log(`[TAP] Observable emitted NEXT`);
+        },
+        error: (err) => {
+          console.error(`[TAP] Observable emitted ERROR:`, err);
+        },
+        complete: () => {
+          console.log(`[TAP] Observable emitted COMPLETE`);
+        },
+      }),
+    );
+  }
+
   public getFileAsNodeJSReadableStreamForGrpc(
     getFileAsNodeJSReadableStreamObservableDto: GetFileAsNodeJSReadableStreamObservableDto,
   ): Observable<FileChunk> {
@@ -54,7 +71,7 @@ export class CloudService {
       // take the output from the function call and pipe to an Observable...
       mergeMap((fileAsNodeJSReadableStream) => {
         // create a new observable of FileChunk type
-        return new Observable<FileChunk>((observer) => {
+        const fileStreamObservable = new Observable<FileChunk>((observer) => {
           const onData = (chunk: Buffer) => {
             observer.next({ data: chunk, size: chunk.length, isLast: false }); // make it an observable's value and call next so that subscribers can actually get the FileChunk Observable data from the stream...
           };
@@ -82,6 +99,7 @@ export class CloudService {
             fileAsNodeJSReadableStream.destroy();
           };
         });
+        return this.logObservable(fileStreamObservable);
       }),
     );
   }
@@ -90,16 +108,16 @@ export class CloudService {
     streamFileToCloudDto: Observable<StreamFileToCloudDto>,
   ): Promise<StreamFileToCloudResponse> {
     return new Promise<StreamFileToCloudResponse>((resolve, reject) => {
-      const sharedStream$ = streamFileToCloudDto.pipe(share());
-
       let isFirst = true;
       let fileKey: string;
       let contentType: string;
 
       const inputStream = new PassThrough();
 
-      sharedStream$.subscribe({
+      this.logObservable(streamFileToCloudDto).subscribe({
         next: (streamFileDto: StreamFileToCloudDto) => {
+          inputStream.write(streamFileDto.fileStream?.data);
+
           if (isFirst) {
             fileKey = streamFileDto.fileKey;
             contentType = streamFileDto.contentType;
@@ -111,7 +129,6 @@ export class CloudService {
               .catch(reject);
           }
 
-          inputStream.push(streamFileDto.fileStream?.data);
           if (streamFileDto.fileStream?.isLast) {
             inputStream.end();
           }

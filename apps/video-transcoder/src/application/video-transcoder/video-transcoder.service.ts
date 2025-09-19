@@ -3,7 +3,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import * as fs from 'fs/promises';
 import * as fsStream from 'fs';
 import Ffmpeg from 'fluent-ffmpeg';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom, Observable, tap } from 'rxjs';
 import { PassThrough } from 'stream';
 import path from 'path';
 import winston from 'winston';
@@ -40,6 +40,93 @@ export class VideoTranscoderService implements OnModuleInit {
     return 'application/octet-stream';
   }
 
+  private logObservable<T>(observable: Observable<T>, s3Key: string) {
+    return observable.pipe(
+      tap({
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        next: (value) => {
+          console.log(`[TAP] Observable for ${s3Key} emitted NEXT`);
+        },
+        error: (err) => {
+          console.error(`[TAP] Observable for ${s3Key} emitted ERROR:`, err);
+        },
+        complete: () => {
+          console.log(`[TAP] Observable for ${s3Key} emitted COMPLETE`);
+        },
+      }),
+    );
+  }
+
+  private async createStreamForAllTranscodedFilesAndSendToCloudService(
+    outputDir: string,
+    videoId: string,
+  ) {
+    console.log(`Video was transcoded successfully...`);
+    const files = await fs.readdir(outputDir);
+
+    const uploadPromises = files.map((file) => {
+      const filePath = path.join(outputDir, file);
+      const s3Key = `hls/${videoId}/${file}`;
+      const contentType = this.getContentType(file);
+
+      const fileStreamObservable = new Observable<StreamFileToCloudDto>(
+        (observer) => {
+          const fileStream = fsStream.createReadStream(filePath);
+          const onData = (chunk: Buffer) => {
+            observer.next({
+              fileKey: s3Key,
+              contentType: contentType,
+              fileStream: {
+                data: chunk,
+                size: chunk.length,
+                isLast: false,
+              },
+            });
+          };
+
+          const onError = (error: Error) => {
+            observer.error(error);
+          };
+
+          const onEnd = () => {
+            Logger.log(`File: ${s3Key} stream was ended`);
+            observer.next({
+              fileKey: s3Key,
+              contentType: contentType,
+              fileStream: {
+                data: Buffer.alloc(0),
+                size: 0,
+                isLast: true,
+              },
+            });
+            observer.complete();
+            console.log(`Completed Triggered`);
+          };
+
+          fileStream.on('data', onData);
+          fileStream.on('error', onError);
+          fileStream.on('end', onEnd);
+          return () => {
+            fileStream.off('data', onData);
+            fileStream.off('error', onError);
+            fileStream.off('end', onEnd);
+            fileStream.destroy();
+          };
+        },
+      );
+
+      const loggedObservable = this.logObservable<StreamFileToCloudDto>(
+        fileStreamObservable,
+        s3Key,
+      );
+
+      return lastValueFrom(this.cloudService.streamToCloud(loggedObservable));
+    });
+
+    await Promise.all(uploadPromises);
+    await fs.rm(outputDir, { recursive: true, force: true });
+  }
+
   async transcodeVideo(videoTranscodeDto: VideoTranscodeDto) {
     this.logger.log(
       'info',
@@ -62,39 +149,41 @@ export class VideoTranscoderService implements OnModuleInit {
       const inputStream = new PassThrough();
 
       console.log(`transcoded files will be saved to ${outputDir}`);
-      Ffmpeg(inputStream)
-        .videoCodec('libx264')
-        .outputOptions(['-preset ultrafast', '-b:v 4M', '-threads 0'])
-        .audioCodec('aac')
-        .outputOption('-f', 'hls')
-        .outputOption('-hls_time', '6')
-        .outputOption('-hls_playlist_type', 'vod')
-        .outputOption('-hls_segment_filename', segmentPattern)
-        .on('error', (err, stdout, stderr) => {
-          console.error(`FFmpeg error for video:${videoId}:`, err);
-          console.error('ffmpeg stderr:\n' + stderr);
-          reject(err);
-        })
-        .on('end', () => {
-          console.log(`HLS transcoding for ${videoId} finished successfully.`);
-          isVideotranscoded = true;
-          resolve(outputDir);
-        })
-        .on('progress', (progress) => {
-          console.log('Processing: ' + progress.timemark);
-        })
-        .save(manifestPath);
+      let isFirstChunk = true;
 
       readableFileStream$.subscribe({
         next: (chunk) => {
           inputStream.write(chunk.data);
+          if (isFirstChunk) {
+            Ffmpeg(inputStream)
+              .videoCodec('libx264')
+              .outputOptions(['-preset ultrafast', '-b:v 4M', '-threads 0'])
+              .audioCodec('aac')
+              .outputOption('-f', 'hls')
+              .outputOption('-hls_time', '6')
+              .outputOption('-hls_playlist_type', 'vod')
+              .outputOption('-hls_segment_filename', segmentPattern)
+              .on('error', (err, stdout, stderr) => {
+                console.error(`FFmpeg error for video:${videoId}:`, err);
+                console.error('ffmpeg stderr:\n' + stderr);
+                reject(err);
+              })
+              .on('end', () => {
+                console.log(
+                  `HLS transcoding for ${videoId} finished successfully.`,
+                );
+                isVideotranscoded = true;
+                resolve(outputDir);
+              })
+              .on('progress', (progress) => {
+                console.log('Processing: ' + progress.timemark);
+              })
+              .save(manifestPath);
+            isFirstChunk = false;
+          }
         },
         error: (error: Error) => {
           console.log(`An error occured while streaming the file`, error);
-          console.error(
-            'An error occurred while streaming the original file',
-            error,
-          );
           inputStream.end();
           reject(error);
         },
@@ -105,72 +194,10 @@ export class VideoTranscoderService implements OnModuleInit {
       });
     });
     if (isVideotranscoded) {
-      console.log(`Video was transcoded successfully...`);
-      const files = await fs.readdir(outputDir);
-
-      console.log(`Files are:`);
-      console.log(files);
-
-      const uploadPromises = files.map((file) => {
-        const filePath = path.join(outputDir, file);
-        const s3Key = `hls/${videoId}/${file}`;
-        const contentType = this.getContentType(file);
-
-        const fileStreamObservable = new Observable<StreamFileToCloudDto>(
-          (observer) => {
-            const fileStream = fsStream.createReadStream(filePath);
-            const onData = (chunk: Buffer) => {
-              observer.next({
-                fileKey: s3Key,
-                contentType: contentType,
-                fileStream: {
-                  data: chunk,
-                  size: chunk.length,
-                  isLast: false,
-                },
-              });
-            };
-
-            const onError = (error: Error) => {
-              observer.error(error);
-            };
-
-            const onEnd = () => {
-              Logger.log(`File: ${s3Key} stream was ended`);
-              observer.next({
-                fileKey: s3Key,
-                contentType: contentType,
-                fileStream: {
-                  data: Buffer.alloc(0),
-                  size: 0,
-                  isLast: true,
-                },
-              });
-              observer.complete();
-              console.log(`Completed Triggered`);
-            };
-
-            fileStream.on('data', onData);
-            fileStream.on('error', onError);
-            fileStream.on('end', onEnd);
-            return () => {
-              fileStream.off('data', onData);
-              fileStream.off('error', onError);
-              fileStream.off('end', onEnd);
-              fileStream.destroy();
-            };
-          },
-        );
-        return lastValueFrom(
-          this.cloudService.streamToCloud(fileStreamObservable),
-        );
-      });
-
-      console.log(`All transcoded files: ${videoId} will be streamed to S3`);
-      await Promise.all(uploadPromises);
-      console.log(`All transcoded files for ${videoId} streamed to S3.`);
-      console.log(`Removing ${outputDir}`);
-      await fs.rm(outputDir, { recursive: true, force: true });
+      return this.createStreamForAllTranscodedFilesAndSendToCloudService(
+        outputDir,
+        videoId,
+      );
     }
   }
 }
