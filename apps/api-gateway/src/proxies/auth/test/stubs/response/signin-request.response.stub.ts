@@ -1,4 +1,4 @@
-import { SigninRequestResponse } from '../../../response';
+import { SigninRequestResponse } from '@gateway/proxies/auth/response';
 
 export const SigninRequestResponseStub = (): SigninRequestResponse => {
   return {

@@ -1,4 +1,4 @@
-import { SigninRequestDTO } from '../../../request';
+import { SigninRequestDTO } from '@gateway/proxies/auth/request';
 
 export const SigninRequestStub = (): SigninRequestDTO => {
   return {

@@ -1,4 +1,4 @@
-import { DeleteUserRequestDto } from '../../../request';
+import { DeleteUserRequestDto } from '@gateway/proxies/users/request';
 
 export const DeleteUserRequestDtoStub = (): DeleteUserRequestDto => {
   return {

@@ -1,4 +1,4 @@
-import { SignupRequestDto } from '../../../request';
+import { SignupRequestDto } from '@gateway/proxies/auth/request';
 
 export const SignupRequestStub = (): SignupRequestDto => {
   return {

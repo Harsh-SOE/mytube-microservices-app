@@ -1,4 +1,4 @@
-import { ChangePasswordRequestDto } from '../../../request';
+import { ChangePasswordRequestDto } from '@gateway/proxies/auth/request';
 
 export const ChangePasswordRequestStub = (): ChangePasswordRequestDto => {
   return {

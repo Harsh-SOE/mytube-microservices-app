@@ -1,11 +1,3 @@
-// export interface JwtUserPayload {
-//   id: string;
-//   userName: string;
-//   fullName: string;
-//   email: string;
-//   dob: string;
-// }
-
 import { JwtUserPayload } from '@app/contracts/jwt';
 
 export const JwtUserPayloadStub = (): JwtUserPayload => {

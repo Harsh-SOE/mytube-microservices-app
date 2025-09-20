@@ -1,12 +1,4 @@
-// export class UpdateUserRequestDto {
-//   email: string;
-
-import { UpdateUserRequestDto } from '../../../request';
-
-//   fullName: string;
-
-//   dob: string;
-// }
+import { UpdateUserRequestDto } from '@gateway/proxies/users/request';
 
 export const UpdateUserRequestDtoStub = (): UpdateUserRequestDto => {
   return {

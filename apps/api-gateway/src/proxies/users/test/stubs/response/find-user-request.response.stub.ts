@@ -1,4 +1,4 @@
-import { FindUserRequestResponse } from '../../../response';
+import { FindUserRequestResponse } from '@gateway/proxies/users/response';
 
 export const FindUserRequestResponseStub = (): FindUserRequestResponse => {
   return {

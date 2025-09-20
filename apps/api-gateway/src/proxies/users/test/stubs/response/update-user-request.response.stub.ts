@@ -1,4 +1,4 @@
-import { UpdatedUserRequestResponse } from '../../../response';
+import { UpdatedUserRequestResponse } from '@gateway/proxies/users/response';
 
 export const UpdatedUserRequestResponseStub =
   (): UpdatedUserRequestResponse => {

@@ -1,4 +1,4 @@
-import { ChangePasswordRequestResponse } from '../../../response';
+import { ChangePasswordRequestResponse } from '@gateway/proxies/auth/response';
 
 export const ChangePasswordRequestResponseStub =
   (): ChangePasswordRequestResponse => {

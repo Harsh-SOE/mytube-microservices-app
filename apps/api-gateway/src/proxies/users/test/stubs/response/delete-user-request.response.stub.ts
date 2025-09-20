@@ -1,4 +1,4 @@
-import { DeleteUserRequestResponse } from '../../../response';
+import { DeleteUserRequestResponse } from '@gateway/proxies/users/response';
 
 export const DeleteUserRequestResponseStub = (): DeleteUserRequestResponse => {
   return {
