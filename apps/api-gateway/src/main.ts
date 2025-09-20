@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
-import { GatewayExceptionFilter } from './filter/gateway.filter';
-import { AppConfigService } from './config/config.service';
+import { GatewayExceptionFilter } from './utils/filter/gateway.filter';
+import { AppConfigService } from './infrastructure/config/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

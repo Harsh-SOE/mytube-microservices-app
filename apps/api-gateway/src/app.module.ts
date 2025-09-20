@@ -1,19 +1,18 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager';
 
-import { AppConfigModule } from './config/config.module';
-import { VideoModule } from './videos/video.module';
-import { UsersModule } from './users/users.module';
-import { MeasureModule } from './measure/measure.module';
-import { CloudModule } from './cloud/cloud.module';
-import { ResponseTimeMiddleware } from './middlewares/response-time.middleware';
-import { LogsModule } from './logs/logs.module';
 import { redisStore } from 'cache-manager-redis-yet';
-import { AuthModule } from './auth/auth.module';
-import { GatewayJwtModule } from './jwt/jwt.module';
-import { LikesModule } from './likes/likes.module';
-import { AppConfigService } from './config/config.service';
-import { WatchModule } from './watch/watch.module';
+import { AppConfigModule, AppConfigService } from './infrastructure/config';
+import { VideoModule } from './proxies/videos/video.module';
+import { UsersModule } from './proxies/users/users.module';
+import { MeasureModule } from './infrastructure/measure';
+import { CloudModule } from './proxies/cloud/cloud.module';
+import { LogsModule } from './infrastructure/logs';
+import { AuthModule } from './proxies/auth/auth.module';
+import { GatewayJwtModule } from './infrastructure/jwt';
+import { LikesModule } from './proxies/likes/likes.module';
+import { WatchModule } from './proxies/watch/watch.module';
+import { ResponseTimeMiddleware } from './infrastructure/middlewares';
 
 @Module({
   imports: [
