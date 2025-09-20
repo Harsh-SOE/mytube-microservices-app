@@ -19,7 +19,7 @@ import { GrpcHealthController } from './grpc-health.controller';
     VideoCacheModule,
     ClientsModule.registerAsync([
       {
-        name: CLIENT_PROVIDER.AGGREGATOR,
+        name: CLIENT_PROVIDER.LIKES_AGGREGATOR,
         imports: [AppConfigModule],
         inject: [AppConfigService],
         useFactory: (configService: AppConfigService) =>

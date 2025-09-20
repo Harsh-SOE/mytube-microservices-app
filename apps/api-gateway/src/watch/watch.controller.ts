@@ -4,6 +4,7 @@ import { User } from '@gateway/decorators';
 import { JwtUserPayload } from '@app/contracts/jwt';
 import { GatewayJwtGuard } from '@gateway/jwt/guards';
 import { WatchService } from './watch.service';
+import { WatchVideoResponse } from './response';
 
 @Controller('watch')
 @UseGuards(GatewayJwtGuard)
@@ -11,7 +12,11 @@ export class WatchController {
   constructor(private watchService: WatchService) {}
 
   @Post(WATCH_API.WATCH_VIDEO)
-  watchVideo(@Param('video-id') videoId: string, @User() user: JwtUserPayload) {
+  watchVideo(
+    @Param('videoId') videoId: string,
+    @User() user: JwtUserPayload,
+  ): Promise<WatchVideoResponse> {
+    console.log(`Request recieved for video: ${videoId}`);
     return this.watchService.watchVideo(videoId, user.id);
   }
 }

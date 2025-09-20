@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { GatewayJwtModule } from './jwt/jwt.module';
 import { LikesModule } from './likes/likes.module';
 import { AppConfigService } from './config/config.service';
+import { WatchModule } from './watch/watch.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AppConfigService } from './config/config.service';
     AuthModule,
     GatewayJwtModule,
     LikesModule,
+    WatchModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -25,7 +25,7 @@ export class LikeService {
   public constructor(
     @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
     private readonly cacheService: VideoCacheService,
-    @Inject(CLIENT_PROVIDER.AGGREGATOR)
+    @Inject(CLIENT_PROVIDER.LIKES_AGGREGATOR)
     private readonly messageBroker: ClientKafka,
   ) {}
 

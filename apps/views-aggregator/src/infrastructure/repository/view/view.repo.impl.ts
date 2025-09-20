@@ -9,7 +9,7 @@ import { WINSTON_LOGGER } from '@app/clients';
 
 import { Prisma, View } from '@persistance/views-aggregator';
 import { ViewAggregate } from '@views-aggregator/domain/aggregates';
-import { ViewEntityToPeristanceACL } from '@views-aggregator/infrastructure/anti-corruption';
+import { ViewPeristanceAggregateACL } from '@views-aggregator/infrastructure/anti-corruption';
 import { PersistanceService } from '@views-aggregator/infrastructure/persistance';
 
 import { IViewRepository } from './view.repo';
@@ -18,7 +18,7 @@ import { IViewRepository } from './view.repo';
 export class ViewRepository implements IViewRepository<ViewAggregate> {
   constructor(
     private persistanceService: PersistanceService,
-    private viewPersistanceACL: ViewEntityToPeristanceACL,
+    private viewPersistanceACL: ViewPeristanceAggregateACL,
     @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
   ) {}
 

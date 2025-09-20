@@ -1,10 +1,20 @@
 import { Module } from '@nestjs/common';
 
-import { WatchAggregatorCacheService } from './cache.service';
 import { AppConfigModule } from '@views-aggregator/config';
+import { ViewAggregateFactory } from '@views-aggregator/domain/factories';
+
+import { ViewAggregatorCacheService } from './cache.service';
+import { ViewRepository } from '../repository';
+import { ViewPeristanceAggregateACL } from '../anti-corruption';
 
 @Module({
   imports: [AppConfigModule],
-  providers: [WatchAggregatorCacheService],
+  providers: [
+    ViewAggregatorCacheService,
+    ViewAggregateFactory,
+    ViewRepository,
+    ViewPeristanceAggregateACL,
+  ],
+  exports: [ViewAggregatorCacheService],
 })
-export class WatchAggregatorCachemodule {}
+export class ViewAggregatorCacheModule {}

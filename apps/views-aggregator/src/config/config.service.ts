@@ -64,4 +64,8 @@ export class AppConfigService {
   get WATCH_STREAM_GROUP_NAME() {
     return this.configService.getOrThrow<string>('WATCH_STREAM_GROUP_NAME');
   }
+
+  get GRAFANA_LOKI_URL() {
+    return this.configService.getOrThrow<string>('GRAFANA_LOKI_URL');
+  }
 }

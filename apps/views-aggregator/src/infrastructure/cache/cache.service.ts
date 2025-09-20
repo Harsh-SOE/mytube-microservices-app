@@ -8,11 +8,11 @@ import { StreamData, WatchMessage } from '@views-aggregator/types';
 import { ViewRepository } from '../repository';
 
 @Injectable()
-export class WatchAggregatorCacheService extends Redis implements OnModuleInit {
+export class ViewAggregatorCacheService extends Redis implements OnModuleInit {
   constructor(
-    private configService: AppConfigService,
-    private viewRepo: ViewRepository,
-    private viewAggregateFactory: ViewAggregateFactory,
+    private readonly configService: AppConfigService,
+    private readonly viewRepo: ViewRepository,
+    private readonly viewAggregateFactory: ViewAggregateFactory,
   ) {
     super({
       host: configService.CACHE_HOST,
@@ -81,24 +81,22 @@ export class WatchAggregatorCacheService extends Redis implements OnModuleInit {
 
     if (!messagesInStream || messagesInStream.length === 0) return;
 
-    this.extractMessageFromStream(messagesInStream);
+    await this.extractMessageFromStream(messagesInStream);
   }
 
-  extractMessageFromStream(stream: StreamData[]): WatchMessage[] {
+  async extractMessageFromStream(stream: StreamData[]) {
     const messageAsWatchMessagesArray: WatchMessage[] = [];
     for (const [streamKey, entries] of stream) {
       console.log(`Processing values for ${streamKey} stream`);
-      for (const [id, values] of entries) {
+      for (const [id, messageKeyValueObjectArray] of entries) {
         console.log(`Got an element with id:${id}`);
-        // convert the underlying message from ['userId': '', videoId: ''] to { userId: '', videoId: '' }
-        const messageAsObject = {};
-        for (let i = 0; i < values.length; i += 2) {
-          messageAsObject[values[i]] = values[i + 1];
-        }
-        messageAsWatchMessagesArray.push(messageAsObject as WatchMessage);
+        messageAsWatchMessagesArray.push(
+          JSON.parse(messageKeyValueObjectArray[1]) as WatchMessage,
+        );
       }
     }
-    return messageAsWatchMessagesArray;
+    console.log(`Messages: ${JSON.stringify(messageAsWatchMessagesArray)}`);
+    await this.processMessages(messageAsWatchMessagesArray);
   }
 
   async processMessages(messages: WatchMessage[]) {

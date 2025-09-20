@@ -8,7 +8,7 @@ import { UserId, VideoId } from '@views-aggregator/domain/value-objects';
 import { View } from '@persistance/views-aggregator';
 
 @Injectable()
-export class ViewEntityToPeristanceACL
+export class ViewPeristanceAggregateACL
   implements IAggregatePersistanceACL<ViewAggregate, Omit<View, 'watchedAt'>>
 {
   toEntity(persistance: Omit<View, 'watchedAt'>): ViewAggregate {

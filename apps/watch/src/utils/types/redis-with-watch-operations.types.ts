@@ -1,5 +1,5 @@
 export interface RedisWithWatchOperations {
-  videoWatchCounterIncrScriptFunction(
+  WatchVideoCounterIncr(
     userWatchSetKey: string,
     videoWatchCounterKey: string,
     userId: string,

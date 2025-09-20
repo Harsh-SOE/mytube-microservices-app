@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
-import { ViewsConsumerModule } from './application/views-consumer/views-consumer.module';
-import { WatchCacheModule } from '@watch/infrastructure/cache';
+import { LogsModule } from '@views-aggregator/infrastructure/logs';
+
 import { PersistanceModule } from './infrastructure/persistance';
+import { ViewsConsumerModule } from './application/views-consumer/views-consumer.module';
 import { AppConfigModule } from './config';
+import { ViewAggregatorCacheModule } from './infrastructure/cache';
 
 @Module({
   imports: [
     ViewsConsumerModule,
-    WatchCacheModule,
     PersistanceModule,
     AppConfigModule,
+    LogsModule,
+    ViewAggregatorCacheModule,
   ],
 })
 export class AppModule {}

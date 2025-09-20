@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { AggregatorCacheService } from './aggregator-cache.service';
 import { AppConfigModule } from '@likes-aggregator/config';
 import { LikeRepository } from '../repository';

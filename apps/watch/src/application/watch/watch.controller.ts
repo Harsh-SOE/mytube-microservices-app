@@ -23,6 +23,9 @@ export class WatchController implements WatchServiceController {
     | Promise<WatchVideoResponse>
     | Observable<WatchVideoResponse>
     | WatchVideoResponse {
+    console.log(
+      `Request recieved by watch service: ${JSON.stringify(watchVideoDto)}`,
+    );
     return this.watchService.watchVideo(watchVideoDto);
   }
 }

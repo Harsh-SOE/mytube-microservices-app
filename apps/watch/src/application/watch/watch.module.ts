@@ -18,7 +18,7 @@ import { WatchService } from './watch.service';
     WatchCacheModule,
     ClientsModule.registerAsync([
       {
-        name: CLIENT_PROVIDER.VIEW_AGGREGATOR,
+        name: CLIENT_PROVIDER.VIEWS_AGGREGATOR,
         imports: [AppConfigModule],
         inject: [AppConfigService],
         useFactory: (configService: AppConfigService) =>

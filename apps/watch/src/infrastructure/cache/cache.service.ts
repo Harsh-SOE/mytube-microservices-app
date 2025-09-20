@@ -9,7 +9,7 @@ import { AppConfigService } from '../config';
 
 @Injectable()
 export class WatchCacheService extends Redis implements OnModuleInit {
-  constructor(private configService: AppConfigService) {
+  constructor(configService: AppConfigService) {
     super({
       host: configService.CACHE_HOST,
       port: configService.CACHE_PORT,
@@ -45,9 +45,8 @@ export class WatchCacheService extends Redis implements OnModuleInit {
     userId: string,
   ): Promise<number> {
     type redisWithWatchOps = this & RedisWithWatchOperations;
-    return await (
-      this as redisWithWatchOps
-    ).videoWatchCounterIncrScriptFunction(
+    console.log(`Saving in redis`);
+    return await (this as redisWithWatchOps).WatchVideoCounterIncr(
       userWatchSetKey,
       videoWatchCounterKey,
       userId,

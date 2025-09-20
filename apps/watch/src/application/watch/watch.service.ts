@@ -1,15 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 
 import { WatchVideoDto, WatchVideoResponse } from '@app/contracts/watch';
 import { getShardFor } from '@app/counters';
 
 import { WatchCacheService } from '@watch/infrastructure/cache';
+import { CLIENT_PROVIDER } from '@app/clients';
 
 @Injectable()
 export class WatchService {
   constructor(
     private cacheService: WatchCacheService,
+    @Inject(CLIENT_PROVIDER.VIEWS_AGGREGATOR)
     private viewAggregatorClient: ClientKafka,
   ) {}
 
@@ -33,11 +35,17 @@ export class WatchService {
     const shardNum = this.getShard(videoId, userId);
     const videoWatchCounterKey = this.videoWatchCounterKey(videoId, shardNum);
 
-    await this.cacheService.VideoWatchCounterIncr(
+    console.log(userWatchedVideoSetKey, shardNum, videoWatchCounterKey);
+
+    const result = await this.cacheService.VideoWatchCounterIncr(
       userWatchedVideoSetKey,
       videoWatchCounterKey,
       userId,
     );
+
+    if (result === 0) {
+      return { response: 'video already watched' };
+    }
 
     this.viewAggregatorClient.emit('video.watched', watchVideoDto);
 
