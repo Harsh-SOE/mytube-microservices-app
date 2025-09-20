@@ -13,21 +13,20 @@ export const protobufPackage = "Watch";
 export interface WatchVideoDto {
   userId: string;
   videoId: string;
-  watchedAt: string;
 }
 
-export interface WatchVideoRsponse {
+export interface WatchVideoResponse {
   response: string;
 }
 
 export const WATCH_PACKAGE_NAME = "Watch";
 
 export interface WatchServiceClient {
-  watchVideo(request: WatchVideoDto): Observable<WatchVideoRsponse>;
+  watchVideo(request: WatchVideoDto): Observable<WatchVideoResponse>;
 }
 
 export interface WatchServiceController {
-  watchVideo(request: WatchVideoDto): Promise<WatchVideoRsponse> | Observable<WatchVideoRsponse> | WatchVideoRsponse;
+  watchVideo(request: WatchVideoDto): Promise<WatchVideoResponse> | Observable<WatchVideoResponse> | WatchVideoResponse;
 }
 
 export function WatchServiceControllerMethods() {

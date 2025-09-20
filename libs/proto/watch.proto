@@ -5,13 +5,12 @@ package Watch;
 message WatchVideoDto {
   string userId = 1;
   string videoId = 2;
-  string watchedAt = 3;
 }
 
-message WatchVideoRsponse {
+message WatchVideoResponse {
   string response = 1;
 }
 
 service WatchService {
-  rpc watchVideo (WatchVideoDto) returns (WatchVideoRsponse) {};
+  rpc watchVideo (WatchVideoDto) returns (WatchVideoResponse) {};
 }

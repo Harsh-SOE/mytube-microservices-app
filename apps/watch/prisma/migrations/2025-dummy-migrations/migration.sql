@@ -1,1 +1,0 @@
-CREATE TYPE "crdb_internal_region" AS ENUM ('aws-ap-south-1');

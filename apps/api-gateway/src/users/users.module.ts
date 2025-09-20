@@ -4,11 +4,11 @@ import { Module } from '@nestjs/common';
 import { CLIENT_PROVIDER } from '@app/clients/constant';
 
 import { AppConfigModule } from '../config/config.module';
+import { AppConfigService } from '../config/config.service';
 import { MeasureModule } from '../measure/measure.module';
 import { LogsModule } from '../logs/logs.module';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { AppConfigService } from '../config/config.service';
 
 @Module({
   providers: [UsersService],

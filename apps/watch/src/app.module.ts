@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { AppConfigModule } from './config/config.module';
+import { AppConfigModule } from './infrastructure/config';
 import { WatchModule } from './application/watch/watch.module';
-import { PersistanceModule } from './infrastructure/persistance/persistance.module';
+import { WatchCacheModule } from './infrastructure/cache';
 
 @Module({
-  imports: [AppConfigModule, WatchModule, PersistanceModule],
+  imports: [AppConfigModule, WatchModule, WatchCacheModule],
 })
 export class AppModule {}

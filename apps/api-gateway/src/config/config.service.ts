@@ -10,6 +10,7 @@ import { USER_PACKAGE_NAME } from '@app/contracts/users';
 import { LIKE_PACKAGE_NAME } from '@app/contracts/likes';
 import { VIDEO_PACKAGE_NAME } from '@app/contracts/videos';
 import { SAGA_PACKAGE_NAME } from '@app/contracts/saga';
+import { WATCH_PACKAGE_NAME } from '@app/contracts/watch';
 
 @Injectable()
 export class AppConfigService {
@@ -167,5 +168,24 @@ export class AppConfigService {
       },
     };
     return options;
+  }
+
+  get WATCH_SERVICE_HOST() {
+    return this.configService.getOrThrow<string>('WATCH_SERVICE_HOST');
+  }
+
+  get WATCH_SERVICE_PORT() {
+    return this.configService.getOrThrow<number>('WATCH_SERVICE_PORT');
+  }
+
+  get WATCH_SERVICE_OPTION(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        package: WATCH_PACKAGE_NAME,
+        protoPath: join(__dirname, '../proto/watch.proto'),
+        url: `${this.WATCH_SERVICE_HOST}:${this.WATCH_SERVICE_PORT}`,
+      },
+    };
   }
 }

@@ -76,7 +76,7 @@ export class VideoCacheService extends Redis implements OnModuleInit {
     userId: string,
   ): Promise<number> {
     type redisWithLikesOps = this & RedisLikesOperations;
-    return await (this as redisWithLikesOps).videoLikesCountIncr(
+    return await (this as redisWithLikesOps).videoLikesCountIncrScriptFunction(
       usersLikedSetKey,
       usersDislikedSetKey,
       videoLikeCounterKey,
@@ -91,7 +91,7 @@ export class VideoCacheService extends Redis implements OnModuleInit {
     userId: string,
   ): Promise<number> {
     type redisWithLikesOps = this & RedisLikesOperations;
-    return await (this as redisWithLikesOps).videoLikesCountDecr(
+    return await (this as redisWithLikesOps).videoLikesCountDecrScriptFunction(
       usersLikedSetKey,
       videoLikeCounterKey,
       userId,
@@ -106,7 +106,9 @@ export class VideoCacheService extends Redis implements OnModuleInit {
     userId: string,
   ): Promise<number> {
     type redisWithLikesOps = this & RedisLikesOperations;
-    return await (this as redisWithLikesOps).videoDislikesCountIncr(
+    return await (
+      this as redisWithLikesOps
+    ).videoDislikesCountIncrScriptFunction(
       usersDislikedSetKey,
       usersLikedSetKey,
       videoDislikeCounterKey,
@@ -121,7 +123,9 @@ export class VideoCacheService extends Redis implements OnModuleInit {
     userId: string,
   ): Promise<number> {
     type redisWithLikesOps = this & RedisLikesOperations;
-    return await (this as redisWithLikesOps).videoDislikesCountDecr(
+    return await (
+      this as redisWithLikesOps
+    ).videoDislikesCountDecrScriptFunction(
       usersDislikedSetKey,
       videoDislikeCounterKey,
       userId,

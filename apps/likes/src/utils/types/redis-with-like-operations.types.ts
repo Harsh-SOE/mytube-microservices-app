@@ -1,5 +1,5 @@
 export interface RedisLikesOperations {
-  videoLikesCountIncr(
+  videoLikesCountIncrScriptFunction(
     usersLikedSetKey: string, // liked by user set key
     usersDislikedSetKey: string, // disliked by user set key
     videoLikeCounterKey: string, // video likes counter key
@@ -7,13 +7,13 @@ export interface RedisLikesOperations {
     userId: string,
   ): Promise<number>;
 
-  videoLikesCountDecr(
+  videoLikesCountDecrScriptFunction(
     usersLikedSetKey: string, // liked by user set key
     videoLikeCounterKey: string, // video likes counter key
     userId: string,
   ): Promise<number>;
 
-  videoDislikesCountIncr(
+  videoDislikesCountIncrScriptFunction(
     usersDislikedSetKey: string, // disliked by user set key
     usersLikedSetKey: string, // liked by user set key
     videoDislikeCounterKey: string, // video disliked counter key
@@ -21,7 +21,7 @@ export interface RedisLikesOperations {
     userId: string,
   ): Promise<number>;
 
-  videoDislikesCountDecr(
+  videoDislikesCountDecrScriptFunction(
     usersDislikedSetKey: string, // liked by users set key
     videoDislikeCounterKey: string, // video disliked counter key
     userId: string,

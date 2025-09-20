@@ -26,6 +26,8 @@ import { join } from 'path';
         LIKE_SERVICE_PORT: joi.number().required(),
         VIDEO_SERVICE_HOST: joi.string().required(),
         VIDEO_SERVICE_PORT: joi.number().required(),
+        WATCH_SERVICE_HOST: joi.string().required(),
+        WATCH_SERVICE_PORT: joi.number().required(),
         SAGA_SERVICE_HOST: joi.string().required(),
         SAGA_SERVICE_PORT: joi.number().required(),
         REDIS_HOST: joi.string().required(),

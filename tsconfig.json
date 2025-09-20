@@ -19,7 +19,6 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@aggregator/*": ["apps/aggregator/src/*"],
       "@app/clients": ["libs/clients/src"],
       "@app/clients/*": ["libs/clients/src/*"],
       "@app/contracts": ["libs/contracts/src"],
@@ -36,16 +35,24 @@
       "@app/testing/*": ["libs/testing/src/*"],
       "@app/utils": ["libs/utils/src"],
       "@app/utils/*": ["libs/utils/src/*"],
-      "@auth/*": ["apps/auth/src/*"],
-      "@gateway/*": ["apps/api-gateway/src/*"],
-      "@likes/*": ["apps/likes/src/*"],
-      "@peristance/aggregator": ["apps/aggregator/generated/prisma"],
+      "@peristance/likes-aggregator": [
+        "apps/likes-aggregator/generated/prisma"
+      ],
       "@peristance/user": ["apps/users/generated/prisma"],
       "@peristance/videos": ["apps/videos/generated/prisma"],
       "@persistance/auth": ["apps/auth/generated/prisma"],
+      "@persistance/views-aggregator": [
+        "apps/views-aggregator/generated/prisma"
+      ],
+      "@auth/*": ["apps/auth/src/*"],
+      "@gateway/*": ["apps/api-gateway/src/*"],
+      "@likes/*": ["apps/likes/src/*"],
+      "@watch/*": ["apps/watch/src/*"],
+      "@transcoder/*": ["apps/video-transcoder/src/*"],
       "@users/*": ["apps/users/src/*"],
       "@videos/*": ["apps/videos/src/*"],
-      "@transcoder/*": ["apps/video-transcoder/src/*"]
+      "@likes-aggregator/*": ["apps/likes-aggregator/src/*"],
+      "@views-aggregator/*": ["apps/views-aggregator/src/*"]
     }
   }
 }

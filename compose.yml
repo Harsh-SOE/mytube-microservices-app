@@ -188,6 +188,31 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  views-development-database:
+    container_name: views-development-database
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: views
+    ports:
+      - 5436:5432
+    volumes:
+      - views-development-database-volume:/var/lib/postgresql/data
+    networks:
+      - views-development-database-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U harsh -d view']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
+
   kafdrop:
     container_name: kafdrop
     image: obsidiandynamics/kafdrop
@@ -642,26 +667,48 @@ services:
     networks:
       - app
 
-  aggregator:
-    container_name: aggregator
+  likes-aggregator:
+    container_name: likes-aggregator
     build:
       context: .
-      dockerfile: apps/aggregator/Dockerfile
+      dockerfile: apps/likes-aggregator/Dockerfile
       target: development
-    image: youtube-aggregator:latest
+    image: youtube-likes-aggregator:latest
     depends_on:
       kafka:
         condition: service_healthy
     environment:
       - KAFKAJS_NO_PARTITIONER_WARNING=1
     env_file:
-      - apps/aggregator/.env
+      - apps/likes-aggregator/.env
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: yarn start:dev aggregator
+    command: yarn start:dev likes-aggregator
     networks:
       - app
+
+  views-aggregator:
+    container_name: views-aggregator
+    build:
+      context: .
+      dockerfile: apps/views-aggregator/Dockerfile
+      target: development
+    image: youtube-views-aggregator:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    env_file:
+      - apps/views-aggregator/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: yarn start:dev views-aggregator
+    networks:
+      - app
+      - views-development-database-network
 
   watch:
     container_name: watch
@@ -693,6 +740,7 @@ volumes:
   videos-development-database-volume: {}
   likes-development-database-volume: {}
   auth-development-database-volume: {}
+  views-development-database-volume: {}
   grafana-storage: {}
   ffmpeg-videos: {}
   transcoder-volume: {}
@@ -703,6 +751,7 @@ networks:
   video-db-development-database-network: {}
   likes-development-database-network: {}
   auth-development-database-network: {}
+  views-development-database-network: {}
   openfga: {}
   app: {}
   gateway-db: {}
