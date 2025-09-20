@@ -1,6 +1,6 @@
 import { LikeTransportStatus } from '@app/contracts/likes';
 
-export type KafkaLikeMessage = {
+export type LikeMessage = {
   userId: string;
   videoId: string;
   likeStatus: LikeTransportStatus;

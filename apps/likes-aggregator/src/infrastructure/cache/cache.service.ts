@@ -2,7 +2,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import winston from 'winston';
 import Redis from 'ioredis';
 
-import { KafkaLikeMessage, StreamData } from '@likes-aggregator/types';
+import { LikeMessage, StreamData } from '@likes-aggregator/types';
 import { LikeAggregateFactory } from '@likes-aggregator/domain/factories';
 import { AppConfigService } from '@likes-aggregator/config';
 
@@ -12,7 +12,7 @@ import { LikeRepository } from '../repository';
 
 @Injectable()
 export class AggregatorCacheService extends Redis implements OnModuleInit {
-  constructor(
+  public constructor(
     private readonly configService: AppConfigService,
     private likeRepo: LikeRepository,
     private likeAggregateFactory: LikeAggregateFactory,
@@ -30,7 +30,7 @@ export class AggregatorCacheService extends Redis implements OnModuleInit {
     });
   }
 
-  async onModuleInit() {
+  public async onModuleInit() {
     // create the stream if it does not exists
     try {
       await this.xgroup(
@@ -60,7 +60,7 @@ export class AggregatorCacheService extends Redis implements OnModuleInit {
     }, 30000);
   }
 
-  public async bufferLikeMessages(message: KafkaLikeMessage) {
+  public async bufferLikeMessages(message: LikeMessage) {
     await this.xadd(
       this.configService.CACHE_STREAM_KEY,
       '*', // this will auto-generate ID for each redis message in the stream
@@ -91,52 +91,34 @@ export class AggregatorCacheService extends Redis implements OnModuleInit {
       messages,
     );
 
-    for (const [stream, entries] of messages) {
-      this.logger.log('cache', `Processing stream: ${stream}`);
-      const messages: Array<{ id: string; likeMessages: KafkaLikeMessage[] }> =
-        [];
-      for (const [id, fields] of entries) {
-        const likeMessages = this.formatMessage(fields);
-        messages.push({ id, likeMessages: likeMessages });
-      }
-      await this.processMessage(messages);
-    }
+    const { ids, extractedMessages } = this.extractMessageFromStream(messages);
+    await this.processMessages(ids, extractedMessages);
   }
 
-  private formatMessage(fields: string[]): KafkaLikeMessage[] {
-    const messages: KafkaLikeMessage[] = [];
-    for (let i = 0; i < fields.length; i += 2) {
-      const key = fields[i];
-      const value = fields[i + 1];
-      if (key === 'like-message') {
-        try {
-          messages.push(JSON.parse(value) as KafkaLikeMessage);
-        } catch (error) {
-          this.logger.log(
-            'cache',
-            `Failed to parse like-message: ${value}`,
-            error,
-          );
-        }
+  private extractMessageFromStream(stream: StreamData[]) {
+    const messages: LikeMessage[] = [];
+    const ids: string[] = [];
+    for (const [streamKey, entries] of stream) {
+      console.log(`Processing ${streamKey} stream`);
+      for (const [id, values] of entries) {
+        console.log(`Recieved element with id:${id}`);
+        ids.push(id);
+        messages.push(JSON.parse(values[1]) as LikeMessage);
       }
     }
-    return messages;
+    return { ids: ids, extractedMessages: messages };
   }
 
-  async processMessage(
-    messages: { id: string; likeMessages: KafkaLikeMessage[] }[],
-  ) {
+  private async processMessages(ids: string[], messages: LikeMessage[]) {
     try {
-      const ids: string[] = [];
       const models = messages.map((message) => {
-        ids.push(message.id);
-        return message.likeMessages.map((likeMessage) => {
-          const { likeStatus, userId, videoId } = likeMessage;
-          return this.likeAggregateFactory.create(userId, videoId, likeStatus);
-        });
+        return this.likeAggregateFactory.create(
+          message.userId,
+          message.videoId,
+          message.likeStatus,
+        );
       });
-      const aggregates = models.flat();
-      await this.likeRepo.interactManyVideos(aggregates);
+      await this.likeRepo.interactManyVideos(models);
 
       this.logger.log(
         'cache',

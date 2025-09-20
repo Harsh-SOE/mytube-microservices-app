@@ -9,7 +9,7 @@ import { ViewRepository } from '../repository';
 
 @Injectable()
 export class ViewAggregatorCacheService extends Redis implements OnModuleInit {
-  constructor(
+  public constructor(
     private readonly configService: AppConfigService,
     private readonly viewRepo: ViewRepository,
     private readonly viewAggregateFactory: ViewAggregateFactory,
@@ -29,7 +29,7 @@ export class ViewAggregatorCacheService extends Redis implements OnModuleInit {
     });
   }
 
-  async onModuleInit() {
+  public async onModuleInit() {
     try {
       await this.xgroup(
         'CREATE',
@@ -55,7 +55,7 @@ export class ViewAggregatorCacheService extends Redis implements OnModuleInit {
     }, 30000);
   }
 
-  async bufferWatchMessage(message: WatchMessage) {
+  public async bufferWatchMessage(message: WatchMessage) {
     // add to stream in order to buffer it
     await this.xadd(
       this.configService.WATCH_STREAM_KEY,
@@ -65,7 +65,7 @@ export class ViewAggregatorCacheService extends Redis implements OnModuleInit {
     );
   }
 
-  async processBufferedWatchMessages(streamConsumerName: string) {
+  private async processBufferedWatchMessages(streamConsumerName: string) {
     const messagesInStream = (await this.xreadgroup(
       'GROUP',
       this.configService.WATCH_STREAM_GROUP_NAME,
@@ -81,28 +81,36 @@ export class ViewAggregatorCacheService extends Redis implements OnModuleInit {
 
     if (!messagesInStream || messagesInStream.length === 0) return;
 
-    await this.extractMessageFromStream(messagesInStream);
+    const { ids, extractedMessages } =
+      this.extractMessageFromStream(messagesInStream);
+    return await this.processMessages(ids, extractedMessages);
   }
 
-  async extractMessageFromStream(stream: StreamData[]) {
-    const messageAsWatchMessagesArray: WatchMessage[] = [];
+  private extractMessageFromStream(stream: StreamData[]) {
+    const messages: WatchMessage[] = [];
+    const ids: string[] = [];
     for (const [streamKey, entries] of stream) {
       console.log(`Processing values for ${streamKey} stream`);
-      for (const [id, messageKeyValueObjectArray] of entries) {
+      for (const [id, values] of entries) {
         console.log(`Got an element with id:${id}`);
-        messageAsWatchMessagesArray.push(
-          JSON.parse(messageKeyValueObjectArray[1]) as WatchMessage,
-        );
+        ids.push(id);
+        messages.push(JSON.parse(values[1]) as WatchMessage);
       }
     }
-    console.log(`Messages: ${JSON.stringify(messageAsWatchMessagesArray)}`);
-    await this.processMessages(messageAsWatchMessagesArray);
+    return { ids: ids, extractedMessages: messages };
   }
 
-  async processMessages(messages: WatchMessage[]) {
+  private async processMessages(ids: string[], messages: WatchMessage[]) {
     const viewAggregates = messages.map((message) =>
       this.viewAggregateFactory.create(message.userId, message.videoId),
     );
-    return await this.viewRepo.watchVideosInBatches(viewAggregates);
+
+    await this.viewRepo.watchVideosInBatches(viewAggregates);
+
+    await this.xack(
+      this.configService.WATCH_STREAM_KEY,
+      this.configService.WATCH_STREAM_GROUP_NAME,
+      ...ids,
+    );
   }
 }

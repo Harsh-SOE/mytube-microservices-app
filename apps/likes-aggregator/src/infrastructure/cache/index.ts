@@ -1,2 +1,2 @@
-export * from './aggregator-cache.module';
-export * from './aggregator-cache.service';
+export * from './cache.module';
+export * from './cache.service';

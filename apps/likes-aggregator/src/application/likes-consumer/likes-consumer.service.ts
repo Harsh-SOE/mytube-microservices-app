@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import winston from 'winston';
 
-import { KafkaLikeMessage } from '@likes-aggregator/types';
+import { LikeMessage } from '@likes-aggregator/types';
 import { AggregatorCacheService } from '@likes-aggregator/infrastructure/cache';
 
 import { WINSTON_LOGGER } from '@app/clients';
@@ -13,7 +13,7 @@ export class LikesConsumerService {
     private readonly cacheService: AggregatorCacheService,
   ) {}
 
-  async onLike(message: KafkaLikeMessage) {
+  async onLike(message: LikeMessage) {
     await this.cacheService.bufferLikeMessages(message);
   }
 }
