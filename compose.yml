@@ -213,6 +213,31 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  comments-development-database:
+    container_name: comments-development-database
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: comments
+    ports:
+      - 5436:5432
+    volumes:
+      - comments-development-database-volume:/var/lib/postgresql/data
+    networks:
+      - comments-development-database-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U harsh -d comments']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: 'local'
+      options:
+        max-size: '10m'
+        max-file: '3'
+
   kafdrop:
     container_name: kafdrop
     image: obsidiandynamics/kafdrop
@@ -735,12 +760,60 @@ services:
     networks:
       - app
 
+  comments-aggregator:
+    container_name: comments-aggregator
+    build:
+      context: .
+      dockerfile: apps/comments-aggregator/Dockerfile
+      target: development
+    image: youtube-comments-aggregator:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    env_file:
+      - apps/comments-aggregator/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: yarn start:dev comments-aggregator
+    networks:
+      - app
+      - comments-development-database-network
+
+  comments:
+    container_name: comments
+    build:
+      context: .
+      dockerfile: apps/comments/Dockerfile
+      target: development
+    image: youtube-comments:latest
+    command: yarn start:dev comments
+    env_file:
+      - apps/comments/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'grpc_health_probe', '-addr=:5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app
+
 volumes:
   users-development-database-volume: {}
   videos-development-database-volume: {}
   likes-development-database-volume: {}
   auth-development-database-volume: {}
   views-development-database-volume: {}
+  comments-development-database-volume: {}
   grafana-storage: {}
   ffmpeg-videos: {}
   transcoder-volume: {}
@@ -752,6 +825,7 @@ networks:
   likes-development-database-network: {}
   auth-development-database-network: {}
   views-development-database-network: {}
+  comments-development-database-network: {}
   openfga: {}
   app: {}
   gateway-db: {}

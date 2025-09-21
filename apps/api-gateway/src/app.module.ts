@@ -13,6 +13,7 @@ import { GatewayJwtModule } from './infrastructure/jwt';
 import { LikesModule } from './proxies/likes/likes.module';
 import { WatchModule } from './proxies/watch/watch.module';
 import { ResponseTimeMiddleware } from './infrastructure/middlewares';
+import { CommentsModule } from './proxies/comments/comments.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ResponseTimeMiddleware } from './infrastructure/middlewares';
     GatewayJwtModule,
     LikesModule,
     WatchModule,
+    CommentsModule,
   ],
 })
 export class AppModule implements NestModule {
