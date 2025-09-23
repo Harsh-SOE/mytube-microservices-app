@@ -60,7 +60,7 @@
     "comments": {
       "type": "application",
       "root": "apps/comments",
-      "entryFile": "main",
+      "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/comments/tsconfig.app.json"
@@ -69,7 +69,7 @@
     "comments-aggregator": {
       "type": "application",
       "root": "apps/comments-aggregator",
-      "entryFile": "main",
+      "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/comments-aggregator/tsconfig.app.json"
@@ -143,8 +143,8 @@
     "likes-aggregator": {
       "type": "application",
       "root": "apps/likes-aggregator",
-      "entryFile": "main",
-      "sourceRoot": "apps/likes-aggregator/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/likes-aggregator/tsconfig.app.json"
       }
@@ -229,8 +229,8 @@
     "views-aggregator": {
       "type": "application",
       "root": "apps/views-aggregator",
-      "entryFile": "main",
-      "sourceRoot": "apps/views-aggregator/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/views-aggregator/tsconfig.app.json"
       }

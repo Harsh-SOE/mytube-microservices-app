@@ -14,6 +14,7 @@ import { LikesModule } from './proxies/likes/likes.module';
 import { WatchModule } from './proxies/watch/watch.module';
 import { ResponseTimeMiddleware } from './infrastructure/middlewares';
 import { CommentsModule } from './proxies/comments/comments.module';
+import { HealthModule } from './infrastructure/health/health.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CommentsModule } from './proxies/comments/comments.module';
     LikesModule,
     WatchModule,
     CommentsModule,
+    HealthModule,
   ],
 })
 export class AppModule implements NestModule {

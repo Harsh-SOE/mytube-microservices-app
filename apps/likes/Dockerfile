@@ -1,34 +1,53 @@
-FROM node:alpine AS development
+FROM node:24-alpine AS base
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
-RUN yarn install
-
-COPY . .
-
-RUN apk add --no-cache curl tar && \
-    GRPCURL_VERSION=1.9.1 && \
-    curl -L https://github.com/fullstorydev/grpcurl/releases/download/v${GRPCURL_VERSION}/grpcurl_${GRPCURL_VERSION}_linux_x86_64.tar.gz -o /tmp/grpcurl.tar.gz && \
-    tar -xzf /tmp/grpcurl.tar.gz -C /tmp && \
-    mv /tmp/grpcurl /usr/local/bin/grpcurl && \
+RUN apk add --no-cache curl && \
     curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe && \
     chmod +x /usr/local/bin/grpc_health_probe && \
-    apk del curl tar
-    
-RUN yarn build likes
-
-FROM node:alpine AS production
-
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-WORKDIR /usr/src/app
+    apk del curl
 
 COPY package.json yarn.lock ./
-RUN yarn install --production
 
-COPY --from=development /usr/src/app/dist/apps/likes ./dist
-COPY --from=development /usr/local/bin/grpc_health_probe /usr/local/bin/grpc_health_probe
+FROM base AS build-dependencies
 
-CMD [ "node", "dist/main" ]
+RUN yarn install --frozen-lockfile --production=false
+
+FROM base AS production-dependencies
+
+RUN yarn install --frozen-lockfile --production=true
+
+FROM base AS builder
+
+COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
+
+COPY apps/likes ./apps/likes
+COPY libs ./libs
+COPY nest-cli.json ./nest-cli.json
+COPY tsconfig.json ./tsconfig.json
+COPY tsconfig.build.json ./tsconfig.build.json
+
+RUN npx nest build likes
+
+FROM base AS development
+
+ENV NODE_ENV=development
+
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+CMD ["yarn", "start:dev", "likes"]
+
+FROM base AS production
+
+ENV NODE_ENV=production
+
+WORKDIR /home/node/app
+
+COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist/apps/likes ./apps/likes
+
+COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
+
+USER node
+
+CMD ["node", "apps/likes/src/main.js"]

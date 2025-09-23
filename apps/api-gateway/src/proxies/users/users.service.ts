@@ -5,9 +5,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
-import { Cache } from 'cache-manager';
 import winston from 'winston';
 import { Counter } from 'prom-client';
 import { firstValueFrom } from 'rxjs';
@@ -31,7 +29,6 @@ export class UsersService implements OnModuleInit {
 
   constructor(
     @Inject(CLIENT_PROVIDER.USER) private readonly userClient: ClientGrpc,
-    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
     @InjectMetric(REQUESTS_COUNTER) private readonly counter: Counter,
   ) {}

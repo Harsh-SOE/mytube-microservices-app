@@ -1,37 +1,48 @@
-# ---------- Build Stage ----------
-FROM node:alpine AS development
+FROM node:24-alpine AS base
 
 WORKDIR /usr/src/app
 
-# Copy only the files needed to install deps
 COPY package.json yarn.lock ./
-RUN yarn install
 
-# Copy everything else (source code, config files)
-COPY . .
+FROM base AS build-dependencies
 
-# Build only the specific app
-RUN yarn build api-gateway
+RUN yarn install --frozen-lockfile --production=false
 
+FROM base AS production-dependencies
 
-# ---------- Production Stage ----------
-FROM node:alpine AS production
+RUN yarn install --frozen-lockfile --production=true
 
-# Set environment
-ARG NODE_ENV=production
-ENV NODE_ENV=$NODE_ENV
+FROM base AS builder
 
-WORKDIR /usr/src/app
+COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
 
-# Install only production dependencies
-COPY package.json yarn.lock ./
-RUN yarn install --production
+COPY apps/api-gateway ./apps/api-gateway
+COPY libs ./libs
+COPY nest-cli.json ./nest-cli.json
+COPY tsconfig.json ./tsconfig.json
+COPY tsconfig.build.json ./tsconfig.build.json
 
-# Copy only the built output from the previous stage
-COPY --from=development /usr/src/app/dist/apps/api-gateway ./dist
+RUN npx nest build api-gateway
 
-# If you use shared libs, you may need to copy them too:
-# COPY --from=development /usr/src/app/dist/libs ./dist/libs
+FROM base AS development
 
-# Launch the app
-CMD ["node", "dist/main"]
+ENV NODE_ENV=development
+
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+CMD ["yarn", "start:dev", "api-gateway"]
+
+FROM base AS production
+
+ENV NODE_ENV=production
+
+WORKDIR /home/node/app
+
+COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist/apps/api-gateway ./apps/api-gateway
+
+COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
+
+USER node
+
+CMD ["node", "apps/api-gateway/src/main.js"]

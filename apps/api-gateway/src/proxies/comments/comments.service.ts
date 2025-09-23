@@ -1,18 +1,37 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { CommentVideoResponse } from './response';
+import {
+  COMMENT_SERVICE_NAME,
+  CommentServiceClient,
+} from '@app/contracts/comments/comments';
+import { CLIENT_PROVIDER } from '@app/clients';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class CommentsService implements OnModuleInit {
-  constructor() {}
+  private commentsService: CommentServiceClient;
+
+  constructor(
+    @Inject(CLIENT_PROVIDER.COMMENTS) private commentsClient: ClientGrpc,
+  ) {}
 
   onModuleInit() {
-    throw new Error('Method not implemented.');
+    this.commentsService =
+      this.commentsClient.getService<CommentServiceClient>(
+        COMMENT_SERVICE_NAME,
+      );
   }
-  commentVideo(
+  async commentVideo(
     comment: string,
     userId: string,
     videoId: string,
   ): Promise<CommentVideoResponse> {
-    console.log(comment, userId, videoId);
+    const response$ = this.commentsService.commentService({
+      comment,
+      userId,
+      videoId,
+    });
+    return await firstValueFrom(response$);
   }
 }

@@ -1,0 +1,114 @@
+# Development-specific overrides
+# To use: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  gateway:
+    build:
+      target: development
+    command: yarn start:dev api-gateway
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  auth:
+    build:
+      target: development
+    command: yarn start:dev auth
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  users:
+    build:
+      target: development
+    command: yarn start:dev users
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  videos:
+    build:
+      target: development
+    command: yarn start:dev videos
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  cloud:
+    build:
+      target: development
+    command: yarn start:dev cloud
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  email:
+    build:
+      target: development
+    command: yarn start:dev email
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  likes:
+    build:
+      target: development
+    command: yarn start:dev likes
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  comments:
+    build:
+      target: development
+    command: yarn start:dev comments
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  video-transcoder:
+    build:
+      target: development
+    command: yarn start:dev video-transcoder
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  saga:
+    build:
+      target: development
+    command: yarn start:dev saga
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  views-aggregator:
+    build:
+      target: development
+    command: yarn start:dev views-aggregator
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  likes-aggregator:
+    build:
+      target: development
+    command: yarn start:dev likes-aggregator
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  comments-aggregator:
+    build:
+      target: development
+    command: yarn start:dev comments-aggregator
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+
+  watch:
+    build:
+      target: development
+    command: yarn start:dev watch
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code

@@ -9,7 +9,7 @@ import { AppConfigService } from './config.service';
   providers: [AppConfigService],
   imports: [
     ConfigModule.forRoot({
-      envFilePath: join(__dirname, '../../env'),
+      envFilePath: join(__dirname, '../../.env'),
       isGlobal: true,
       validationSchema: joi.object({
         HTTP_PORT: joi.number().required(),

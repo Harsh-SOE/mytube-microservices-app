@@ -11,6 +11,7 @@ import { LIKE_PACKAGE_NAME } from '@app/contracts/likes';
 import { VIDEO_PACKAGE_NAME } from '@app/contracts/videos';
 import { SAGA_PACKAGE_NAME } from '@app/contracts/saga';
 import { WATCH_PACKAGE_NAME } from '@app/contracts/watch';
+import { COMMENT_PACKAGE_NAME } from '@app/contracts/comments/comments';
 
 @Injectable()
 export class AppConfigService {
@@ -143,6 +144,25 @@ export class AppConfigService {
         protoPath: join(__dirname, '../proto/saga.proto'),
         package: SAGA_PACKAGE_NAME,
         url: `${this.SAGA_SERVICE_HOST}:${this.SAGA_SERVICE_PORT}`,
+      },
+    };
+  }
+
+  get COMMENT_SERVICE_PORT() {
+    return this.configService.getOrThrow<number>('COMMENT_SERVICE_PORT');
+  }
+
+  get COMMENT_SERVICE_HOST() {
+    return this.configService.getOrThrow<string>('COMMENT_SERVICE_HOST');
+  }
+
+  get COMMENT_SERVICE_OPTIONS(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        protoPath: join(__dirname, '../proto/comments.proto'),
+        package: COMMENT_PACKAGE_NAME,
+        url: `${this.COMMENT_SERVICE_HOST}:${this.CLOUD_SERVICE_PORT}`,
       },
     };
   }

@@ -1,32 +1,53 @@
-FROM node:alpine AS development
+FROM node:24-alpine AS base
 
 WORKDIR /usr/src/app
-
-COPY package.json yarn.lock ./
-
-RUN yarn install
-
-COPY . .
 
 RUN apk add --no-cache curl && \
     curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe && \
     chmod +x /usr/local/bin/grpc_health_probe && \
     apk del curl
-    
-RUN yarn build email
-
-FROM node:alpine AS production
-
-ARG NODE_ENV=production
-ENV NODE_ENV=$NODE_ENV
-
-WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./
 
-RUN yarn install --production
+FROM base AS build-dependencies
 
-COPY --from=development /usr/src/app/dist/apps/email ./dist
-COPY --from=development /usr/local/bin/grpc_health_probe /usr/local/bin/grpc_health_probe
+RUN yarn install --frozen-lockfile --production=false
 
-RUN ["node", "dist/main"]
+FROM base AS production-dependencies
+
+RUN yarn install --frozen-lockfile --production=true
+
+FROM base AS builder
+
+COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
+
+COPY apps/email ./apps/email
+COPY libs ./libs
+COPY nest-cli.json ./nest-cli.json
+COPY tsconfig.json ./tsconfig.json
+COPY tsconfig.build.json ./tsconfig.build.json
+
+RUN npx nest build email
+
+FROM base AS development
+
+ENV NODE_ENV=development
+
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+CMD ["yarn", "start:dev", "email"]
+
+FROM base AS production
+
+ENV NODE_ENV=production
+
+WORKDIR /home/node/app
+
+COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist/apps/email ./apps/email
+
+COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
+
+USER node
+
+CMD ["node", "apps/email/src/main.js"]
