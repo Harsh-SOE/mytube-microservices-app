@@ -1,4 +1,4 @@
-import { GatewayJwtGuard } from '@gateway/infrastructure/jwt';
+import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { COMMENT_API } from './api';
 import { CommentOnVideo } from './request';

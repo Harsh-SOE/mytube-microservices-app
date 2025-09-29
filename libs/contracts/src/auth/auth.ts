@@ -21,14 +21,13 @@ export enum ProviderTransport {
 
 export interface AuthSignupDto {
   provider: ProviderTransport;
-  providerId?: string | undefined;
-  userName?: string | undefined;
-  email?: string | undefined;
-  emailVerified?: boolean | undefined;
-  fullName?: string | undefined;
+  providerId: string;
+  userName: string;
+  email: string;
+  fullName: string;
   password?: string | undefined;
-  dob?: string | undefined;
-  avatar?: string | undefined;
+  dob: string;
+  avatar: string;
   accessToken?: string | undefined;
   refreshToken?: string | undefined;
   iat?: number | undefined;
@@ -53,11 +52,11 @@ export interface AuthDeleteUserCredentialsDto {
 
 export interface AuthSignupResponse {
   id: string;
-  userName?: string | undefined;
-  email?: string | undefined;
-  fullName?: string | undefined;
-  dob?: string | undefined;
-  avatar?: string | undefined;
+  userName: string;
+  email: string;
+  fullName: string;
+  dob: string;
+  avatar: string;
   coverImage?: string | undefined;
 }
 

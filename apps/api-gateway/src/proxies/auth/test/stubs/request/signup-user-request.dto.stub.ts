@@ -1,6 +1,6 @@
-import { SignupRequestDto } from '@gateway/proxies/auth/request';
+import { GoogleSignupRequestDto } from '@gateway/proxies/auth/request';
 
-export const SignupRequestStub = (): SignupRequestDto => {
+export const SignupRequestStub = (): GoogleSignupRequestDto => {
   return {
     userName: 'test-username',
     fullName: 'test-fullname',

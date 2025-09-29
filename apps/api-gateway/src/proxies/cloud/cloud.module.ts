@@ -9,7 +9,7 @@ import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
-import { GatewayJwtModule } from '@gateway/infrastructure/jwt';
+import { GatewayJwtModule } from '@gateway/infrastructure/auth';
 
 import { CloudService } from './cloud.service';
 import { CloudController } from './cloud.controller';

@@ -12,14 +12,13 @@ enum ProviderTransport {
 
 message SagaSignupDto {
   ProviderTransport provider = 1;
-  optional string providerId = 2;
-  optional string userName = 3;
-  optional string email = 4;
-  optional bool email_verified = 5;
-  optional string fullName = 6;
+  string providerId = 2;
+  string userName = 3;
+  string email = 4;
+  string fullName = 6;
   optional string password = 7;
-  optional string dob = 8;
-  optional string avatar = 9;
+  string dob = 8;
+  string avatar = 9;
   optional string accessToken = 10;
   optional string refreshToken = 11;
   optional int64 iat = 12;

@@ -3,7 +3,7 @@ import { Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtUserPayload } from '@app/contracts/jwt';
 
 import { User } from '@gateway/utils/decorators';
-import { GatewayJwtGuard } from '@gateway/infrastructure/jwt';
+import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
 
 import { VIEWS_API } from './api';
 import { WatchService } from './views.service';

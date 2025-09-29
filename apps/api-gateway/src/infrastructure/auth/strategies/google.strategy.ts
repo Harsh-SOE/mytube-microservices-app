@@ -1,8 +1,8 @@
 import { AppConfigService } from '@gateway/infrastructure/config';
 import { Providers } from '@gateway/proxies/auth/enums';
-import { SignupRequestDto } from '@gateway/proxies/auth/request';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { GoogleProfileUser } from '../payloads';
 
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private configService: AppConfigService) {
@@ -44,17 +44,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       picture,
     } = profileInfo;
 
-    const userPayloadForSignup: SignupRequestDto = {
+    const userPayloadForSignup: GoogleProfileUser = {
       provider: Providers.GOOGLE,
       providerId: sub,
       email,
-      email_verified,
+      isEmailVerified: email_verified,
       fullName: `${given_name} ${family_name}`,
       avatar: picture,
-      accessToken,
-      refreshToken,
-      iat,
-      exp,
+      googleAccessToken: accessToken,
+      googleRefreshToken: refreshToken,
+      issuedAt: iat,
+      expiry: exp,
     };
 
     done(null, userPayloadForSignup);

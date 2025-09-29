@@ -13,9 +13,10 @@ import { LogExecutionTime } from '@app/utils';
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
 
 import {
-  SignupRequestDto,
+  GoogleSignupRequestDto,
   SigninRequestDTO,
   ChangePasswordRequestDto,
+  LocalSignupRequestDto,
 } from './request';
 import {
   ChangePasswordRequestResponse,
@@ -45,7 +46,7 @@ export class AuthService implements OnModuleInit {
 
   @LogExecutionTime()
   async signup(
-    signupRequestDto: SignupRequestDto,
+    signupRequestDto: GoogleSignupRequestDto,
   ): Promise<SignupRequestResponse> {
     this.counter.inc();
 
@@ -64,6 +65,63 @@ export class AuthService implements OnModuleInit {
 
     const response$ = this.sagaService.userSignupFlow({
       ...signupRequestDto,
+      provider: authServiceProvider,
+    });
+
+    const response = await firstValueFrom(response$);
+    console.log(`response is ${JSON.stringify(response)}`);
+    return response;
+  }
+
+  @LogExecutionTime()
+  async signupLocal(
+    localSignupRequestDto: LocalSignupRequestDto,
+  ): Promise<SignupRequestResponse> {
+    this.counter.inc();
+
+    this.logger.log(
+      'info',
+      `GATEWAY::SIGNUP:: Request recieved:${localSignupRequestDto.userName}`,
+    );
+
+    const authServiceProvider = ClientGrpcProviderEnumMapper.get(
+      localSignupRequestDto.provider,
+    );
+
+    if (authServiceProvider === undefined) {
+      throw new Error(`Invalid provider...`);
+    }
+
+    const response$ = this.sagaService.userSignupFlow({
+      ...localSignupRequestDto,
+      providerId: '0',
+      provider: authServiceProvider,
+    });
+
+    const response = await firstValueFrom(response$);
+    console.log(`response is ${JSON.stringify(response)}`);
+    return response;
+  }
+
+  @LogExecutionTime()
+  async signupGoogle(googleSignupRequestDto: GoogleSignupRequestDto) {
+    this.counter.inc();
+
+    this.logger.log(
+      'info',
+      `GATEWAY::SIGNUP:: Request recieved:${googleSignupRequestDto.userName}`,
+    );
+
+    const authServiceProvider = ClientGrpcProviderEnumMapper.get(
+      googleSignupRequestDto.provider,
+    );
+
+    if (authServiceProvider === undefined) {
+      throw new Error(`Invalid provider...`);
+    }
+
+    const response$ = this.sagaService.userSignupFlow({
+      ...googleSignupRequestDto,
       provider: authServiceProvider,
     });
 

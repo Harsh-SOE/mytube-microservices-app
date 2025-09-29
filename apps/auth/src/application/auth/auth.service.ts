@@ -126,7 +126,10 @@ export class AuthService implements OnModuleInit {
     const userId = uuidv4();
     const authCredId = uuidv4();
 
-    if (authSignupDto.provider === ProviderTransport.TRANSPORT_LOCAL) {
+    if (
+      authSignupDto.provider === ProviderTransport.TRANSPORT_LOCAL ||
+      authSignupDto.providerId === '0'
+    ) {
       const hasedPassword = await this.hashPassword(
         authSignupDto.password as string,
       );
@@ -136,6 +139,7 @@ export class AuthService implements OnModuleInit {
       await this.authUserRepository.saveUserCredentials({
         _id: authCredId,
         provider: authSignupDto.provider,
+        providerId: authSignupDto.providerId,
         userId,
         userPasswordHash: hasedPassword,
       });

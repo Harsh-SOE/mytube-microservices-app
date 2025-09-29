@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { CLIENT_PROVIDER } from '@app/clients/constant';
 
-import { JwtStrategy } from './strategy';
+import { JwtStrategy } from './strategies';
 import { AppConfigModule, AppConfigService } from '../config';
 
 @Module({

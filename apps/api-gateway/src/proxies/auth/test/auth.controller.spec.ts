@@ -46,7 +46,7 @@ describe('UserController', () => {
       const signupRequestInput = SignupRequestStub();
       const signupRequestExpectedResponse = SignupRequestResponseStub();
       beforeEach(async () => {
-        signupResponse = await authController.signup(signupRequestInput);
+        signupResponse = await authController.signupLocal(signupRequestInput);
       });
 
       test('then it should call auth service, with all correct paramters', () => {

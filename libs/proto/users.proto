@@ -4,11 +4,11 @@ package User;
 
 message UserSignupDto {
   string id = 1;
-  optional string userName = 2;
-  optional string email = 3;
-  optional string fullName = 4;
-  optional string dob = 5;
-  optional string avatar = 6;
+  string userName = 2;
+  string email = 3;
+  string fullName = 4;
+  string dob = 5;
+  string avatar = 6;
   optional string coverImage = 7;
 }
 

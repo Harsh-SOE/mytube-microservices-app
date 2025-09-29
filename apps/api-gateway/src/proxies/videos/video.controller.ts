@@ -10,7 +10,7 @@ import {
 
 import { JwtUserPayload } from '@app/contracts/jwt';
 
-import { GatewayJwtGuard } from '@gateway/infrastructure/jwt';
+import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
 import { User } from '@gateway/utils/decorators';
 
 import { CreateVideoRequestDto, UpdateVideoRequestDto } from './request';

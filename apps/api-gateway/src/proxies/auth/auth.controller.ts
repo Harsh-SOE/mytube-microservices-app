@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { JwtUserPayload } from '@app/contracts/jwt';
 
@@ -6,12 +6,13 @@ import { User } from '@gateway/utils/decorators';
 import {
   GatewayGoogleOAuthGaurd,
   GatewayJwtGuard,
-} from '@gateway/infrastructure/jwt';
+} from '@gateway/infrastructure/auth';
 
 import {
-  SignupRequestDto,
+  GoogleSignupRequestDto,
   SigninRequestDTO,
   ChangePasswordRequestDto,
+  LocalSignupRequestDto,
 } from './request';
 import {
   ChangePasswordRequestResponse,
@@ -20,17 +21,34 @@ import {
 } from './response';
 import { AuthService } from './auth.service';
 import { AUTH_API } from './api';
+import { GoogleProfileUser } from '@gateway/infrastructure/auth/payloads';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(GatewayGoogleOAuthGaurd)
-  @Post(AUTH_API.SIGNUP)
-  signup(
-    @User() signupRequestDto: SignupRequestDto,
+  @Post(AUTH_API.SIGNUP_LOCAL)
+  signupLocal(
+    @User() localSignupRequestDto: LocalSignupRequestDto,
   ): Promise<SignupRequestResponse> {
-    return this.authService.signup(signupRequestDto);
+    return this.authService.signupLocal(localSignupRequestDto);
+  }
+
+  @UseGuards(GatewayGoogleOAuthGaurd)
+  @Post(AUTH_API.SIGNUP_GOOGLE)
+  signupGoogle() {}
+
+  @Get('google/callback')
+  @UseGuards(GatewayGoogleOAuthGaurd)
+  googleAuthRedirect(
+    @User() googleUserPayload: GoogleProfileUser,
+  ): GoogleProfileUser {
+    return googleUserPayload;
+  }
+
+  @Post('google/signup')
+  googleSignup(@Body() googleSignupRequestDto: GoogleSignupRequestDto) {
+    return this.authService.signupGoogle(googleSignupRequestDto);
   }
 
   @Post(AUTH_API.SIGNIN)

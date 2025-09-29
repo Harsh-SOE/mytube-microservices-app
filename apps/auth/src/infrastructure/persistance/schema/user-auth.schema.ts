@@ -14,7 +14,7 @@ export class UserAuth {
   public readonly provider: ProviderTransport;
 
   @Prop()
-  public readonly providerId?: string;
+  public readonly providerId: string;
 
   @Prop()
   public readonly userPasswordHash?: string;

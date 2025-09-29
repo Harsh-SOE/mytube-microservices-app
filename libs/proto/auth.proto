@@ -11,14 +11,13 @@ enum ProviderTransport {
 
 message AuthSignupDto {
   ProviderTransport provider = 1;
-  optional string providerId = 2;
-  optional string userName = 3;
-  optional string email = 4;
-  optional bool email_verified = 5;
-  optional string fullName = 6;
+  string providerId = 2;
+  string userName = 3;
+  string email = 4;
+  string fullName = 6;
   optional string password = 7;
-  optional string dob = 8;
-  optional string avatar = 9;
+  string dob = 8;
+  string avatar = 9;
   optional string accessToken = 10;
   optional string refreshToken = 11;
   optional int64 iat = 12;
@@ -43,11 +42,11 @@ message AuthDeleteUserCredentialsDto {
 
 message AuthSignupResponse {
   string id = 1;
-  optional string userName = 2;
-  optional string email = 3;
-  optional string fullName = 4;
-  optional string dob = 5;
-  optional string avatar = 6;
+  string userName = 2;
+  string email = 3;
+  string fullName = 4;
+  string dob = 5;
+  string avatar = 6;
   optional string coverImage = 7; 
 }
 

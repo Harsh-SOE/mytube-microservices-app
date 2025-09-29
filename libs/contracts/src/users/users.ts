@@ -12,11 +12,11 @@ export const protobufPackage = "User";
 
 export interface UserSignupDto {
   id: string;
-  userName?: string | undefined;
-  email?: string | undefined;
-  fullName?: string | undefined;
-  dob?: string | undefined;
-  avatar?: string | undefined;
+  userName: string;
+  email: string;
+  fullName: string;
+  dob: string;
+  avatar: string;
   coverImage?: string | undefined;
 }
 

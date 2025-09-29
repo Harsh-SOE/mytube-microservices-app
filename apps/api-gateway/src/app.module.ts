@@ -9,7 +9,7 @@ import { MeasureModule } from './infrastructure/measure';
 import { CloudModule } from './proxies/cloud/cloud.module';
 import { LogsModule } from './infrastructure/logs';
 import { AuthModule } from './proxies/auth/auth.module';
-import { GatewayJwtModule } from './infrastructure/jwt';
+import { GatewayJwtModule } from './infrastructure/auth';
 import { LikesModule } from './proxies/likes/likes.module';
 import { WatchModule } from './proxies/views/views.module';
 import { ResponseTimeMiddleware } from './infrastructure/middlewares';
