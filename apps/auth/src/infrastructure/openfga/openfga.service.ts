@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { OpenFgaClient } from '@openfga/sdk';
 
-import { AppConfigService } from '@auth/config';
+import { AppConfigService } from '@auth/infrastructure/config';
 
 @Injectable()
 export class OpenfgaService implements OnModuleInit {

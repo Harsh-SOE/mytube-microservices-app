@@ -9,10 +9,9 @@ import { CLIENT_PROVIDER } from '@app/clients';
 
 import { LikesController } from './likes.controller';
 import { LikeService } from './likes.service';
-import { GrpcHealthController } from './grpc-health.controller';
 
 @Module({
-  controllers: [LikesController, GrpcHealthController],
+  controllers: [LikesController],
   imports: [
     LogsModule,
     AppConfigModule,

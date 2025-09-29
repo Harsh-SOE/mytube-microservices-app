@@ -13,10 +13,6 @@ FROM base AS build-dependencies
 
 RUN yarn install --frozen-lockfile --production=false
 
-FROM base AS production-dependencies
-
-RUN yarn install --frozen-lockfile --production=true
-
 FROM base AS builder
 
 COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
@@ -36,6 +32,10 @@ ENV NODE_ENV=development
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "saga"]
+
+FROM base AS production-dependencies
+
+RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 

@@ -22,7 +22,7 @@ export class VideoAggregatePersistanceACL
       Omit<Video, 'publishedAt' | 'updatedAt'>
     >
 {
-  toEntity(
+  toAggregate(
     persistance: Omit<Video, 'publishedAt' | 'updatedAt'>,
   ): VideoAggregate {
     const videoEntity = new VideoEntity(

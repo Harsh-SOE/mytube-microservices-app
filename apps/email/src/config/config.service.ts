@@ -38,7 +38,9 @@ export class AppConfigService {
           clientId: this.EMAIL_CLIENT_ID,
           brokers: [`${this.KAFKA_SERVICE_HOST}:${this.KAFKA_SERVICE_PORT}`],
         },
-        consumer: { groupId: this.EMAIL_CONSUMER_ID },
+        consumer: {
+          groupId: this.EMAIL_CONSUMER_ID,
+        },
       },
     };
     return options;

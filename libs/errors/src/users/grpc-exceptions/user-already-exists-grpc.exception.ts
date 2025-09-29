@@ -1,9 +1,8 @@
-import { BaseGrpcServiceException, ErrorPayload } from '../../common';
-import { Metadata } from '@grpc/grpc-js';
+import { GrpcApplicationError, ErrorPayload } from '../../common';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import { HttpStatus } from '@nestjs/common';
 
-export class UserAlreadyExistsGrpcException extends BaseGrpcServiceException {
+export class UserAlreadyExistsGrpcException extends GrpcApplicationError {
   constructor(public readonly message: string) {
     const payload: ErrorPayload = {
       statusCode: 'USER_ALREADY_EXIST_EXCEPTION',
@@ -11,9 +10,6 @@ export class UserAlreadyExistsGrpcException extends BaseGrpcServiceException {
       stack: new Error().stack,
     };
 
-    const metadata = new Metadata();
-    metadata.add('error-payload', JSON.stringify(payload));
-
-    super(Status.ALREADY_EXISTS, message, metadata);
+    super(Status.ALREADY_EXISTS, message, payload);
   }
 }

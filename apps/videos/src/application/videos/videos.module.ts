@@ -14,13 +14,12 @@ import { LogsModule } from '@videos/infrastructure/logs';
 
 import { VideosService } from './videos.service';
 import { VideosController } from './videos.controller';
-import { GrpcHealthController } from './grpc-health.controller';
 import { videoQueryHandler, QueryModelResponseMapper } from '../queries';
 import { videoCommandHandlers } from '../commands';
 import { videoEventHandler } from '@videos/domain/domain-events';
 
 @Module({
-  controllers: [VideosController, GrpcHealthController],
+  controllers: [VideosController],
   providers: [
     VideosService,
     VideoCommandRepository,

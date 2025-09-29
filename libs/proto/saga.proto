@@ -2,14 +2,29 @@ syntax = "proto3";
 
 package Saga;
 
+enum ProviderTransport {
+  TRANSPORT_LOCAL = 0;
+  TRANSPORT_GOOGLE = 1;
+  TRANSPORT_GITHUB = 2;
+  TRANSPORT_MICROSOFT = 3;
+  TRANSPORT_APPLE = 4;
+}
+
 message SagaSignupDto {
-  string userName = 2;
-  string email = 3;
-  string fullName = 4;
-  string password = 5;
-  string dob = 6;
-  string avatar = 7;
-  optional string coverImage = 8;
+  ProviderTransport provider = 1;
+  optional string providerId = 2;
+  optional string userName = 3;
+  optional string email = 4;
+  optional bool email_verified = 5;
+  optional string fullName = 6;
+  optional string password = 7;
+  optional string dob = 8;
+  optional string avatar = 9;
+  optional string accessToken = 10;
+  optional string refreshToken = 11;
+  optional int64 iat = 12;
+  optional int64 exp = 13;
+  optional string coverImage = 14;
 }
 
 message SagaSignupResponse {
@@ -33,5 +48,4 @@ message SagaHealthCheckResponse {
 
 service SagaService {
   rpc userSignupFlow(SagaSignupDto) returns (SagaSignupResponse) {}
-  rpc Check(SagaHealthCheckRequest) returns (SagaHealthCheckResponse) {}
 }

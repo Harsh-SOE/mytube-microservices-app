@@ -13,7 +13,7 @@ export class CommentAggregatePersistance
       Omit<Comment, 'createdAt' | 'updatedAt'>
     >
 {
-  toEntity(
+  toAggregate(
     persistance: Omit<Comment, 'createdAt' | 'updatedAt'>,
   ): CommentAggregate {
     const commentEntity = new CommentEntity(

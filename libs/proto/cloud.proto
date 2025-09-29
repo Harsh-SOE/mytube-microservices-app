@@ -3,23 +3,18 @@ syntax = "proto3";
 package Cloud;
 
 message FileChunk {
-  bytes data= 1;  // the actual stream data bits
+  bytes data= 1; 
   int64 size = 2;
   bool is_last = 3;
 }
 
-message CloudPresignedUrlDto {
+message GetPresignedUrlDto {
   string fileName = 1;
   string mimeType = 2;
   string dir = 3;
 }
 
-message CloudHealthCheckRequest {
-  string service = 1;
-}
-
-
-message GetFileAsNodeJSReadableStreamObservableDto {
+message DownloadFileAsStreamDto {
   string key = 1;
 }
 
@@ -28,20 +23,9 @@ message CloudPreSignedUrlResponse {
   optional string key = 2;
 }
 
-message CloudHealthCheckResponse {
-  enum ServingStatus {
-    UNKNOWN = 0;
-    SERVING = 1;
-    NOT_SERVING = 2;
-    SERVICE_UNKNOWN = 3;
-  }
-  ServingStatus status = 1;
-}
-
-message StreamFileToCloudDto {
+message UploadFileDto {
   FileChunk fileStream = 1;
   string fileKey = 2;
-  string contentType = 3;
 }
 
 message StreamFileToCloudResponse {
@@ -49,8 +33,7 @@ message StreamFileToCloudResponse {
 }
 
 service CloudService {
-  rpc getPresignedUrl(CloudPresignedUrlDto) returns (CloudPreSignedUrlResponse) {}
-  rpc getFileAsNodeJSReadableStreamObservable(GetFileAsNodeJSReadableStreamObservableDto) returns (stream FileChunk) {}
-  rpc Check(CloudHealthCheckRequest) returns (CloudHealthCheckResponse) {}
-  rpc StreamToCloud(stream StreamFileToCloudDto) returns (StreamFileToCloudResponse) {}
+  rpc getPresignedUrl(GetPresignedUrlDto) returns (CloudPreSignedUrlResponse) {}
+  rpc downloadFileAsStream(DownloadFileAsStreamDto) returns (stream FileChunk) {}
+  rpc uploadFile(stream UploadFileDto) returns (StreamFileToCloudResponse) {}
 }

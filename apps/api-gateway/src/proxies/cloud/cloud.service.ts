@@ -48,9 +48,7 @@ export class CloudService implements OnModuleInit {
     );
 
     const result$ =
-      this.cloudService.getFileAsNodeJsReadableStreamObservable(
-        streamFileRequestDto,
-      );
+      this.cloudService.downloadFileAsStream(streamFileRequestDto);
     return await firstValueFrom(result$);
   }
 }

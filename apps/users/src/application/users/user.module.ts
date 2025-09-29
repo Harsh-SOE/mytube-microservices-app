@@ -12,18 +12,17 @@ import {
   UserQueryRepository,
   UserCommandRepository,
 } from '@users/infrastructure/repository';
-import { UserEntityToPersistanceACL } from '@users/infrastructure/anti-corruption';
+import { UserEntityPersistanceACL } from '@users/infrastructure/anti-corruption';
 import { PersistanceService } from '@users/infrastructure/persistance';
 import { UserAggregateFactory } from '@users/domain/factories';
 
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { GrpcHealthController } from './grpc-health.controller';
 import { MeasureModule } from '@users/infrastructure/measure';
 import { LogsModule } from '@users/infrastructure/logs';
 
 @Module({
-  controllers: [UserController, GrpcHealthController],
+  controllers: [UserController],
   imports: [
     AppConfigModule,
     CqrsModule,
@@ -46,7 +45,7 @@ import { LogsModule } from '@users/infrastructure/logs';
     UserCommandRepository,
     UserQueryRepository,
     UserAggregateFactory,
-    UserEntityToPersistanceACL,
+    UserEntityPersistanceACL,
     ...UserCommandHandlers,
     ...UserEventHandlers,
     ...UserQueryHandlers,

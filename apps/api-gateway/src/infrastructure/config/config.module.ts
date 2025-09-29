@@ -34,6 +34,8 @@ import { join } from 'path';
         COMMENT_SERVICE_PORT: joi.number().required(),
         REDIS_HOST: joi.string().required(),
         REDIS_PORT: joi.number().required(),
+        OAUTH_CLIENT_ID: joi.string().required(),
+        OAUTH_CLIENT_SECRET: joi.string().required(),
       }),
     }),
   ],

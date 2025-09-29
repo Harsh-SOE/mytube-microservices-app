@@ -18,7 +18,9 @@ export class LikePersistanceACL
       Omit<VideoLikes, 'createdAt' | 'updatedAt'>
     >
 {
-  toEntity(schema: Omit<VideoLikes, 'createdAt' | 'updatedAt'>): LikeAggregate {
+  toAggregate(
+    schema: Omit<VideoLikes, 'createdAt' | 'updatedAt'>,
+  ): LikeAggregate {
     const likeEntity = new LikeEntity(
       schema.id,
       UserId.create(schema.userId),

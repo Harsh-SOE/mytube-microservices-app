@@ -1,36 +1,68 @@
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { Providers } from '../enums';
 
 export class SignupRequestDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  userName: string;
+  providerId?: string;
 
   @IsNotEmpty()
+  @IsEnum(Providers)
+  provider: Providers = Providers.LOCAL;
+
+  @IsOptional()
+  @IsString()
+  userName?: string;
+
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
-  @IsNotEmpty()
-  @IsStrongPassword()
-  password: string;
+  @IsOptional()
+  @IsBoolean()
+  email_verified?: boolean;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  fullName: string;
+  fullName?: string;
+
+  @IsOptional()
+  @IsStrongPassword()
+  password?: string;
 
   @IsDateString()
-  @IsNotEmpty()
-  dob: string;
+  @IsOptional()
+  dob?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  avatar: string;
+  avatar?: string;
+
+  @IsOptional()
+  @IsString()
+  accessToken?: string;
+
+  @IsOptional()
+  @IsString()
+  refreshToken?: string;
+
+  @IsOptional()
+  @IsNumber()
+  iat?: number;
+
+  @IsOptional()
+  @IsNumber()
+  exp?: number;
 
   @IsOptional()
   @IsString()

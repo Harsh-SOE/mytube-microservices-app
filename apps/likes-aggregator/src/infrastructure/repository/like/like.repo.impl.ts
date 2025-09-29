@@ -75,7 +75,7 @@ export class LikeRepository
     const createdEntity = await this.persistanceService.videoLikes.create({
       data: this.likePersistanceACL.toPersistance(model),
     });
-    return this.likePersistanceACL.toEntity(createdEntity);
+    return this.likePersistanceACL.toAggregate(createdEntity);
   }
 
   async interactManyVideos(models: LikeAggregate[]): Promise<number> {
@@ -115,7 +115,7 @@ export class LikeRepository
       ) as Prisma.VideoLikesWhereUniqueInput,
       data: { likeStatus: newLikeStatus },
     });
-    return this.likePersistanceACL.toEntity(updatedLike);
+    return this.likePersistanceACL.toAggregate(updatedLike);
   }
 
   async changeManyLikeStatus(

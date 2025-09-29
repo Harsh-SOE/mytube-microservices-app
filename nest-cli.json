@@ -63,7 +63,16 @@
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/comments/tsconfig.app.json"
+        "tsConfigPath": "apps/comments/tsconfig.app.json",
+        "assets": [
+          "libs/proto/comments.proto",
+          "libs/proto/health.proto",
+          {
+            "include": "apps/comments/src/scripts/*.lua",
+            "outDir": "dist/apps"
+          }
+        ],
+        "watchAssets": true
       }
     },
     "comments-aggregator": {
@@ -235,18 +244,18 @@
         "tsConfigPath": "apps/views-aggregator/tsconfig.app.json"
       }
     },
-    "watch": {
+    "views": {
       "type": "application",
-      "root": "apps/watch",
+      "root": "apps/views",
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/watch/tsconfig.app.json",
+        "tsConfigPath": "apps/views/tsconfig.app.json",
         "assets": [
-          "libs/proto/watch.proto",
+          "libs/proto/views.proto",
           "libs/proto/health.proto",
           {
-            "include": "apps/watch/src/scripts/*.lua",
+            "include": "apps/views/src/scripts/*.lua",
             "outDir": "dist/apps"
           }
         ],

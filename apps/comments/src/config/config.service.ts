@@ -79,8 +79,17 @@ export class AppConfigService {
         client: {
           clientId: this.COMMENTS_AGGREGATOR_CLIENT_ID,
           brokers: [`${this.KAFKA_SERVICE_HOST}:${this.KAFKA_SERVICE_PORT}`],
+          connectionTimeout: 30000,
+          retry: {
+            initialRetryTime: 300,
+            retries: 10,
+          },
         },
-        consumer: { groupId: this.COMMENTS_AGGREGATOR_CONSUMER_GROUP_ID },
+        consumer: {
+          groupId: this.COMMENTS_AGGREGATOR_CONSUMER_GROUP_ID,
+          sessionTimeout: 30000,
+          allowAutoTopicCreation: true,
+        },
       },
     };
   }

@@ -1,2 +1,2 @@
-export * from './base-service.exception';
-export * from './invalid-input.exception';
+export * from './http-application.exception';
+export * from './http-invalid-input.exception';

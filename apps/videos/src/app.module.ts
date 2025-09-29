@@ -5,6 +5,7 @@ import { PersistanceModule } from '@videos/infrastructure/persistance';
 import { AppConfigModule } from '@videos/config';
 import { MeasureModule } from '@videos/infrastructure/measure';
 import { LogsModule } from '@videos/infrastructure/logs';
+import { AppHealthModule } from './infrastructure/health/health.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { LogsModule } from '@videos/infrastructure/logs';
     MeasureModule,
     LogsModule,
     AppConfigModule,
+    AppHealthModule,
   ],
 })
 export class AppModule {}

@@ -1,114 +1,257 @@
 # Development-specific overrides
 # To use: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+# volumes:
+#   - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+#   - .:/usr/src/app # Mount source code
 services:
   gateway:
+    image: gateway-dev
     build:
       target: development
     command: yarn start:dev api-gateway
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   auth:
+    image: auth-dev
     build:
       target: development
     command: yarn start:dev auth
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   users:
+    image: users-dev
     build:
       target: development
     command: yarn start:dev users
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   videos:
+    image: videos-dev
     build:
       target: development
     command: yarn start:dev videos
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   cloud:
+    image: cloud-dev
     build:
       target: development
     command: yarn start:dev cloud
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   email:
+    image: email-dev
     build:
       target: development
     command: yarn start:dev email
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   likes:
+    image: likes-dev
     build:
       target: development
     command: yarn start:dev likes
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   comments:
+    image: comments-dev
     build:
       target: development
     command: yarn start:dev comments
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   video-transcoder:
+    image: video-transcoder-dev
     build:
       target: development
     command: yarn start:dev video-transcoder
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   saga:
+    image: saga-dev
     build:
       target: development
     command: yarn start:dev saga
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   views-aggregator:
+    image: views-aggregator-dev
     build:
       target: development
     command: yarn start:dev views-aggregator
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   likes-aggregator:
+    image: likes-aggregator-dev
     build:
       target: development
     command: yarn start:dev likes-aggregator
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
   comments-aggregator:
+    image: comments-aggregator-dev
     build:
       target: development
     command: yarn start:dev comments-aggregator
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
 
-  watch:
+  views:
+    image: views-dev
     build:
       target: development
-    command: yarn start:dev watch
+    command: yarn start:dev views
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json

@@ -5,7 +5,7 @@ import { UserNotFoundGrpcException } from '@app/errors';
 
 import { UserAggregate } from '@users/domain/aggregates';
 import { PersistanceService } from '@users/infrastructure/persistance';
-import { UserEntityToPersistanceACL } from '@users/infrastructure/anti-corruption';
+import { UserEntityPersistanceACL } from '@users/infrastructure/anti-corruption';
 
 import { Prisma, User } from '@peristance/user';
 import {
@@ -19,10 +19,45 @@ export class UserCommandRepository
   implements ICommandRepository<UserAggregate, User>
 {
   public constructor(
-    private readonly userEntityPeristanceACL: UserEntityToPersistanceACL,
+    private readonly userEntityPeristanceACL: UserEntityPersistanceACL,
     private readonly peristanceService: PersistanceService,
   ) {}
 
+  /**
+   * Converts a generic `DatabaseFilter<User>` object into a Prisma-compatible filter object
+   * (`Prisma.UserWhereInput` or `Prisma.UserWhereUniqueInput`) for querying the database.
+   *
+   * @param filter - The filter object describing the conditions to apply. This can include direct field matches,
+   *                 as well as logical operators (`and`, `or`, `not`) for complex queries.
+   * @param mode - Specifies the type of filter to generate:
+   *   - `'unique'`: Generates a filter suitable for unique queries (e.g., `findUnique`). Only direct field matches are included.
+   *   - `'many'`: Generates a filter suitable for multi-record queries (e.g., `findMany`). Supports logical operators (`AND`, `OR`, `NOT`).
+   * @returns A Prisma filter object (`Prisma.UserWhereInput` or `Prisma.UserWhereUniqueInput`) that can be used in Prisma queries.
+   *
+   * @example
+   * // Example DatabaseFilter<User>:
+   * const filter: DatabaseFilter<User> = {
+   *   id: '123',
+   *   email: 'user@example.com',
+   *   and: [
+   *     { field: 'age', operator: 'gte', value: 18 },
+   *     { field: 'isActive', operator: 'equals', value: true }
+   *   ],
+   *   or: [
+   *     { field: 'role', operator: 'equals', value: 'admin' }
+   *   ],
+   *   not: [
+   *     { field: 'deletedAt', operator: 'not', value: null }
+   *   ]
+   * };
+   *
+   * // Usage:
+   * const prismaFilter = toPrismaFilter(filter, 'many');
+   *
+   * // Modes:
+   * // - 'unique': Only direct field matches (e.g., { id: '123' }) are included.
+   * // - 'many': Supports logical operators (AND, OR, NOT) for complex queries.
+   */
   toPrismaFilter(
     filter: DatabaseFilter<User>,
     mode: 'many' | 'unique',
@@ -63,6 +98,8 @@ export class UserCommandRepository
       }));
     }
 
+    console.log(prismaFilter);
+
     return prismaFilter;
   }
 
@@ -79,7 +116,7 @@ export class UserCommandRepository
     const createdEntity = await handlePrismaPersistanceOperation(
       createdEntityOperation,
     );
-    return this.userEntityPeristanceACL.toEntity(createdEntity);
+    return this.userEntityPeristanceACL.toAggregate(createdEntity);
   }
 
   @LogExecutionTime()
@@ -115,7 +152,7 @@ export class UserCommandRepository
     const updatedDomainResult = await handlePrismaPersistanceOperation(
       updateDomainOperation,
     );
-    return this.userEntityPeristanceACL.toEntity(updatedDomainResult);
+    return this.userEntityPeristanceACL.toAggregate(updatedDomainResult);
   }
 
   @LogExecutionTime()
@@ -132,7 +169,7 @@ export class UserCommandRepository
     const updatedDomainResult = await handlePrismaPersistanceOperation(
       updateDomainOperation,
     );
-    return this.userEntityPeristanceACL.toEntity(updatedDomainResult);
+    return this.userEntityPeristanceACL.toAggregate(updatedDomainResult);
   }
 
   @LogExecutionTime()
@@ -156,7 +193,7 @@ export class UserCommandRepository
       );
     }
     return (await this.peristanceService.user.findMany({ where: filter })).map(
-      (user) => this.userEntityPeristanceACL.toEntity(user),
+      (user) => this.userEntityPeristanceACL.toAggregate(user),
     );
   }
 
@@ -220,6 +257,6 @@ export class UserCommandRepository
         `User with id:${id} was not found in the database`,
       );
     }
-    return this.userEntityPeristanceACL.toEntity(foundUser);
+    return this.userEntityPeristanceACL.toAggregate(foundUser);
   }
 }

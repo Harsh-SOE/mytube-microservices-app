@@ -11,7 +11,7 @@ import { View } from '@persistance/views-aggregator';
 export class ViewPeristanceAggregateACL
   implements IAggregatePersistanceACL<ViewAggregate, Omit<View, 'watchedAt'>>
 {
-  toEntity(persistance: Omit<View, 'watchedAt'>): ViewAggregate {
+  toAggregate(persistance: Omit<View, 'watchedAt'>): ViewAggregate {
     const viewEntity = new ViewEntity(
       persistance.id,
       new UserId(persistance.userId),

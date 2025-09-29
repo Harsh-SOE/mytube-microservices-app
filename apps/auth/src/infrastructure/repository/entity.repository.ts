@@ -1,11 +1,21 @@
-export interface BaseEntityRepository<TDomainModel, TFilter> {
-  create(entity: TDomainModel): Promise<TDomainModel>;
+export interface BaseEntityRepository<TPersistance, TFilter> {
+  saveUserCredentials(entity: TPersistance): Promise<TPersistance>;
 
-  deleteOne(filter: TFilter): Promise<boolean>;
+  deleteUserCredentials(filter: TFilter): Promise<TPersistance>;
 
-  updatePassword(filter: TFilter, newPassword: string): Promise<TDomainModel>;
+  deleteUserCredentialsById(id: string): Promise<TPersistance>;
 
-  updatePasswordById(id: string, newPassword: string): Promise<TDomainModel>;
+  updateSigninPassword(
+    filter: TFilter,
+    newPassword: string,
+  ): Promise<TPersistance>;
 
-  findOne(filter: TFilter): Promise<TDomainModel>;
+  updateSigninPasswordById(
+    id: string,
+    newPassword: string,
+  ): Promise<TPersistance>;
+
+  FindOneUser(filter: TFilter): Promise<TPersistance>;
+
+  FindOneUserById(id: string): Promise<TPersistance>;
 }

@@ -69,7 +69,7 @@ export class ViewRepository implements IViewRepository<ViewAggregate> {
     const createdEntity = await this.persistanceService.view.create({
       data: this.viewPersistanceACL.toPersistance(model),
     });
-    return this.viewPersistanceACL.toEntity(createdEntity);
+    return this.viewPersistanceACL.toAggregate(createdEntity);
   }
 
   async watchVideosInBatches(models: ViewAggregate[]): Promise<number> {

@@ -3,7 +3,7 @@ import { RpcException } from '@nestjs/microservices';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import { throwError } from 'rxjs';
 
-import { isAppGrpcServiceError } from '@app/errors';
+import { isGrpcApplicationError } from '@app/errors';
 
 /* Do not throw any error here, it will crash the service... */
 @Catch()
@@ -18,7 +18,7 @@ export class GrpcAppExceptionFilter implements ExceptionFilter {
         return throwError(() => new RpcException(exception));
       }
 
-      case isAppGrpcServiceError(exception): {
+      case isGrpcApplicationError(exception): {
         return throwError(() => exception);
       }
 

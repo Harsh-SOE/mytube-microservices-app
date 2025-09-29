@@ -10,7 +10,7 @@ import { Response } from 'express';
 
 import { BaseServiceException, getErrorPayload } from '@app/errors';
 
-import { isAppGrpcServiceError } from '@app/errors';
+import { isGrpcApplicationError } from '@app/errors';
 
 @Catch()
 export class GatewayExceptionFilter implements ExceptionFilter {
@@ -25,7 +25,7 @@ export class GatewayExceptionFilter implements ExceptionFilter {
 
     switch (true) {
       /* Catch all the Grpc Service Error [EXTERNAL SERVICE CALL ERRORS ONLY!!!] */
-      case isAppGrpcServiceError(exception): {
+      case isGrpcApplicationError(exception): {
         const errorPayload = getErrorPayload(exception);
         statusCode = errorPayload.statusCode;
         errorCode = errorPayload.errorCode;

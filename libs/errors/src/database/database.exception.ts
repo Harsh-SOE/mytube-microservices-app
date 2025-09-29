@@ -1,10 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
-import { Metadata } from '@grpc/grpc-js';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 
-import { BaseGrpcServiceException, ErrorPayload } from '../common';
+import { GrpcApplicationError, ErrorPayload } from '../common';
 
-export class DatabaseException extends BaseGrpcServiceException {
+export class DatabaseException extends GrpcApplicationError {
   constructor(public readonly message: string) {
     const payload: ErrorPayload = {
       statusCode: 'DATABASE_EXCEPTION',
@@ -12,9 +11,6 @@ export class DatabaseException extends BaseGrpcServiceException {
       stack: new Error().stack,
     };
 
-    const metadata = new Metadata();
-    metadata.add('error-payload', JSON.stringify(payload));
-
-    super(Status.INTERNAL, message, metadata);
+    super(Status.INTERNAL, message, payload);
   }
 }

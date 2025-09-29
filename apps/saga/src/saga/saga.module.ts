@@ -6,11 +6,10 @@ import { SagaService } from './saga.service';
 import { SagaController } from './saga.controller';
 import { AppConfigModule } from '../config/config.module';
 import { AppConfigService } from '../config/config.service';
-import { GrpcHealthController } from './grpc-health.controller';
 import { LogsModule } from '../logs/logs.module';
 
 @Module({
-  controllers: [SagaController, GrpcHealthController],
+  controllers: [SagaController],
   providers: [SagaService],
   imports: [
     LogsModule,

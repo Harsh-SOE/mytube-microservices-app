@@ -7,15 +7,14 @@ import { CLIENT_PROVIDER } from '@app/clients/constant';
 import { UserAuthRepository } from '@auth/infrastructure/repository';
 import { AppJwtModule } from '@auth/infrastructure/jwt';
 import { LogsModule } from '@auth/infrastructure/logs';
-import { AppConfigModule, AppConfigService } from '@auth/config';
+import { AppConfigModule, AppConfigService } from '@auth/infrastructure/config';
 import { UserAuth, UserAuthSchema } from '@auth/infrastructure/persistance';
 
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { GrpcHealthController } from './grpc-health.controller';
 
 @Module({
-  controllers: [AuthController, GrpcHealthController],
+  controllers: [AuthController],
   providers: [AuthService, UserAuthRepository],
   imports: [
     AppJwtModule,

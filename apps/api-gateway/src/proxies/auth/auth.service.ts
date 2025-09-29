@@ -22,6 +22,7 @@ import {
   SigninRequestResponse,
   SignupRequestResponse,
 } from './response';
+import { ClientGrpcProviderEnumMapper } from './mappers/client-grpc';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -52,7 +53,20 @@ export class AuthService implements OnModuleInit {
       'info',
       `GATEWAY::SIGNUP:: Request recieved:${signupRequestDto.userName}`,
     );
-    const response$ = this.sagaService.userSignupFlow(signupRequestDto);
+
+    const authServiceProvider = ClientGrpcProviderEnumMapper.get(
+      signupRequestDto.provider,
+    );
+
+    if (authServiceProvider === undefined) {
+      throw new Error(`Invalid provider...`);
+    }
+
+    const response$ = this.sagaService.userSignupFlow({
+      ...signupRequestDto,
+      provider: authServiceProvider,
+    });
+
     const response = await firstValueFrom(response$);
     console.log(`response is ${JSON.stringify(response)}`);
     return response;

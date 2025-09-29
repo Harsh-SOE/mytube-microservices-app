@@ -30,7 +30,6 @@ export class JwtStrategy
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-
       ignoreExpiration: false,
       algorithms: ['RS256'],
       secretOrKey: configService.JWT_PUBLIC_KEY,

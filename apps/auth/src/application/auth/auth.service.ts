@@ -1,9 +1,9 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ClientGrpc } from '@nestjs/microservices';
-import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
+import argon from 'argon2';
 import { firstValueFrom } from 'rxjs';
-import winston from 'winston';
+import { Logger } from 'winston';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -15,6 +15,7 @@ import {
   AuthChangePasswordResponse,
   AuthDeleteUserCredentialsResponse,
   AuthDeleteUserCredentialsDto,
+  ProviderTransport,
 } from '@app/contracts/auth';
 import {
   UserSignupDto,
@@ -28,83 +29,124 @@ import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
 import { UserAuthRepository } from '@auth/infrastructure/repository';
 
 import {
-  IncorrectUserPasswordGrpcException,
-  UserCredentialNotFoundGrpcException,
+  IncorrectPasswordException,
+  UserCredentialNotFoundException,
 } from '../errors';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
   private userService: UserServiceClient;
 
+  /**
+   * Constructor for AuthService
+   * @param {ClientGrpc} userClient - Grpc client for User Service
+   * @param {winston.Logger} logger - Logger instance
+   * @param {UserAuthRepository} authUserRepository - Repository for user authentication
+   * @param {JwtService} jwtService - Service for JWT generation and verification
+   */
   constructor(
     @Inject(CLIENT_PROVIDER.USER) private readonly userClient: ClientGrpc,
-    @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
-    private readonly authUser: UserAuthRepository,
+    @Inject(WINSTON_LOGGER) private readonly logger: Logger,
+    private readonly authUserRepository: UserAuthRepository,
     private readonly jwtService: JwtService,
   ) {}
 
+  /**
+   * Initializes the AuthService by setting the UserServiceClient instance.
+   */
   onModuleInit() {
     this.userService = this.userClient.getService(USER_SERVICE_NAME);
   }
 
+  /**
+   * Hashes a given password using argonjs
+   * @param {string} password - The password to be hashed
+   * @returns {Promise<string>} - A promise that resolves with the hashed password
+   */
   @LogExecutionTime()
   async hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await argon.hash(password);
     return hashedPassword;
   }
 
+  /**
+   * Verifies if a given password matches the stored password hash for a user.
+   * @param {string} enteredPassword - The password to be verified
+   * @param {string} userId - The ID of the user to verify the password for
+   * @returns {Promise<boolean>} - A promise that resolves with true if the password is correct, throws otherwise
+   * @throws {UserCredentialNotFoundException} - If the user with the given ID is not found
+   * @throws {IncorrectPasswordException} - If the given password does not match the stored password hash for the user
+   */
   @LogExecutionTime()
   async verifyPasswords(
     enteredPassword: string,
     userId: string,
-  ): Promise<void> {
-    const foundUser = await this.authUser.findOne({ userId });
+  ): Promise<boolean> {
+    const foundUser = await this.authUserRepository.FindOneUser({ userId });
     if (!foundUser) {
-      const error = new UserCredentialNotFoundGrpcException(
+      const error = new UserCredentialNotFoundException(
         `User with id:${userId} not found`,
       );
-      console.log(`--->`, error);
       throw error;
     }
-    const isPasswordCorrect = await bcrypt.compare(
+    const isPasswordCorrect = await argon.verify(
+      foundUser.userPasswordHash as string,
       enteredPassword,
-      foundUser.userPasswordHash,
     );
     if (!isPasswordCorrect) {
-      console.log(`Incorrect password`);
-      const error = new IncorrectUserPasswordGrpcException(
+      throw new IncorrectPasswordException(
         `Incorrect password for user with id:${userId}`,
       );
-      console.log(error);
-      throw error;
     }
+    return true;
   }
 
+  /**
+   * Verify a given user token.
+   * @param {string} userToken - The user token to verify
+   * @returns {Promise<JwtUserPayload>} - A promise that resolves with the verified user payload if the token is valid, throws otherwise
+   */
+  @LogExecutionTime()
   async verifyToken(userToken: string): Promise<JwtUserPayload> {
     return this.jwtService.verify(userToken);
   }
 
+  /**
+   * Signs up a new user using the provided AuthSignupDto.
+   * This Auth.signup service will just be saving the user signin credentials in the auth database
+   * @param {AuthSignupDto} authSignupDto - The user signup dto.
+   * @returns {Promise<AuthSignupResponse>} - A promise that resolves with the signup response.
+   */
   async signup(authSignupDto: AuthSignupDto): Promise<AuthSignupResponse> {
     this.logger.log(
       'info',
       `AUTH:SIGNUP: Request was recieved: ${JSON.stringify(authSignupDto)}`,
     );
 
-    console.log(`Request in auth`);
-
-    const hasedPassword = await this.hashPassword(authSignupDto.password);
-
-    // generate the id for the user
     const userId = uuidv4();
-    // generate the id for user credentials
     const authCredId = uuidv4();
 
-    await this.authUser.create({
-      _id: authCredId,
-      userId,
-      userPasswordHash: hasedPassword,
-    });
+    if (authSignupDto.provider === ProviderTransport.TRANSPORT_LOCAL) {
+      const hasedPassword = await this.hashPassword(
+        authSignupDto.password as string,
+      );
+      const userId = uuidv4();
+      const authCredId = uuidv4();
+
+      await this.authUserRepository.saveUserCredentials({
+        _id: authCredId,
+        provider: authSignupDto.provider,
+        userId,
+        userPasswordHash: hasedPassword,
+      });
+    } else {
+      await this.authUserRepository.saveUserCredentials({
+        _id: authCredId,
+        provider: authSignupDto.provider,
+        providerId: authSignupDto.providerId,
+        userId,
+      });
+    }
 
     const userCreateDto: UserSignupDto = {
       id: userId,
@@ -115,8 +157,6 @@ export class AuthService implements OnModuleInit {
       avatar: authSignupDto.avatar,
       coverImage: authSignupDto.coverImage,
     };
-
-    console.log(userCreateDto);
 
     return userCreateDto;
   }
@@ -155,10 +195,11 @@ export class AuthService implements OnModuleInit {
     const { id, oldPassword, newPassword } = authChangePasswordDto;
     await this.verifyPasswords(oldPassword, id);
     const hashedPassword = await this.hashPassword(newPassword);
-    const updatedPasswordResponse = await this.authUser.updatePasswordById(
-      id,
-      hashedPassword,
-    );
+    const updatedPasswordResponse =
+      await this.authUserRepository.updateSigninPasswordById(
+        id,
+        hashedPassword,
+      );
     return updatedPasswordResponse ? { response: true } : { response: false };
   }
 
@@ -170,7 +211,9 @@ export class AuthService implements OnModuleInit {
       `AUTH::DELETE_CREDENTIALS:: Request recieved: ${JSON.stringify(authDeleteUserCredentialsDto)}`,
     );
 
-    await this.authUser.deleteOne({ userId: authDeleteUserCredentialsDto.id });
+    await this.authUserRepository.deleteUserCredentials({
+      userId: authDeleteUserCredentialsDto.id,
+    });
     return { response: 'deletion successful' };
   }
 }

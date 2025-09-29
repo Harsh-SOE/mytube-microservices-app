@@ -12,7 +12,7 @@ import {
   CLOUD_SERVICE_NAME,
   CloudServiceClient,
   FileChunk,
-  StreamFileToCloudDto,
+  UploadFileDto,
 } from '@app/contracts/cloud';
 import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients';
 import { VideoTranscodeDto } from '@app/contracts/video-transcoder';
@@ -67,60 +67,55 @@ export class VideoTranscoderService implements OnModuleInit {
     const uploadPromises = files.map((file) => {
       const filePath = path.join(outputDir, file);
       const s3Key = `hls/${videoId}/${file}`;
-      const contentType = this.getContentType(file);
 
-      const fileStreamObservable = new Observable<StreamFileToCloudDto>(
-        (observer) => {
-          const fileStream = fsStream.createReadStream(filePath);
-          const onData = (chunk: Buffer) => {
-            observer.next({
-              fileKey: s3Key,
-              contentType: contentType,
-              fileStream: {
-                data: chunk,
-                size: chunk.length,
-                isLast: false,
-              },
-            });
-          };
+      const fileStreamObservable = new Observable<UploadFileDto>((observer) => {
+        const fileStream = fsStream.createReadStream(filePath);
+        const onData = (chunk: Buffer) => {
+          observer.next({
+            fileKey: s3Key,
+            fileStream: {
+              data: chunk,
+              size: chunk.length,
+              isLast: false,
+            },
+          });
+        };
 
-          const onError = (error: Error) => {
-            observer.error(error);
-          };
+        const onError = (error: Error) => {
+          observer.error(error);
+        };
 
-          const onEnd = () => {
-            Logger.log(`File: ${s3Key} stream was ended`);
-            observer.next({
-              fileKey: s3Key,
-              contentType: contentType,
-              fileStream: {
-                data: Buffer.alloc(0),
-                size: 0,
-                isLast: true,
-              },
-            });
-            observer.complete();
-            console.log(`Completed Triggered`);
-          };
+        const onEnd = () => {
+          Logger.log(`File: ${s3Key} stream was ended`);
+          observer.next({
+            fileKey: s3Key,
+            fileStream: {
+              data: Buffer.alloc(0),
+              size: 0,
+              isLast: true,
+            },
+          });
+          observer.complete();
+          console.log(`Completed Triggered`);
+        };
 
-          fileStream.on('data', onData);
-          fileStream.on('error', onError);
-          fileStream.on('end', onEnd);
-          return () => {
-            fileStream.off('data', onData);
-            fileStream.off('error', onError);
-            fileStream.off('end', onEnd);
-            fileStream.destroy();
-          };
-        },
-      );
+        fileStream.on('data', onData);
+        fileStream.on('error', onError);
+        fileStream.on('end', onEnd);
+        return () => {
+          fileStream.off('data', onData);
+          fileStream.off('error', onError);
+          fileStream.off('end', onEnd);
+          fileStream.destroy();
+        };
+      });
 
-      const loggedObservable = this.logObservable<StreamFileToCloudDto>(
+      const loggedObservable = this.logObservable<UploadFileDto>(
         fileStreamObservable,
         s3Key,
       );
 
-      return lastValueFrom(this.cloudService.streamToCloud(loggedObservable));
+      return lastValueFrom(this.cloudService.uploadFile(loggedObservable));
     });
 
     await Promise.all(uploadPromises);
@@ -135,7 +130,7 @@ export class VideoTranscoderService implements OnModuleInit {
 
     const { key, videoId } = videoTranscodeDto;
 
-    const outputDir = path.join('/usr/src/transcoded-videos', videoId);
+    const outputDir = path.join('/home/node/transcoded-videos', videoId);
     const manifestPath = path.join(outputDir, `${videoId}.m3u8`);
     const segmentPattern = path.join(outputDir, 'segment%03d.ts');
 
@@ -144,7 +139,7 @@ export class VideoTranscoderService implements OnModuleInit {
 
     await new Promise((resolve, reject) => {
       const readableFileStream$: Observable<FileChunk> =
-        this.cloudService.getFileAsNodeJsReadableStreamObservable({ key });
+        this.cloudService.downloadFileAsStream({ key });
 
       const inputStream = new PassThrough();
 

@@ -11,23 +11,18 @@ import { Observable } from "rxjs";
 export const protobufPackage = "Cloud";
 
 export interface FileChunk {
-  /** the actual stream data bits */
   data: Uint8Array;
   size: number;
   isLast: boolean;
 }
 
-export interface CloudPresignedUrlDto {
+export interface GetPresignedUrlDto {
   fileName: string;
   mimeType: string;
   dir: string;
 }
 
-export interface CloudHealthCheckRequest {
-  service: string;
-}
-
-export interface GetFileAsNodeJSReadableStreamObservableDto {
+export interface DownloadFileAsStreamDto {
   key: string;
 }
 
@@ -36,22 +31,9 @@ export interface CloudPreSignedUrlResponse {
   key?: string | undefined;
 }
 
-export interface CloudHealthCheckResponse {
-  status: CloudHealthCheckResponse_ServingStatus;
-}
-
-export enum CloudHealthCheckResponse_ServingStatus {
-  UNKNOWN = 0,
-  SERVING = 1,
-  NOT_SERVING = 2,
-  SERVICE_UNKNOWN = 3,
-  UNRECOGNIZED = -1,
-}
-
-export interface StreamFileToCloudDto {
+export interface UploadFileDto {
   fileStream: FileChunk | undefined;
   fileKey: string;
-  contentType: string;
 }
 
 export interface StreamFileToCloudResponse {
@@ -61,39 +43,33 @@ export interface StreamFileToCloudResponse {
 export const CLOUD_PACKAGE_NAME = "Cloud";
 
 export interface CloudServiceClient {
-  getPresignedUrl(request: CloudPresignedUrlDto): Observable<CloudPreSignedUrlResponse>;
+  getPresignedUrl(request: GetPresignedUrlDto): Observable<CloudPreSignedUrlResponse>;
 
-  getFileAsNodeJsReadableStreamObservable(request: GetFileAsNodeJSReadableStreamObservableDto): Observable<FileChunk>;
+  downloadFileAsStream(request: DownloadFileAsStreamDto): Observable<FileChunk>;
 
-  check(request: CloudHealthCheckRequest): Observable<CloudHealthCheckResponse>;
-
-  streamToCloud(request: Observable<StreamFileToCloudDto>): Observable<StreamFileToCloudResponse>;
+  uploadFile(request: Observable<UploadFileDto>): Observable<StreamFileToCloudResponse>;
 }
 
 export interface CloudServiceController {
   getPresignedUrl(
-    request: CloudPresignedUrlDto,
+    request: GetPresignedUrlDto,
   ): Promise<CloudPreSignedUrlResponse> | Observable<CloudPreSignedUrlResponse> | CloudPreSignedUrlResponse;
 
-  getFileAsNodeJsReadableStreamObservable(request: GetFileAsNodeJSReadableStreamObservableDto): Observable<FileChunk>;
+  downloadFileAsStream(request: DownloadFileAsStreamDto): Observable<FileChunk>;
 
-  check(
-    request: CloudHealthCheckRequest,
-  ): Promise<CloudHealthCheckResponse> | Observable<CloudHealthCheckResponse> | CloudHealthCheckResponse;
-
-  streamToCloud(
-    request: Observable<StreamFileToCloudDto>,
+  uploadFile(
+    request: Observable<UploadFileDto>,
   ): Promise<StreamFileToCloudResponse> | Observable<StreamFileToCloudResponse> | StreamFileToCloudResponse;
 }
 
 export function CloudServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getPresignedUrl", "getFileAsNodeJsReadableStreamObservable", "check"];
+    const grpcMethods: string[] = ["getPresignedUrl", "downloadFileAsStream"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("CloudService", method)(constructor.prototype[method], method, descriptor);
     }
-    const grpcStreamMethods: string[] = ["streamToCloud"];
+    const grpcStreamMethods: string[] = ["uploadFile"];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcStreamMethod("CloudService", method)(constructor.prototype[method], method, descriptor);

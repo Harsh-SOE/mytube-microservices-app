@@ -15,14 +15,16 @@ import { User } from '@peristance/user';
 import { IAggregatePersistanceACL } from '@app/infrastructure';
 
 @Injectable()
-export class UserEntityToPersistanceACL
+export class UserEntityPersistanceACL
   implements
     IAggregatePersistanceACL<
       UserAggregate,
       Omit<User, 'createdAt' | 'updatedAt'>
     >
 {
-  toEntity(persistance: Omit<User, 'createdAt' | 'updatedAt'>): UserAggregate {
+  toAggregate(
+    persistance: Omit<User, 'createdAt' | 'updatedAt'>,
+  ): UserAggregate {
     const user = new UserEntity(
       persistance.id,
       new UserName(persistance.userName),

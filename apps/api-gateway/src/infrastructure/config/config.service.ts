@@ -10,7 +10,7 @@ import { USER_PACKAGE_NAME } from '@app/contracts/users';
 import { LIKE_PACKAGE_NAME } from '@app/contracts/likes';
 import { VIDEO_PACKAGE_NAME } from '@app/contracts/videos';
 import { SAGA_PACKAGE_NAME } from '@app/contracts/saga';
-import { WATCH_PACKAGE_NAME } from '@app/contracts/watch';
+import { VIEWS_PACKAGE_NAME } from '@app/contracts/views';
 import { COMMENT_PACKAGE_NAME } from '@app/contracts/comments/comments';
 
 @Injectable()
@@ -202,10 +202,18 @@ export class AppConfigService {
     return {
       transport: Transport.GRPC,
       options: {
-        package: WATCH_PACKAGE_NAME,
-        protoPath: join(__dirname, '../proto/watch.proto'),
+        package: VIEWS_PACKAGE_NAME,
+        protoPath: join(__dirname, '../proto/views.proto'),
         url: `${this.WATCH_SERVICE_HOST}:${this.WATCH_SERVICE_PORT}`,
       },
     };
+  }
+
+  get OAUTH_CLIENT_ID() {
+    return this.configService.getOrThrow<string>('OAUTH_CLIENT_ID');
+  }
+
+  get OAUTH_CLIENT_SECRET() {
+    return this.configService.getOrThrow<string>('OAUTH_CLIENT_SECRET');
   }
 }

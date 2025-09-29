@@ -19,96 +19,42 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/clients": [
-        "libs/clients/src"
-      ],
-      "@app/clients/*": [
-        "libs/clients/src/*"
-      ],
-      "@app/contracts": [
-        "libs/contracts/src"
-      ],
-      "@app/contracts/*": [
-        "libs/contracts/src/*"
-      ],
-      "@app/counters": [
-        "libs/counters/src"
-      ],
-      "@app/counters/*": [
-        "libs/counters/src/*"
-      ],
-      "@app/errors": [
-        "libs/errors/src"
-      ],
-      "@app/errors/*": [
-        "libs/errors/src/*"
-      ],
-      "@app/infrastructure": [
-        "libs/infrastructure/src"
-      ],
-      "@app/infrastructure/*": [
-        "libs/infrastructure/src/*"
-      ],
-      "@app/proto": [
-        "libs/proto/src"
-      ],
-      "@app/proto/*": [
-        "libs/proto/src/*"
-      ],
-      "@app/testing": [
-        "libs/testing/src"
-      ],
-      "@app/testing/*": [
-        "libs/testing/src/*"
-      ],
-      "@app/utils": [
-        "libs/utils/src"
-      ],
-      "@app/utils/*": [
-        "libs/utils/src/*"
-      ],
-      "@auth/*": [
-        "apps/auth/src/*"
-      ],
-      "@gateway/*": [
-        "apps/api-gateway/src/*"
-      ],
-      "@likes-aggregator/*": [
-        "apps/likes-aggregator/src/*"
-      ],
-      "@likes/*": [
-        "apps/likes/src/*"
-      ],
+      "@app/clients": ["libs/clients/src"],
+      "@app/clients/*": ["libs/clients/src/*"],
+      "@app/contracts": ["libs/contracts/src"],
+      "@app/contracts/*": ["libs/contracts/src/*"],
+      "@app/counters": ["libs/counters/src"],
+      "@app/counters/*": ["libs/counters/src/*"],
+      "@app/errors": ["libs/errors/src"],
+      "@app/errors/*": ["libs/errors/src/*"],
+      "@app/infrastructure": ["libs/infrastructure/src"],
+      "@app/infrastructure/*": ["libs/infrastructure/src/*"],
+      "@app/proto": ["libs/proto/src"],
+      "@app/proto/*": ["libs/proto/src/*"],
+      "@app/testing": ["libs/testing/src"],
+      "@app/testing/*": ["libs/testing/src/*"],
+      "@app/utils": ["libs/utils/src"],
+      "@app/utils/*": ["libs/utils/src/*"],
+      "@likes-aggregator/*": ["apps/likes-aggregator/src/*"],
       "@peristance/likes-aggregator": [
         "apps/likes-aggregator/generated/prisma"
       ],
-      "@peristance/user": [
-        "apps/users/generated/prisma"
-      ],
-      "@peristance/videos": [
-        "apps/videos/generated/prisma"
-      ],
-      "@persistance/auth": [
-        "apps/auth/generated/prisma"
-      ],
+      "@peristance/user": ["apps/users/generated/prisma"],
+      "@peristance/videos": ["apps/videos/generated/prisma"],
+      "@persistance/auth": ["apps/auth/generated/prisma"],
       "@persistance/views-aggregator": [
         "apps/views-aggregator/generated/prisma"
       ],
-      "@transcoder/*": [
-        "apps/video-transcoder/src/*"
-      ],
-      "@users/*": [
-        "apps/users/src/*"
-      ],
-      "@videos/*": [
-        "apps/videos/src/*"
-      ],
-      "@views-aggregator/*": [
-        "apps/views-aggregator/src/*"
-      ],
-      "@watch/*": [
-        "apps/watch/src/*"
-      ]
+      "@auth/*": ["apps/auth/src/*"],
+      "@gateway/*": ["apps/api-gateway/src/*"],
+      "@likes/*": ["apps/likes/src/*"],
+      "@transcoder/*": ["apps/video-transcoder/src/*"],
+      "@users/*": ["apps/users/src/*"],
+      "@videos/*": ["apps/videos/src/*"],
+      "@views-aggregator/*": ["apps/views-aggregator/src/*"],
+      "@views/*": ["apps/views/src/*"],
+      "@comments/*": ["apps/comments/src/*"],
+      "@cloud/*": ["apps/cloud/src/*"]
     }
   }
 }

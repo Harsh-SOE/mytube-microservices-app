@@ -2,7 +2,7 @@ FROM node:24-alpine AS base
 
 WORKDIR /usr/src/app
 
-RUN apk add --no-cache curl && \
+RUN apk add --no-cache ffmpeg curl && \
     curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe && \
     chmod +x /usr/local/bin/grpc_health_probe && \
     apk del curl
@@ -12,11 +12,6 @@ COPY package.json yarn.lock ./
 FROM base AS build-dependencies
 
 RUN yarn install --frozen-lockfile --production=false
-
-FROM base AS production-dependencies
-
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS builder
 
@@ -38,6 +33,11 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "video-transcoder"]
 
+FROM base AS production-dependencies
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production=true
+
 FROM base AS production
 
 ENV NODE_ENV=production
@@ -49,6 +49,9 @@ COPY --from=builder /usr/src/app/dist/apps/video-transcoder ./apps/video-transco
 
 COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
 
+USER root
+RUN mkdir /home/node/transcoded-videos
+RUN chown -R node:node /home/node/transcoded-videos
 USER node
 
 CMD ["node", "apps/video-transcoder/src/main.js"]

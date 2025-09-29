@@ -60,9 +60,11 @@ export class AppConfigService {
       options: {
         client: {
           clientId: this.COMMENTS_AGGREGATOR_CLIENT_ID,
-          brokers: [`${this.KAFKA_SERVICE_PORT}:${this.KAFKA_SERVICE_PORT}`],
+          brokers: [`${this.KAFKA_SERVICE_HOST}:${this.KAFKA_SERVICE_PORT}`],
         },
-        consumer: { groupId: this.COMMENTS_AGGREGATOR_CONSUMER_GROUP_ID },
+        consumer: {
+          groupId: this.COMMENTS_AGGREGATOR_CONSUMER_GROUP_ID,
+        },
       },
     };
   }

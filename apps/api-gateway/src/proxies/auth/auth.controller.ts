@@ -3,7 +3,10 @@ import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtUserPayload } from '@app/contracts/jwt';
 
 import { User } from '@gateway/utils/decorators';
-import { GatewayJwtGuard } from '@gateway/infrastructure/jwt';
+import {
+  GatewayGoogleOAuthGaurd,
+  GatewayJwtGuard,
+} from '@gateway/infrastructure/jwt';
 
 import {
   SignupRequestDto,
@@ -22,11 +25,12 @@ import { AUTH_API } from './api';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(GatewayGoogleOAuthGaurd)
   @Post(AUTH_API.SIGNUP)
   signup(
-    @Body() createUserDto: SignupRequestDto,
+    @User() signupRequestDto: SignupRequestDto,
   ): Promise<SignupRequestResponse> {
-    return this.authService.signup(createUserDto);
+    return this.authService.signup(signupRequestDto);
   }
 
   @Post(AUTH_API.SIGNIN)

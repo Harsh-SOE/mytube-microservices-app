@@ -44,7 +44,9 @@ export class AppConfigService {
           clientId: this.VIEWS_AGGREGATOR_CLIENT_ID,
           brokers: [`${this.KAFKA_SERVICE_HOST}:${this.KAFKA_SERVICE_PORT}`],
         },
-        consumer: { groupId: this.VIEWS_AGGREGATOR_CONSUMER_ID },
+        consumer: {
+          groupId: this.VIEWS_AGGREGATOR_CONSUMER_ID,
+        },
       },
     };
   }

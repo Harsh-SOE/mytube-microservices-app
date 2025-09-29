@@ -1,3 +1,3 @@
-export * from './base-grpc-service.exception';
-export * from './grpc-error.type';
-export * from './invalid-domain-input.exception';
+export * from './grpc-application.exception';
+export * from './grpc-application.exception.type';
+export * from './grpc-invalid-domain-input.exception';

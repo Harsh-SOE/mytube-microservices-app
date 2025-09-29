@@ -1,8 +1,6 @@
 import { Controller, UseFilters } from '@nestjs/common';
 
 import {
-  SagaHealthCheckRequest,
-  SagaHealthCheckResponse,
   SagaServiceController,
   SagaServiceControllerMethods,
   SagaSignupDto,
@@ -11,23 +9,12 @@ import {
 
 import { SagaService } from './saga.service';
 import { SagaExceptionFilter } from '../filters';
-import { Observable } from 'rxjs';
 
 @UseFilters(SagaExceptionFilter)
 @SagaServiceControllerMethods()
 @Controller()
 export class SagaController implements SagaServiceController {
   constructor(private readonly sagaService: SagaService) {}
-
-  check(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    request: SagaHealthCheckRequest,
-  ):
-    | Promise<SagaHealthCheckResponse>
-    | Observable<SagaHealthCheckResponse>
-    | SagaHealthCheckResponse {
-    return { status: 1 }; // 1 = SERVING
-  }
 
   userSignupFlow(
     authSignupUserDto: SagaSignupDto,

@@ -10,13 +10,29 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "Auth";
 
+export enum ProviderTransport {
+  TRANSPORT_LOCAL = 0,
+  TRANSPORT_GOOGLE = 1,
+  TRANSPORT_GITHUB = 2,
+  TRANSPORT_MICROSOFT = 3,
+  TRANSPORT_APPLE = 4,
+  UNRECOGNIZED = -1,
+}
+
 export interface AuthSignupDto {
-  userName: string;
-  email: string;
-  password: string;
-  fullName: string;
-  dob: string;
-  avatar: string;
+  provider: ProviderTransport;
+  providerId?: string | undefined;
+  userName?: string | undefined;
+  email?: string | undefined;
+  emailVerified?: boolean | undefined;
+  fullName?: string | undefined;
+  password?: string | undefined;
+  dob?: string | undefined;
+  avatar?: string | undefined;
+  accessToken?: string | undefined;
+  refreshToken?: string | undefined;
+  iat?: number | undefined;
+  exp?: number | undefined;
   coverImage?: string | undefined;
 }
 
@@ -37,11 +53,11 @@ export interface AuthDeleteUserCredentialsDto {
 
 export interface AuthSignupResponse {
   id: string;
-  userName: string;
-  email: string;
-  fullName: string;
-  dob: string;
-  avatar: string;
+  userName?: string | undefined;
+  email?: string | undefined;
+  fullName?: string | undefined;
+  dob?: string | undefined;
+  avatar?: string | undefined;
   coverImage?: string | undefined;
 }
 
@@ -57,22 +73,6 @@ export interface AuthDeleteUserCredentialsResponse {
   response: string;
 }
 
-export interface AuthHealthCheckRequest {
-  service: string;
-}
-
-export interface AuthHealthCheckResponse {
-  status: AuthHealthCheckResponse_ServingStatus;
-}
-
-export enum AuthHealthCheckResponse_ServingStatus {
-  UNKNOWN = 0,
-  SERVING = 1,
-  NOT_SERVING = 2,
-  SERVICE_UNKNOWN = 3,
-  UNRECOGNIZED = -1,
-}
-
 export const AUTH_PACKAGE_NAME = "Auth";
 
 export interface AuthServiceClient {
@@ -83,8 +83,6 @@ export interface AuthServiceClient {
   changePassword(request: AuthChangePasswordDto): Observable<AuthChangePasswordResponse>;
 
   deleteUserCredentials(request: AuthDeleteUserCredentialsDto): Observable<AuthDeleteUserCredentialsResponse>;
-
-  check(request: AuthHealthCheckRequest): Observable<AuthHealthCheckResponse>;
 }
 
 export interface AuthServiceController {
@@ -102,15 +100,11 @@ export interface AuthServiceController {
     | Promise<AuthDeleteUserCredentialsResponse>
     | Observable<AuthDeleteUserCredentialsResponse>
     | AuthDeleteUserCredentialsResponse;
-
-  check(
-    request: AuthHealthCheckRequest,
-  ): Promise<AuthHealthCheckResponse> | Observable<AuthHealthCheckResponse> | AuthHealthCheckResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signup", "signin", "changePassword", "deleteUserCredentials", "check"];
+    const grpcMethods: string[] = ["signup", "signin", "changePassword", "deleteUserCredentials"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

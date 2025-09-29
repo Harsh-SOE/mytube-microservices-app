@@ -1,1 +1,1 @@
-export * from './grpc-exception.guard';
+export * from './grpc-application-error.guard';

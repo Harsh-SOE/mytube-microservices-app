@@ -13,10 +13,6 @@ FROM base AS build-dependencies
 
 RUN yarn install --frozen-lockfile --production=false
 
-FROM base AS production-dependencies
-
-RUN yarn install --frozen-lockfile --production=true
-
 FROM base AS builder
 
 COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
@@ -39,6 +35,10 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "likes-aggregator"]
 
+FROM base AS production-dependencies
+
+RUN yarn install --frozen-lockfile --production=true
+
 FROM base AS production
 
 ENV NODE_ENV=production
@@ -53,6 +53,10 @@ COPY --from=builder /usr/src/app/apps/likes-aggregator/prisma/schema.prisma ./ap
 
 COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
 
+USER root
+RUN chown -R node:node /home/node/app/apps/likes-aggregator/prisma
+RUN chown -R node:node /home/node/app/apps/likes-aggregator/generated
+RUN chown -R node:node /home/node/app/node_modules/prisma
 USER node
 
 CMD ["node", "apps/likes-aggregator/src/main.js"]

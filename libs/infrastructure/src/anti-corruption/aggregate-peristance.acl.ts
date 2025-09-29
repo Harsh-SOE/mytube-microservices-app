@@ -4,7 +4,7 @@ export interface IAggregatePersistanceACL<
   TAggregate extends AggregateRoot,
   TPersistance,
 > {
-  toEntity(schema: TPersistance): TAggregate;
+  toAggregate(schema: TPersistance): TAggregate;
 
   toPersistance(model: TAggregate): TPersistance;
 }

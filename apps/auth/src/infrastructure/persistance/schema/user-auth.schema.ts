@@ -1,3 +1,4 @@
+import { ProviderTransport } from '@app/contracts/auth';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuid } from 'uuid';
 
@@ -10,7 +11,13 @@ export class UserAuth {
   public readonly userId: string;
 
   @Prop()
-  public readonly userPasswordHash: string;
+  public readonly provider: ProviderTransport;
+
+  @Prop()
+  public readonly providerId?: string;
+
+  @Prop()
+  public readonly userPasswordHash?: string;
 }
 
 // Create Mongoose schema object

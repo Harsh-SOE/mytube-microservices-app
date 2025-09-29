@@ -10,13 +10,13 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  userName   String   @unique
-  email      String   @unique
-  fullName   String
-  dob        DateTime
-  avatar     String
+  id         String    @id @default(uuid())
+  userName   String?   @unique
+  email      String?   @unique
+  fullName   String?
+  dob        DateTime?
+  avatar     String?
   coverImage String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }

@@ -34,7 +34,7 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('USER_SERVICE_HOST');
   }
 
-  get USER_SERVICE_OPTIONS() {
+  get USER_SERVICE_OPTIONS(): GrpcOptions {
     const options: GrpcOptions = {
       transport: Transport.GRPC,
       options: {

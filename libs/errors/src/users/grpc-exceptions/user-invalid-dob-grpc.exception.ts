@@ -1,9 +1,8 @@
-import { BaseGrpcServiceException, ErrorPayload } from '../../common';
-import { Metadata } from '@grpc/grpc-js';
+import { GrpcApplicationError, ErrorPayload } from '../../common';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import { HttpStatus } from '@nestjs/common';
 
-export class UserInvalidDOBGrpcException extends BaseGrpcServiceException {
+export class UserInvalidDOBGrpcException extends GrpcApplicationError {
   constructor(public readonly message: string) {
     const payload: ErrorPayload = {
       errorCode: HttpStatus.BAD_REQUEST,
@@ -11,8 +10,6 @@ export class UserInvalidDOBGrpcException extends BaseGrpcServiceException {
       stack: new Error().stack,
     };
 
-    const metadata = new Metadata();
-    metadata.add('error-payload', JSON.stringify(payload));
-    super(Status.INVALID_ARGUMENT, message, metadata);
+    super(Status.INVALID_ARGUMENT, message, payload);
   }
 }

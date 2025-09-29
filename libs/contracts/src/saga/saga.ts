@@ -10,13 +10,29 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "Saga";
 
+export enum ProviderTransport {
+  TRANSPORT_LOCAL = 0,
+  TRANSPORT_GOOGLE = 1,
+  TRANSPORT_GITHUB = 2,
+  TRANSPORT_MICROSOFT = 3,
+  TRANSPORT_APPLE = 4,
+  UNRECOGNIZED = -1,
+}
+
 export interface SagaSignupDto {
-  userName: string;
-  email: string;
-  fullName: string;
-  password: string;
-  dob: string;
-  avatar: string;
+  provider: ProviderTransport;
+  providerId?: string | undefined;
+  userName?: string | undefined;
+  email?: string | undefined;
+  emailVerified?: boolean | undefined;
+  fullName?: string | undefined;
+  password?: string | undefined;
+  dob?: string | undefined;
+  avatar?: string | undefined;
+  accessToken?: string | undefined;
+  refreshToken?: string | undefined;
+  iat?: number | undefined;
+  exp?: number | undefined;
   coverImage?: string | undefined;
 }
 
@@ -45,23 +61,17 @@ export const SAGA_PACKAGE_NAME = "Saga";
 
 export interface SagaServiceClient {
   userSignupFlow(request: SagaSignupDto): Observable<SagaSignupResponse>;
-
-  check(request: SagaHealthCheckRequest): Observable<SagaHealthCheckResponse>;
 }
 
 export interface SagaServiceController {
   userSignupFlow(
     request: SagaSignupDto,
   ): Promise<SagaSignupResponse> | Observable<SagaSignupResponse> | SagaSignupResponse;
-
-  check(
-    request: SagaHealthCheckRequest,
-  ): Promise<SagaHealthCheckResponse> | Observable<SagaHealthCheckResponse> | SagaHealthCheckResponse;
 }
 
 export function SagaServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["userSignupFlow", "check"];
+    const grpcMethods: string[] = ["userSignupFlow"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("SagaService", method)(constructor.prototype[method], method, descriptor);

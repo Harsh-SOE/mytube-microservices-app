@@ -1,14 +1,29 @@
 syntax = "proto3";
 package Auth;
 
+enum ProviderTransport {
+  TRANSPORT_LOCAL = 0;
+  TRANSPORT_GOOGLE = 1;
+  TRANSPORT_GITHUB = 2;
+  TRANSPORT_MICROSOFT = 3;
+  TRANSPORT_APPLE = 4;
+}
+
 message AuthSignupDto {
-  string userName = 2;
-  string email = 3;
-  string password = 4;
-  string fullName = 5;
-  string dob = 6;
-  string avatar = 7;
-  optional string coverImage = 8;
+  ProviderTransport provider = 1;
+  optional string providerId = 2;
+  optional string userName = 3;
+  optional string email = 4;
+  optional bool email_verified = 5;
+  optional string fullName = 6;
+  optional string password = 7;
+  optional string dob = 8;
+  optional string avatar = 9;
+  optional string accessToken = 10;
+  optional string refreshToken = 11;
+  optional int64 iat = 12;
+  optional int64 exp = 13;
+  optional string coverImage = 14;
 }
 
 message AuthChangePasswordDto {
@@ -28,11 +43,11 @@ message AuthDeleteUserCredentialsDto {
 
 message AuthSignupResponse {
   string id = 1;
-  string userName = 2;
-  string email = 3;
-  string fullName = 4;
-  string dob = 5;
-  string avatar = 6;
+  optional string userName = 2;
+  optional string email = 3;
+  optional string fullName = 4;
+  optional string dob = 5;
+  optional string avatar = 6;
   optional string coverImage = 7; 
 }
 
@@ -48,24 +63,9 @@ message AuthDeleteUserCredentialsResponse {
   string response = 1;
 }
 
-message AuthHealthCheckRequest {
-  string service = 1;
-}
-
-message AuthHealthCheckResponse {
-  enum ServingStatus {
-    UNKNOWN = 0;
-    SERVING = 1;
-    NOT_SERVING = 2;
-    SERVICE_UNKNOWN = 3;
-  }
-  ServingStatus status = 1;
-}
-
 service AuthService {
   rpc signup(AuthSignupDto) returns (AuthSignupResponse) {}
   rpc signin(AuthSigninDto) returns (AuthSigninResponse) {}
   rpc changePassword(AuthChangePasswordDto) returns (AuthChangePasswordResponse) {}
   rpc deleteUserCredentials(AuthDeleteUserCredentialsDto) returns (AuthDeleteUserCredentialsResponse) {}
-  rpc Check (AuthHealthCheckRequest) returns (AuthHealthCheckResponse) {};
 }

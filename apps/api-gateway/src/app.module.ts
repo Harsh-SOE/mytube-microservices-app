@@ -11,10 +11,10 @@ import { LogsModule } from './infrastructure/logs';
 import { AuthModule } from './proxies/auth/auth.module';
 import { GatewayJwtModule } from './infrastructure/jwt';
 import { LikesModule } from './proxies/likes/likes.module';
-import { WatchModule } from './proxies/watch/watch.module';
+import { WatchModule } from './proxies/views/views.module';
 import { ResponseTimeMiddleware } from './infrastructure/middlewares';
 import { CommentsModule } from './proxies/comments/comments.module';
-import { HealthModule } from './infrastructure/health/health.module';
+import { AppHealthModule } from './infrastructure/health/health.module';
 
 @Module({
   imports: [
@@ -44,7 +44,7 @@ import { HealthModule } from './infrastructure/health/health.module';
     LikesModule,
     WatchModule,
     CommentsModule,
-    HealthModule,
+    AppHealthModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -79,7 +79,7 @@ export class VideoCommandRepository
     const createdEntity = await handlePrismaPersistanceOperation(
       createdEntityOperation,
     );
-    return this.videoEntityPeristanceACL.toEntity(createdEntity);
+    return this.videoEntityPeristanceACL.toAggregate(createdEntity);
   }
 
   @LogExecutionTime()
@@ -109,7 +109,7 @@ export class VideoCommandRepository
     const updatedDomainResult = await handlePrismaPersistanceOperation(
       updateDomainOperation,
     );
-    return this.videoEntityPeristanceACL.toEntity(updatedDomainResult);
+    return this.videoEntityPeristanceACL.toAggregate(updatedDomainResult);
   }
 
   @LogExecutionTime()
@@ -126,7 +126,7 @@ export class VideoCommandRepository
     const updatedDomainResult = await handlePrismaPersistanceOperation(
       updateDomainOperation,
     );
-    return this.videoEntityPeristanceACL.toEntity(updatedDomainResult);
+    return this.videoEntityPeristanceACL.toAggregate(updatedDomainResult);
   }
 
   @LogExecutionTime()
@@ -150,7 +150,7 @@ export class VideoCommandRepository
       );
     }
     return (await this.peristanceService.video.findMany({ where: filter })).map(
-      (video) => this.videoEntityPeristanceACL.toEntity(video),
+      (video) => this.videoEntityPeristanceACL.toAggregate(video),
     );
   }
 
@@ -214,6 +214,6 @@ export class VideoCommandRepository
         `Video with id:${id} was not found in the database`,
       );
     }
-    return this.videoEntityPeristanceACL.toEntity(foundUser);
+    return this.videoEntityPeristanceACL.toAggregate(foundUser);
   }
 }

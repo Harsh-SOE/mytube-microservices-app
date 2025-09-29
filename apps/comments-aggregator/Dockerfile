@@ -13,10 +13,6 @@ FROM base AS build-dependencies
 
 RUN yarn install --frozen-lockfile --production=false
 
-FROM base AS production-dependencies
-
-RUN yarn install --frozen-lockfile --production=true
-
 FROM base AS builder
 
 COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
@@ -30,7 +26,7 @@ COPY tsconfig.build.json ./tsconfig.build.json
 RUN npx prisma generate --schema ./apps/comments-aggregator/prisma/schema.prisma
 
 RUN npx nest build comments-aggregator
-    
+
 FROM base AS development
 
 ENV NODE_ENV=development
@@ -38,6 +34,10 @@ ENV NODE_ENV=development
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "comments-aggregator"]
+
+FROM base AS production-dependencies
+
+RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
@@ -53,6 +53,10 @@ COPY --from=builder /usr/src/app/apps/comments-aggregator/prisma/schema.prisma .
 
 COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
 
+USER root
+RUN chown -R node:node /home/node/app/apps/comments-aggregator/prisma
+RUN chown -R node:node /home/node/app/apps/comments-aggregator/generated
+RUN chown -R node:node /home/node/app/node_modules/prisma
 USER node
 
 CMD ["node", "apps/comments-aggregator/src/main.js"]
