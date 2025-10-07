@@ -1,37 +1,52 @@
 import {
-  UserAvatarImage,
-  UserCoverImage,
+  UserHandle,
   UserDOB,
   UserEmail,
-  UserFullName,
-  UserName,
+  UserPhoneNumber,
+  UserThemePreference,
+  UserLanguagePreference,
+  UserRegion,
 } from '@users/domain/value-objects';
 import { UserAggregate } from '@users/domain/aggregates';
 import { AggregateFactory } from '@users/domain/factories';
 import { UserEntity } from '@users/domain/entities';
-import { UserCreatedDomainEvent } from '@users/domain/domain-events';
+
+import { CreateProfileEvent } from '../events';
 
 export class UserAggregateFactory implements AggregateFactory<UserAggregate> {
   create(
     id: string,
-    userName: string,
+    userAuthId: string,
+    handle: string,
     email: string,
-    fullName: string,
-    dob: Date,
-    avatar: string,
-    coverImage: string | undefined,
+    dob?: Date,
+    phoneNumber?: string,
+    isPhoneNumberVerified?: boolean,
+    notification?: boolean,
+    preferredTheme?: string,
+    preferredLanguage?: string,
+    isOnBoardingComplete?: boolean,
+    region?: string,
   ): UserAggregate {
     const user = new UserEntity(
       id,
-      UserName.create(userName),
+      userAuthId,
+      UserHandle.create(handle),
       UserEmail.create(email),
-      UserFullName.create(fullName),
       UserDOB.create(dob),
-      UserAvatarImage.create(avatar),
-      UserCoverImage.create(coverImage),
+      UserPhoneNumber.create(phoneNumber),
+      isPhoneNumberVerified ?? false,
+      notification ?? true,
+      UserThemePreference.create(preferredTheme),
+      UserLanguagePreference.create(preferredLanguage),
+      isOnBoardingComplete ?? false,
+      UserRegion.create(region),
     );
     const userAggregate = new UserAggregate(user);
-    userAggregate.apply(new UserCreatedDomainEvent(user));
+
+    // add an event that user was created...
+    userAggregate.apply(new CreateProfileEvent(userAggregate));
+
     return userAggregate;
   }
 }

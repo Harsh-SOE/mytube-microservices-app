@@ -14,7 +14,6 @@ export class UserEmail {
       UserEmail.UserEmailValidationSchema.safeParse(value);
     if (!parsedEmailResult.success) {
       const errorMessage = parsedEmailResult.error.message;
-      console.log(`Invalid Email`);
       throw new UserEntityInvalidInputException(
         `Email validation failed. Reason: ${errorMessage}`,
       );

@@ -1,23 +1,24 @@
-import {
-  Controller,
-  NotImplementedException,
-  UseFilters,
-} from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 
 import {
   UserServiceController,
-  UserSignupDto,
-  UserSignupResponse,
-  UserLoginDto,
-  UserLoginResponse,
   UserFindByIdDto,
   UserFoundResponse,
   UsersFoundResponse,
-  UserUpdateDto,
-  userUpdateProfileResponse,
   UserServiceControllerMethods,
-  UsersHealthCheckRequest,
-  UsersHealthCheckResponse,
+  UserChangeNotificationStatusDto,
+  UserChangePreferredLanguageDto,
+  UserChangePreferredThemeDto,
+  UserNotificationStatusChangedResponse,
+  UserPhoneNumberVerifiedResponse,
+  UserPreferredLanguageChangedResponse,
+  UserPreferredThemeChangedResponse,
+  UserProfileUpdatedResponse,
+  UserUpdateByIdDto,
+  UserVerifyPhoneNumberDto,
+  UserUpdateProfileDto,
+  UserCreateProfileDto,
+  UserProfileCreatedResponse,
 } from '@app/contracts/users';
 import { GrpcAppExceptionFilter } from '@app/utils';
 
@@ -30,22 +31,67 @@ import { Observable } from 'rxjs';
 export class UserController implements UserServiceController {
   constructor(private readonly userService: UserService) {}
 
-  check(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    request: UsersHealthCheckRequest,
+  createProfile(
+    userCompleteSignupDto: UserCreateProfileDto,
   ):
-    | Promise<UsersHealthCheckResponse>
-    | Observable<UsersHealthCheckResponse>
-    | UsersHealthCheckResponse {
-    return { status: 1 }; // 1 = SERVING
+    | Promise<UserProfileCreatedResponse>
+    | Observable<UserProfileCreatedResponse>
+    | UserProfileCreatedResponse {
+    return this.userService.createProfile(userCompleteSignupDto);
   }
 
-  async userSignup(createUserDto: UserSignupDto): Promise<UserSignupResponse> {
-    return this.userService.signup(createUserDto);
+  updateProfile(
+    userUpdateProfileDto: UserUpdateProfileDto,
+  ):
+    | Promise<UserProfileUpdatedResponse>
+    | Observable<UserProfileUpdatedResponse>
+    | UserProfileUpdatedResponse {
+    return this.userService.updateProfile(userUpdateProfileDto);
   }
 
-  async login(userLoginDto: UserLoginDto): Promise<UserLoginResponse> {
-    return this.userService.login(userLoginDto);
+  changeNotificationStatus(
+    userChangeNotificationStatusDto: UserChangeNotificationStatusDto,
+  ):
+    | Promise<UserNotificationStatusChangedResponse>
+    | Observable<UserNotificationStatusChangedResponse>
+    | UserNotificationStatusChangedResponse {
+    return this.changeNotificationStatus(userChangeNotificationStatusDto);
+  }
+
+  changePreferredLanguage(
+    userChangePreferredLanguageDto: UserChangePreferredLanguageDto,
+  ):
+    | Promise<UserPreferredLanguageChangedResponse>
+    | Observable<UserPreferredLanguageChangedResponse>
+    | UserPreferredLanguageChangedResponse {
+    return this.changePreferredLanguage(userChangePreferredLanguageDto);
+  }
+
+  changePreferredTheme(
+    userChangePreferredThemeDto: UserChangePreferredThemeDto,
+  ):
+    | Promise<UserPreferredThemeChangedResponse>
+    | Observable<UserPreferredThemeChangedResponse>
+    | UserPreferredThemeChangedResponse {
+    return this.changePreferredTheme(userChangePreferredThemeDto);
+  }
+
+  verifyPhoneNumber(
+    userVerifyPhoneNumberDto: UserVerifyPhoneNumberDto,
+  ):
+    | Promise<UserPhoneNumberVerifiedResponse>
+    | Observable<UserPhoneNumberVerifiedResponse>
+    | UserPhoneNumberVerifiedResponse {
+    return this.verifyPhoneNumber(userVerifyPhoneNumberDto);
+  }
+
+  updateUserProfileById(
+    userUpdateByIdDto: UserUpdateByIdDto,
+  ):
+    | Promise<UserProfileUpdatedResponse>
+    | Observable<UserProfileUpdatedResponse>
+    | UserProfileUpdatedResponse {
+    return this.userService.updateUserProfileById(userUpdateByIdDto);
   }
 
   findAllUsers(): Promise<UsersFoundResponse> {
@@ -54,23 +100,5 @@ export class UserController implements UserServiceController {
 
   findOneUserById(userFindByDto: UserFindByIdDto): Promise<UserFoundResponse> {
     return this.userService.findOneUserById(userFindByDto);
-  }
-
-  async updateUserProfile(
-    userUpdateDto: UserUpdateDto,
-  ): Promise<userUpdateProfileResponse> {
-    return this.userService.updateProfile(userUpdateDto);
-  }
-
-  remove(id: string): Promise<boolean> {
-    throw new NotImplementedException(
-      `Remove method has not been implemented yet: ${id}`,
-    );
-  }
-
-  getPasswordHash(id: string): Promise<string> {
-    throw new NotImplementedException(
-      `getPasswordHash method has not been implemented yet: ${id}`,
-    );
   }
 }

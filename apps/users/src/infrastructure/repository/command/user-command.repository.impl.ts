@@ -5,21 +5,21 @@ import { UserNotFoundGrpcException } from '@app/errors';
 
 import { UserAggregate } from '@users/domain/aggregates';
 import { PersistanceService } from '@users/infrastructure/persistance';
-import { UserEntityPersistanceACL } from '@users/infrastructure/anti-corruption';
+import { UserAggregatePersistanceACL } from '@users/infrastructure/anti-corruption';
 
 import { Prisma, User } from '@peristance/user';
 import {
   DatabaseFilter,
   handlePrismaPersistanceOperation,
-  ICommandRepository,
 } from '@app/infrastructure';
+import { IUserCommandRepository } from './prisma-entity-command.repository';
 
 @Injectable()
 export class UserCommandRepository
-  implements ICommandRepository<UserAggregate, User>
+  implements IUserCommandRepository<UserAggregate, User>
 {
   public constructor(
-    private readonly userEntityPeristanceACL: UserEntityPersistanceACL,
+    private readonly userEntityPeristanceACL: UserAggregatePersistanceACL,
     private readonly peristanceService: PersistanceService,
   ) {}
 
@@ -104,6 +104,55 @@ export class UserCommandRepository
   }
 
   @LogExecutionTime()
+  async loadOneAggregateById(id: string): Promise<UserAggregate> {
+    const findUserOperation = async () => {
+      return await this.peristanceService.user.findUnique({
+        where: { id },
+      });
+    };
+    const foundUser = await handlePrismaPersistanceOperation(findUserOperation);
+    if (!foundUser) {
+      throw new UserNotFoundGrpcException(
+        `User with id: ${id} was not found...`,
+      );
+    }
+    return this.userEntityPeristanceACL.toAggregate(foundUser);
+  }
+
+  @LogExecutionTime()
+  async loadOneAggregate(filter: DatabaseFilter<User>): Promise<UserAggregate> {
+    const findUserOperation = async () => {
+      return await this.peristanceService.user.findFirst({
+        where: { ...this.toPrismaFilter(filter, 'unique') },
+      });
+    };
+    const foundUser = await handlePrismaPersistanceOperation(findUserOperation);
+    if (!foundUser) {
+      throw new UserNotFoundGrpcException(`User not found...`);
+    }
+    return this.userEntityPeristanceACL.toAggregate(foundUser);
+  }
+
+  @LogExecutionTime()
+  async loadManyAggregate(
+    filter: DatabaseFilter<User>,
+  ): Promise<UserAggregate[]> {
+    const findUserOperation = async () => {
+      return await this.peristanceService.user.findMany({
+        where: { ...this.toPrismaFilter(filter, 'many') },
+      });
+    };
+    const foundUsers =
+      await handlePrismaPersistanceOperation(findUserOperation);
+    if (!foundUsers) {
+      throw new UserNotFoundGrpcException(`User not found...`);
+    }
+    return foundUsers.map((user) =>
+      this.userEntityPeristanceACL.toAggregate(user),
+    );
+  }
+
+  @LogExecutionTime()
   public async createOne(domain: UserAggregate): Promise<UserAggregate> {
     const createdEntityOperation = async () => {
       return await this.peristanceService.user.create({
@@ -112,7 +161,6 @@ export class UserCommandRepository
         },
       });
     };
-
     const createdEntity = await handlePrismaPersistanceOperation(
       createdEntityOperation,
     );
@@ -138,7 +186,7 @@ export class UserCommandRepository
   @LogExecutionTime()
   public async updateOne(
     filter: DatabaseFilter<User>,
-    updatedDomain: UserAggregate,
+    domainAggregate: UserAggregate,
   ): Promise<UserAggregate> {
     const updateDomainOperation = async () => {
       return await this.peristanceService.user.update({
@@ -146,7 +194,7 @@ export class UserCommandRepository
           filter,
           'unique',
         ) as Prisma.UserWhereUniqueInput,
-        data: this.userEntityPeristanceACL.toPersistance(updatedDomain),
+        data: this.userEntityPeristanceACL.toPersistance(domainAggregate),
       });
     };
     const updatedDomainResult = await handlePrismaPersistanceOperation(
@@ -158,12 +206,12 @@ export class UserCommandRepository
   @LogExecutionTime()
   public async updateOneById(
     id: string,
-    updatedDomain: UserAggregate,
+    domainAggregate: UserAggregate,
   ): Promise<UserAggregate> {
     const updateDomainOperation = async () => {
       return await this.peristanceService.user.update({
         where: { id },
-        data: this.userEntityPeristanceACL.toPersistance(updatedDomain),
+        data: this.userEntityPeristanceACL.toPersistance(domainAggregate),
       });
     };
     const updatedDomainResult = await handlePrismaPersistanceOperation(
@@ -175,12 +223,12 @@ export class UserCommandRepository
   @LogExecutionTime()
   public async updateMany(
     filter: DatabaseFilter<User>,
-    updatedDomain: UserAggregate,
-  ): Promise<UserAggregate[]> {
+    domainAggregate: UserAggregate,
+  ): Promise<number> {
     const updateEntitiesOperation = async () => {
       return await this.peristanceService.user.updateMany({
         where: this.toPrismaFilter(filter, 'many') as Prisma.UserWhereInput,
-        data: this.userEntityPeristanceACL.toPersistance(updatedDomain),
+        data: this.userEntityPeristanceACL.toPersistance(domainAggregate),
       });
     };
 
@@ -192,9 +240,7 @@ export class UserCommandRepository
         `No users with filter: ${JSON.stringify(filter)} were found in the database`,
       );
     }
-    return (await this.peristanceService.user.findMany({ where: filter })).map(
-      (user) => this.userEntityPeristanceACL.toAggregate(user),
-    );
+    return updatedEntitiesResult.count;
   }
 
   @LogExecutionTime()
@@ -214,7 +260,7 @@ export class UserCommandRepository
   }
 
   @LogExecutionTime()
-  public async deleteOnebyId(id: string): Promise<boolean> {
+  public async deleteOneById(id: string): Promise<boolean> {
     const deleteEntityOperation = async () => {
       return await this.peristanceService.user.delete({
         where: { id },
@@ -227,7 +273,7 @@ export class UserCommandRepository
   }
 
   @LogExecutionTime()
-  public async deleteMany(filter: DatabaseFilter<User>): Promise<boolean> {
+  public async deleteMany(filter: DatabaseFilter<User>): Promise<number> {
     const deleteEntityOperation = async () => {
       return await this.peristanceService.user.deleteMany({
         where: this.toPrismaFilter(filter, 'many') as Prisma.UserWhereInput,
@@ -240,23 +286,22 @@ export class UserCommandRepository
       throw new UserNotFoundGrpcException(
         `User with filter: ${JSON.stringify(filter)} was not found in the database`,
       );
-    return true;
+    return deletedEntityResponse.count;
   }
 
   @LogExecutionTime()
-  public async findOneById(id: string): Promise<UserAggregate> {
-    const findUserOperation = async () => {
-      return await this.peristanceService.user.findUnique({
+  async markAsOnboarded(id: string): Promise<UserAggregate> {
+    const markAsOnboardedOperation = async () => {
+      return await this.peristanceService.user.update({
         where: { id },
+        data: { onBoardingComplete: true },
       });
     };
 
-    const foundUser = await handlePrismaPersistanceOperation(findUserOperation);
-    if (!foundUser) {
-      throw new UserNotFoundGrpcException(
-        `User with id:${id} was not found in the database`,
-      );
-    }
-    return this.userEntityPeristanceACL.toAggregate(foundUser);
+    const onBoardedEntity = await handlePrismaPersistanceOperation(
+      markAsOnboardedOperation,
+    );
+
+    return this.userEntityPeristanceACL.toAggregate(onBoardedEntity);
   }
 }

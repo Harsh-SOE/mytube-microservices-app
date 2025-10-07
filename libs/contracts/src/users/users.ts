@@ -10,61 +10,106 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "User";
 
-export interface UserSignupDto {
-  id: string;
-  userName: string;
-  email: string;
-  fullName: string;
-  dob: string;
-  avatar: string;
-  coverImage?: string | undefined;
+export enum UserTransportThemePreferences {
+  LIGHT = 0,
+  DARK = 1,
+  SYSTEM = 2,
+  UNRECOGNIZED = -1,
 }
 
-export interface UserLoginDto {
-  userName: string;
+export interface UserCreateProfileDto {
+  authId: string;
+  email: string;
+  handle: string;
+}
+
+export interface UserUpdateProfileDto {
+  id: string;
+  dob?: string | undefined;
+  phoneNumber?: string | undefined;
+}
+
+export interface UserChangeNotificationStatusDto {
+  id: string;
+  notificationStatus: boolean;
+}
+
+export interface UserChangePreferredThemeDto {
+  id: string;
+  themePerference: UserTransportThemePreferences;
+}
+
+export interface UserChangePreferredLanguageDto {
+  id: string;
+  language: string;
+}
+
+export interface UserVerifyPhoneNumberDto {
+  id: string;
+  phoneNumber: string;
 }
 
 export interface UserFindByIdDto {
   id: string;
 }
 
-export interface UserUpdateDto {
+export interface UserUpdateByIdDto {
   id: string;
   email?: string | undefined;
   fullName?: string | undefined;
   dob?: string | undefined;
 }
 
-export interface UserSignupResponse {
+export interface UserProfileCreatedResponse {
   response: string;
   userId: string;
 }
 
-export interface UserLoginResponse {
-  id: string;
-  userName: string;
-  email: string;
-  fullName: string;
-  dob: string;
-  avatar: string;
-  coverImage?: string | undefined;
+export interface UserUpdateProfileResponse {
+  response: string;
+  userId: string;
+}
+
+export interface UserNotificationStatusChangedResponse {
+  response: string;
+  status: boolean;
+}
+
+export interface UserPreferredLanguageChangedResponse {
+  response: string;
+  language: string;
+}
+
+export interface UserPreferredThemeChangedResponse {
+  response: string;
+  theme: string;
+}
+
+export interface UserPhoneNumberVerifiedResponse {
+  response: string;
+  verified: boolean;
 }
 
 export interface UserFoundResponse {
   id: string;
-  userName: string;
+  authUserId: string;
   email: string;
-  fullName: string;
-  dob: string;
-  avatar: string;
-  coverImage?: string | undefined;
+  handle: string;
+  dob?: string | undefined;
+  phoneNumber?: string | undefined;
+  isPhoneNumberVerified: boolean;
+  notification: boolean;
+  languagePreference: string;
+  themePreference: string;
+  region: string;
+  onBoardingComplete: boolean;
 }
 
 export interface UsersFoundResponse {
   userFoundResponse: UserFoundResponse[];
 }
 
-export interface userUpdateProfileResponse {
+export interface UserProfileUpdatedResponse {
   response: string;
   userId: string;
 }
@@ -72,67 +117,88 @@ export interface userUpdateProfileResponse {
 export interface Empty {
 }
 
-export interface UsersHealthCheckRequest {
-  service: string;
-}
-
-export interface UsersHealthCheckResponse {
-  status: UsersHealthCheckResponse_ServingStatus;
-}
-
-export enum UsersHealthCheckResponse_ServingStatus {
-  UNKNOWN = 0,
-  SERVING = 1,
-  NOT_SERVING = 2,
-  SERVICE_UNKNOWN = 3,
-  UNRECOGNIZED = -1,
-}
-
 export const USER_PACKAGE_NAME = "User";
 
 export interface UserServiceClient {
-  userSignup(request: UserSignupDto): Observable<UserSignupResponse>;
+  createProfile(request: UserCreateProfileDto): Observable<UserProfileCreatedResponse>;
 
-  login(request: UserLoginDto): Observable<UserLoginResponse>;
+  updateProfile(request: UserUpdateProfileDto): Observable<UserUpdateProfileResponse>;
 
-  findAllUsers(request: Empty): Observable<UsersFoundResponse>;
+  changeNotificationStatus(request: UserChangeNotificationStatusDto): Observable<UserNotificationStatusChangedResponse>;
+
+  changePreferredLanguage(request: UserChangePreferredLanguageDto): Observable<UserPreferredLanguageChangedResponse>;
+
+  changePreferredTheme(request: UserChangePreferredThemeDto): Observable<UserPreferredThemeChangedResponse>;
+
+  verifyPhoneNumber(request: UserVerifyPhoneNumberDto): Observable<UserPhoneNumberVerifiedResponse>;
 
   findOneUserById(request: UserFindByIdDto): Observable<UserFoundResponse>;
 
-  updateUserProfile(request: UserUpdateDto): Observable<userUpdateProfileResponse>;
+  findAllUsers(request: Empty): Observable<UsersFoundResponse>;
 
-  check(request: UsersHealthCheckRequest): Observable<UsersHealthCheckResponse>;
+  updateUserProfileById(request: UserUpdateByIdDto): Observable<UserProfileUpdatedResponse>;
 }
 
 export interface UserServiceController {
-  userSignup(request: UserSignupDto): Promise<UserSignupResponse> | Observable<UserSignupResponse> | UserSignupResponse;
+  createProfile(
+    request: UserCreateProfileDto,
+  ): Promise<UserProfileCreatedResponse> | Observable<UserProfileCreatedResponse> | UserProfileCreatedResponse;
 
-  login(request: UserLoginDto): Promise<UserLoginResponse> | Observable<UserLoginResponse> | UserLoginResponse;
+  updateProfile(
+    request: UserUpdateProfileDto,
+  ): Promise<UserUpdateProfileResponse> | Observable<UserUpdateProfileResponse> | UserUpdateProfileResponse;
 
-  findAllUsers(request: Empty): Promise<UsersFoundResponse> | Observable<UsersFoundResponse> | UsersFoundResponse;
+  changeNotificationStatus(
+    request: UserChangeNotificationStatusDto,
+  ):
+    | Promise<UserNotificationStatusChangedResponse>
+    | Observable<UserNotificationStatusChangedResponse>
+    | UserNotificationStatusChangedResponse;
+
+  changePreferredLanguage(
+    request: UserChangePreferredLanguageDto,
+  ):
+    | Promise<UserPreferredLanguageChangedResponse>
+    | Observable<UserPreferredLanguageChangedResponse>
+    | UserPreferredLanguageChangedResponse;
+
+  changePreferredTheme(
+    request: UserChangePreferredThemeDto,
+  ):
+    | Promise<UserPreferredThemeChangedResponse>
+    | Observable<UserPreferredThemeChangedResponse>
+    | UserPreferredThemeChangedResponse;
+
+  verifyPhoneNumber(
+    request: UserVerifyPhoneNumberDto,
+  ):
+    | Promise<UserPhoneNumberVerifiedResponse>
+    | Observable<UserPhoneNumberVerifiedResponse>
+    | UserPhoneNumberVerifiedResponse;
 
   findOneUserById(
     request: UserFindByIdDto,
   ): Promise<UserFoundResponse> | Observable<UserFoundResponse> | UserFoundResponse;
 
-  updateUserProfile(
-    request: UserUpdateDto,
-  ): Promise<userUpdateProfileResponse> | Observable<userUpdateProfileResponse> | userUpdateProfileResponse;
+  findAllUsers(request: Empty): Promise<UsersFoundResponse> | Observable<UsersFoundResponse> | UsersFoundResponse;
 
-  check(
-    request: UsersHealthCheckRequest,
-  ): Promise<UsersHealthCheckResponse> | Observable<UsersHealthCheckResponse> | UsersHealthCheckResponse;
+  updateUserProfileById(
+    request: UserUpdateByIdDto,
+  ): Promise<UserProfileUpdatedResponse> | Observable<UserProfileUpdatedResponse> | UserProfileUpdatedResponse;
 }
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      "userSignup",
-      "login",
-      "findAllUsers",
+      "createProfile",
+      "updateProfile",
+      "changeNotificationStatus",
+      "changePreferredLanguage",
+      "changePreferredTheme",
+      "verifyPhoneNumber",
       "findOneUserById",
-      "updateUserProfile",
-      "check",
+      "findAllUsers",
+      "updateUserProfileById",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

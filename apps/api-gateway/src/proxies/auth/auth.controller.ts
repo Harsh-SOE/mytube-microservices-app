@@ -1,61 +1,34 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 
 import { JwtUserPayload } from '@app/contracts/jwt';
 
 import { User } from '@gateway/utils/decorators';
 import {
-  GatewayGoogleOAuthGaurd,
+  Auth0OAuthGaurd,
   GatewayJwtGuard,
-} from '@gateway/infrastructure/auth';
+} from '@gateway/infrastructure/passport';
+import { Auth0ProfileUser } from '@gateway/infrastructure/passport/payloads';
 
-import {
-  GoogleSignupRequestDto,
-  SigninRequestDTO,
-  ChangePasswordRequestDto,
-  LocalSignupRequestDto,
-} from './request';
-import {
-  ChangePasswordRequestResponse,
-  SigninRequestResponse,
-  SignupRequestResponse,
-} from './response';
+import { ChangePasswordRequestDto } from './request';
+import { ChangePasswordRequestResponse } from './response';
 import { AuthService } from './auth.service';
 import { AUTH_API } from './api';
-import { GoogleProfileUser } from '@gateway/infrastructure/auth/payloads';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post(AUTH_API.SIGNUP_LOCAL)
-  signupLocal(
-    @User() localSignupRequestDto: LocalSignupRequestDto,
-  ): Promise<SignupRequestResponse> {
-    return this.authService.signupLocal(localSignupRequestDto);
-  }
+  @UseGuards(Auth0OAuthGaurd)
+  @Get(AUTH_API.SIGNUP_AUTH)
+  signup() {}
 
-  @UseGuards(GatewayGoogleOAuthGaurd)
-  @Post(AUTH_API.SIGNUP_GOOGLE)
-  signupGoogle() {}
+  @UseGuards(Auth0OAuthGaurd)
+  @Get(AUTH_API.AUTH0_REDIRECT)
+  signupRedirect(@User() auth0UserPayload: Auth0ProfileUser): Auth0ProfileUser {
+    // TODO: Complete saving the user in the user service's database
 
-  @Get('google/callback')
-  @UseGuards(GatewayGoogleOAuthGaurd)
-  googleAuthRedirect(
-    @User() googleUserPayload: GoogleProfileUser,
-  ): GoogleProfileUser {
-    return googleUserPayload;
-  }
-
-  @Post('google/signup')
-  googleSignup(@Body() googleSignupRequestDto: GoogleSignupRequestDto) {
-    return this.authService.signupGoogle(googleSignupRequestDto);
-  }
-
-  @Post(AUTH_API.SIGNIN)
-  signin(
-    @Body() loginUserDto: SigninRequestDTO,
-  ): Promise<SigninRequestResponse> {
-    return this.authService.signin(loginUserDto);
+    console.log(auth0UserPayload);
+    return auth0UserPayload;
   }
 
   @UseGuards(GatewayJwtGuard)

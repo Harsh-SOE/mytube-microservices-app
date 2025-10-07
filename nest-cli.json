@@ -37,6 +37,17 @@
         "watchAssets": true
       }
     },
+    "hub": {
+      "type": "application",
+      "root": "apps/hub",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/hub/tsconfig.app.json",
+        "assets": ["libs/proto/hub.proto", "libs/proto/health.proto"],
+        "watchAssets": true
+      }
+    },
     "clients": {
       "type": "library",
       "root": "libs/clients",
@@ -235,15 +246,6 @@
         "watchAssets": true
       }
     },
-    "views-aggregator": {
-      "type": "application",
-      "root": "apps/views-aggregator",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
-      "compilerOptions": {
-        "tsConfigPath": "apps/views-aggregator/tsconfig.app.json"
-      }
-    },
     "views": {
       "type": "application",
       "root": "apps/views",
@@ -261,6 +263,15 @@
         ],
         "webpack": true,
         "watchAssets": true
+      }
+    },
+    "views-aggregator": {
+      "type": "application",
+      "root": "apps/views-aggregator",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/views-aggregator/tsconfig.app.json"
       }
     }
   }

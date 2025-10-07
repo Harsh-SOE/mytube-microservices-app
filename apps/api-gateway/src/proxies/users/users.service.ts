@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Inject,
   Injectable,
@@ -22,6 +23,7 @@ import {
   FindUserRequestResponse,
   UpdatedUserRequestResponse,
 } from './response';
+import { Auth0ProfileUser } from '@gateway/infrastructure/passport/payloads';
 
 @Injectable()
 export class UsersService implements OnModuleInit {
@@ -36,6 +38,8 @@ export class UsersService implements OnModuleInit {
   onModuleInit() {
     this.userService = this.userClient.getService(USER_SERVICE_NAME);
   }
+
+  async saveUserInDatabase(auth0ProfileUser: Auth0ProfileUser) {}
 
   async updateUserDetails(
     userId: string,

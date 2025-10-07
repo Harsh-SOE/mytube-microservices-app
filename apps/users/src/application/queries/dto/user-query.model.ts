@@ -1,11 +1,16 @@
+import { ThemePreferences } from '@peristance/user';
+
 export class UserQueryModel {
-  constructor(
-    readonly id: string,
-    readonly userName: string,
-    readonly fullName: string,
-    readonly email: string,
-    readonly dob: Date,
-    readonly avatar: string,
-    readonly coverImage: string | undefined,
-  ) {}
+  public readonly id: string;
+  public readonly authUserId: string;
+  public readonly email: string;
+  public readonly handle: string;
+  public readonly onBoardingComplete: boolean;
+  public readonly dob: Date | null;
+  public readonly phoneNumber: string | null;
+  public readonly isPhoneNumberVerified: boolean;
+  public readonly notification: boolean;
+  public readonly themePreference: ThemePreferences;
+  public readonly languagePreference: string;
+  public readonly region: string;
 }

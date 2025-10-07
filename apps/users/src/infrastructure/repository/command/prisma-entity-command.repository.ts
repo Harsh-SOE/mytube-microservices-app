@@ -1,37 +1,39 @@
-import { AggregateRoot } from '@nestjs/cqrs';
-
 import { DatabaseFilter } from '@app/infrastructure';
+import { AggregateRoot } from '@nestjs/cqrs';
 
 export interface IUserCommandRepository<
   TAggregate extends AggregateRoot,
-  TPersistance,
+  TPersistence,
 > {
-  userSignup(domain: TAggregate): Promise<TAggregate>;
+  createOne(domain: TAggregate): Promise<TAggregate>;
 
-  manyUsersSignup(domains: TAggregate[]): Promise<number>;
+  createMany(domains: TAggregate[]): Promise<number>;
 
-  updateOneUserDetails(
-    filter: DatabaseFilter<TPersistance>,
-    updatedDomain: TAggregate,
-  ): Promise<TAggregate>;
+  loadOneAggregateById(id: string): Promise<TAggregate>;
 
-  updateOneUserDetailsById(
-    id: string,
-    updatedDomain: TAggregate,
-  ): Promise<TAggregate>;
+  loadOneAggregate(filter: DatabaseFilter<TPersistence>): Promise<TAggregate>;
 
-  updateManyUsersDetails(
-    filter: DatabaseFilter<TPersistance>,
-    updatedDomains: TAggregate,
+  loadManyAggregate(
+    filter: DatabaseFilter<TPersistence>,
   ): Promise<TAggregate[]>;
 
-  findOneUserById(id: string): Promise<TAggregate>;
+  updateOneById(id: string, updates: TAggregate): Promise<TAggregate>;
 
-  findOneUser(filter: DatabaseFilter<TPersistance>): Promise<TAggregate>;
+  updateOne(
+    filter: DatabaseFilter<TPersistence>,
+    updates: TAggregate,
+  ): Promise<TAggregate>;
 
-  deleteOneUser(filter: DatabaseFilter<TPersistance>): Promise<boolean>;
+  updateMany(
+    filter: DatabaseFilter<TPersistence>,
+    updates: TAggregate,
+  ): Promise<number>;
 
-  deleteOneUserbyId(id: string): Promise<boolean>;
+  deleteOneById(id: string): Promise<boolean>;
 
-  deleteManyUsers(filter: DatabaseFilter<TPersistance>): Promise<boolean>;
+  deleteOne(filter: DatabaseFilter<TPersistence>): Promise<boolean>;
+
+  deleteMany(filter: DatabaseFilter<TPersistence>): Promise<number>;
+
+  markAsOnboarded(id: string): Promise<TAggregate>;
 }

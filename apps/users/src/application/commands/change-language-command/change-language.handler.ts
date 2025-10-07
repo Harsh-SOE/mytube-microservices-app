@@ -1,0 +1,41 @@
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { ChangeLanguageCommand } from './change-language.command';
+import { UserPreferredLanguageChangedResponse } from '@app/contracts/users';
+import { UserCommandRepository } from '@users/infrastructure/repository';
+
+@CommandHandler(ChangeLanguageCommand)
+export class ChangeLanguageCommandHandler
+  implements ICommandHandler<ChangeLanguageCommand>
+{
+  constructor(
+    private readonly userRepository: UserCommandRepository,
+    private eventPublisher: EventPublisher,
+  ) {}
+
+  async execute({
+    userChangePreferredLanguageDto,
+  }: ChangeLanguageCommand): Promise<UserPreferredLanguageChangedResponse> {
+    // extract the inputs...
+    const { id, language } = userChangePreferredLanguageDto;
+
+    // load the aggregate...
+    const userAggregate = this.eventPublisher.mergeObjectContext(
+      await this.userRepository.loadOneAggregateById(id),
+    );
+
+    // apply the business rules here, the rules are abstracted by the domain layer...
+    userAggregate.changeUserPreferredlanguage(language);
+
+    // persist aggregate here...
+    await this.userRepository.updateOneById(id, userAggregate);
+
+    // commit all uncomitted events...
+    userAggregate.commit();
+
+    // Optionally, return the updated aggregate id or DTO for UI
+    return {
+      response: 'Language changed successfully',
+      language: userAggregate.getUserSnapshot().languagePreference,
+    };
+  }
+}

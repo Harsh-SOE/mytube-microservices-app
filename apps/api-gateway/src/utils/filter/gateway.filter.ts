@@ -18,6 +18,8 @@ export class GatewayExceptionFilter implements ExceptionFilter {
     const httpContext = host.switchToHttp();
     const response = httpContext.getResponse<Response>();
 
+    console.log(exception);
+
     let statusCode = 'Error';
     let errorCode: number = HttpStatus.INTERNAL_SERVER_ERROR;
     let errorMessage = `Something went wrong`;

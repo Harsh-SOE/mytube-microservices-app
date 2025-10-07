@@ -10,15 +10,14 @@ import { PersistanceService } from '@users/infrastructure/persistance';
 import {
   DatabaseFilter,
   handlePrismaPersistanceOperation,
-  IQueryRepository,
 } from '@app/infrastructure';
+import { IUserQueryRepository } from './prisma-entity-query.repository';
 
 @Injectable()
 export class UserQueryRepository
-  implements IQueryRepository<DatabaseFilter<User>, UserQueryModel>
+  implements IUserQueryRepository<DatabaseFilter<User>, UserQueryModel>
 {
   constructor(private readonly persistanceService: PersistanceService) {}
-
   toPrismaFilter(
     filter: DatabaseFilter<User>,
     mode: 'many' | 'unique',
@@ -62,6 +61,22 @@ export class UserQueryRepository
     return prismaFilter;
   }
 
+  async findById(id: string): Promise<UserQueryModel> {
+    const findUserOperation = async () => {
+      return await this.persistanceService.user.findUnique({
+        where: { id },
+      });
+    };
+
+    const foundUser = await handlePrismaPersistanceOperation(findUserOperation);
+    if (!foundUser) {
+      throw new UserNotFoundGrpcException(
+        `User with id${id} was not found in the database`,
+      );
+    }
+    return foundUser;
+  }
+
   @LogExecutionTime()
   async findOne(filter: DatabaseFilter<User>): Promise<UserQueryModel> {
     const findUserOperation = async () => {
@@ -80,7 +95,7 @@ export class UserQueryRepository
         `User with filter: ${JSON.stringify(filter)} was not found in the database`,
       );
     }
-    return { ...foundUser, coverImage: foundUser.coverImage ?? undefined };
+    return foundUser;
   }
 
   async findMany(filter: DatabaseFilter<User>): Promise<UserQueryModel[]> {
@@ -91,25 +106,6 @@ export class UserQueryRepository
     };
     const foundUsers =
       await handlePrismaPersistanceOperation(findUsersOperation);
-    return foundUsers.map((user) => ({
-      ...user,
-      coverImage: user.coverImage ?? undefined,
-    }));
-  }
-
-  async findOneByid(id: string): Promise<UserQueryModel> {
-    const findUserOperation = async () => {
-      return await this.persistanceService.user.findUnique({
-        where: { id },
-      });
-    };
-
-    const foundUser = await handlePrismaPersistanceOperation(findUserOperation);
-    if (!foundUser) {
-      throw new UserNotFoundGrpcException(
-        `User with id${id} was not found in the database`,
-      );
-    }
-    return { ...foundUser, coverImage: foundUser.coverImage ?? undefined };
+    return foundUsers;
   }
 }

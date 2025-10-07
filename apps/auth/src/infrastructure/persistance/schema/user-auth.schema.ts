@@ -10,7 +10,7 @@ export class UserAuth {
   @Prop()
   public readonly userId: string;
 
-  @Prop()
+  @Prop({ type: String, enum: ProviderTransport })
   public readonly provider: ProviderTransport;
 
   @Prop()

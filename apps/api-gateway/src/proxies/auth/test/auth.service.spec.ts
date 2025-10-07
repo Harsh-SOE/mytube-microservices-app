@@ -9,7 +9,7 @@ import { AUTH_SERVICE_NAME, AuthServiceClient } from '@app/contracts/auth';
 
 /* testing stubs for requests and responses with mocks for services and clients */
 import {
-  SagaSignupDtoStub,
+  LocalSignupDtoStub,
   SagaSignupResponseStub,
 } from '@app/testing/saga/stubs';
 import { CounterMock } from '@app/testing/measure';
@@ -64,14 +64,14 @@ describe('AuthService', () => {
   });
 
   describe('signup', () => {
-    describe('when signup is called', () => {
+    describe('when local signup is called', () => {
       let signupResponse: SignupRequestResponse;
 
-      const sagaSignupInput = SagaSignupDtoStub();
+      const sagaSignupInput = LocalSignupDtoStub();
       const sagaSignupExpectedResponse = SagaSignupResponseStub();
 
       beforeEach(async () => {
-        signupResponse = await authGatewayService.signup(sagaSignupInput);
+        signupResponse = await authGatewayService.signupLocal(sagaSignupInput);
       });
 
       test('should increament the counter for total requests', () => {

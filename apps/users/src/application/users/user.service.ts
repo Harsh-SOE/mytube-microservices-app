@@ -5,27 +5,36 @@ import { Logger } from 'winston';
 import { WINSTON_LOGGER } from '@app/clients/constant';
 
 import {
-  SignupUserCommand,
-  UpdateUserProfileCommand,
-} from '@users/application/commands';
-
-import {
   FindAllUsersQuery,
   FindUserByIdQuery,
-  LoginSearchQuery,
 } from '@users/application/queries';
 
 import {
+  UserChangeNotificationStatusDto,
+  UserChangePreferredLanguageDto,
+  UserChangePreferredThemeDto,
+  UserCreateProfileDto,
   UserFindByIdDto,
   UserFoundResponse,
-  UserLoginDto,
-  UserLoginResponse,
+  UserNotificationStatusChangedResponse,
+  UserPhoneNumberVerifiedResponse,
+  UserPreferredLanguageChangedResponse,
+  UserPreferredThemeChangedResponse,
+  UserProfileCreatedResponse,
+  UserProfileUpdatedResponse,
   UsersFoundResponse,
-  UserSignupDto,
-  UserSignupResponse,
-  UserUpdateDto,
-  userUpdateProfileResponse,
+  UserUpdateByIdDto,
+  UserUpdateProfileDto,
+  UserVerifyPhoneNumberDto,
 } from '@app/contracts/users';
+import {
+  ChangeLanguageCommand,
+  ChangeNotificationCommand,
+  ChangeThemeCommand,
+  CreateProfileCommand,
+  UpdateProfileCommand,
+  VerifyPhoneNumberCommand,
+} from '../commands';
 
 @Injectable()
 export class UserService {
@@ -35,37 +44,67 @@ export class UserService {
     @Inject(WINSTON_LOGGER) private logger: Logger,
   ) {}
 
-  async signup(userCreateDto: UserSignupDto): Promise<UserSignupResponse> {
-    this.logger.info(`USER::SIGNUP:: Request recieved: ${userCreateDto.id}`);
-
-    console.log(`Creating a new account`);
-
-    return await this.commandBus.execute<SignupUserCommand, UserSignupResponse>(
-      new SignupUserCommand(userCreateDto),
-    );
-  }
-
-  async login(userLoginDto: UserLoginDto): Promise<UserLoginResponse> {
-    this.logger.info(
-      `USER::LOGIN:: Request recieved: ${userLoginDto.userName}`,
-    );
-
-    return await this.queryBus.execute<LoginSearchQuery, UserLoginResponse>(
-      new LoginSearchQuery(userLoginDto),
-    );
+  async createProfile(
+    userCompleteSignupDto: UserCreateProfileDto,
+  ): Promise<UserProfileCreatedResponse> {
+    return this.commandBus.execute<
+      CreateProfileCommand,
+      UserProfileCreatedResponse
+    >(new CreateProfileCommand(userCompleteSignupDto));
   }
 
   async updateProfile(
-    userUpdateDto: UserUpdateDto,
-  ): Promise<userUpdateProfileResponse> {
-    this.logger.info(
-      `USER::UPDATE_PROFILE:: Request recieved: ${userUpdateDto.id}`,
-    );
+    userCompleteProfileDto: UserUpdateProfileDto,
+  ): Promise<UserProfileUpdatedResponse> {
+    return this.commandBus.execute<
+      UpdateProfileCommand,
+      UserProfileUpdatedResponse
+    >(new UpdateProfileCommand(userCompleteProfileDto));
+  }
 
-    return await this.commandBus.execute<
-      UpdateUserProfileCommand,
-      userUpdateProfileResponse
-    >(new UpdateUserProfileCommand(userUpdateDto));
+  async changeNotificationStatus(
+    userChangeNotificationStatusDto: UserChangeNotificationStatusDto,
+  ): Promise<UserNotificationStatusChangedResponse> {
+    return this.commandBus.execute<
+      ChangeNotificationCommand,
+      UserNotificationStatusChangedResponse
+    >(new ChangeNotificationCommand(userChangeNotificationStatusDto));
+  }
+
+  async changePreferredLanguage(
+    userChangePreferredLanguageDto: UserChangePreferredLanguageDto,
+  ): Promise<UserPreferredLanguageChangedResponse> {
+    return this.commandBus.execute<
+      ChangeLanguageCommand,
+      UserPreferredLanguageChangedResponse
+    >(new ChangeLanguageCommand(userChangePreferredLanguageDto));
+  }
+
+  async changePreferredTheme(
+    userChangePreferredThemeDto: UserChangePreferredThemeDto,
+  ): Promise<UserPreferredThemeChangedResponse> {
+    return this.commandBus.execute<
+      ChangeThemeCommand,
+      UserPreferredThemeChangedResponse
+    >(new ChangeThemeCommand(userChangePreferredThemeDto));
+  }
+
+  async changeVerifyPhoneNumber(
+    userVerifyPhoneNumberDto: UserVerifyPhoneNumberDto,
+  ): Promise<UserPhoneNumberVerifiedResponse> {
+    return this.commandBus.execute<
+      VerifyPhoneNumberCommand,
+      UserPhoneNumberVerifiedResponse
+    >(new VerifyPhoneNumberCommand(userVerifyPhoneNumberDto));
+  }
+
+  async updateUserProfileById(
+    userUpdateProfileByIdDto: UserUpdateByIdDto,
+  ): Promise<UserProfileUpdatedResponse> {
+    return this.commandBus.execute<
+      UpdateProfileCommand,
+      UserProfileUpdatedResponse
+    >(new UpdateProfileCommand(userUpdateProfileByIdDto));
   }
 
   async findOneUserById(

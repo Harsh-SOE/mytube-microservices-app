@@ -9,7 +9,7 @@ import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
-import { GatewayJwtModule } from '@gateway/infrastructure/auth';
+import { GatewayAuthModule } from '@gateway/infrastructure/passport';
 
 import { CloudService } from './cloud.service';
 import { CloudController } from './cloud.controller';
@@ -30,6 +30,6 @@ import { CloudController } from './cloud.controller';
     ]),
   ],
   controllers: [CloudController],
-  providers: [CloudService, GatewayJwtModule],
+  providers: [CloudService, GatewayAuthModule],
 })
 export class CloudModule {}

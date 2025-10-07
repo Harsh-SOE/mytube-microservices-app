@@ -2,87 +2,120 @@ syntax = "proto3";
 
 package User;
 
-message UserSignupDto {
-  string id = 1;
-  string userName = 2;
-  string email = 3;
-  string fullName = 4;
-  string dob = 5;
-  string avatar = 6;
-  optional string coverImage = 7;
+enum UserTransportThemePreferences {
+  LIGHT = 0;
+  DARK = 1;
+  SYSTEM = 2; 
 }
 
-message UserLoginDto {
-  string userName = 1;
+message UserCreateProfileDto {
+  string authId = 1;
+  string email = 2;
+  string handle = 3;
+}
+
+message UserUpdateProfileDto {
+  string id = 1;
+  optional string dob = 2;
+  optional string phoneNumber = 3;
+}
+
+message UserChangeNotificationStatusDto {
+  string id = 1;
+  bool notificationStatus = 2;
+}
+
+message UserChangePreferredThemeDto {
+  string id = 1;
+  UserTransportThemePreferences themePerference = 2;
+}
+
+message UserChangePreferredLanguageDto {
+  string id = 1;
+  string language = 2;
+}
+
+message UserVerifyPhoneNumberDto {
+  string id = 1;
+  string phoneNumber = 2;
 }
 
 message UserFindByIdDto {
   string id = 1;
 }
 
-message UserUpdateDto {
+message UserUpdateByIdDto {
   string id = 1;
   optional string email = 3;
   optional string fullName = 4;
   optional string dob = 5;
 }
 
-message UserSignupResponse {
+message UserProfileCreatedResponse {
   string response = 1;
   string userId = 2;
 }
 
-message UserLoginResponse {
-  string id = 1;
-  string userName = 2;
-  string email = 3;
-  string fullName = 4;
-  string dob = 5;
-  string avatar = 6;
-  optional string coverImage = 7;
+message UserUpdateProfileResponse {
+  string response = 1;
+  string userId = 2;
+}
+
+message UserNotificationStatusChangedResponse {
+  string response = 1;
+  bool status = 2;
+}
+
+message UserPreferredLanguageChangedResponse {
+  string response = 1;
+  string language = 2;
+}
+
+message UserPreferredThemeChangedResponse {
+  string response = 1;
+  string theme = 2;
+}
+
+message UserPhoneNumberVerifiedResponse {
+  string response = 1;
+  bool verified = 2;
 }
 
 message UserFoundResponse {
   string id = 1;
-  string userName = 2;
+  string authUserId = 2;
   string email = 3;
-  string fullName = 4;
-  string dob = 5;
-  string avatar = 6;
-  optional string coverImage = 7;
+  string handle = 4;
+  optional string dob = 5;
+  optional string phoneNumber = 6;
+  bool isPhoneNumberVerified = 7;
+  bool notification = 8;
+  string languagePreference = 9;
+  string themePreference = 10;
+  string region = 11;
+  bool onBoardingComplete = 12;
 }
 
 message UsersFoundResponse {
   repeated UserFoundResponse userFoundResponse = 1;
 }
 
-message userUpdateProfileResponse {
+message UserProfileUpdatedResponse {
   string response = 1;
   string userId = 2;
 }
 
 message Empty {}
 
-message UsersHealthCheckRequest {
-  string service = 1;
-}
-
-message UsersHealthCheckResponse {
-  enum ServingStatus {
-    UNKNOWN = 0;
-    SERVING = 1;
-    NOT_SERVING = 2;
-    SERVICE_UNKNOWN = 3;
-  }
-  ServingStatus status = 1;
-}
-
 
 service UserService {
-  rpc userSignup(UserSignupDto) returns (UserSignupResponse) {}
-  rpc login(UserLoginDto) returns (UserLoginResponse) {}
-  rpc findAllUsers(Empty) returns (UsersFoundResponse) {}
+  rpc createProfile(UserCreateProfileDto) returns (UserProfileCreatedResponse) {}
+  rpc updateProfile(UserUpdateProfileDto) returns (UserUpdateProfileResponse) {}
+  rpc changeNotificationStatus(UserChangeNotificationStatusDto) returns (UserNotificationStatusChangedResponse) {}
+  rpc changePreferredLanguage(UserChangePreferredLanguageDto) returns (UserPreferredLanguageChangedResponse) {}
+  rpc changePreferredTheme(UserChangePreferredThemeDto) returns (UserPreferredThemeChangedResponse) {}
+  rpc verifyPhoneNumber(UserVerifyPhoneNumberDto) returns (UserPhoneNumberVerifiedResponse) {}
   rpc findOneUserById(UserFindByIdDto) returns (UserFoundResponse) {}
-  rpc updateUserProfile(UserUpdateDto) returns (userUpdateProfileResponse) {}
-  rpc Check(UsersHealthCheckRequest) returns (UsersHealthCheckResponse) {}
+  rpc findAllUsers(Empty) returns (UsersFoundResponse) {}
+  rpc updateUserProfileById(UserUpdateByIdDto) returns (UserProfileUpdatedResponse) {}
 }

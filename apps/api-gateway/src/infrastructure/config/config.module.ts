@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
 import * as joi from 'joi';
 
 import { AppConfigService } from './config.service';
-import { join } from 'path';
 
 @Module({
   imports: [
@@ -34,8 +34,11 @@ import { join } from 'path';
         COMMENT_SERVICE_PORT: joi.number().required(),
         REDIS_HOST: joi.string().required(),
         REDIS_PORT: joi.number().required(),
-        OAUTH_CLIENT_ID: joi.string().required(),
-        OAUTH_CLIENT_SECRET: joi.string().required(),
+        AUTH0_CLIENT_ID: joi.string().required(),
+        AUTH0_CLIENT_SECRET: joi.string().required(),
+        AUTH0_CLIENT_DOMAIN: joi.string().required(),
+        AUTH0_CALLBACK_URL: joi.string().required(),
+        EXPRESS_SESSION_SECRET: joi.string().required(),
       }),
     }),
   ],

@@ -9,6 +9,7 @@ import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
+import { GatewayAuthModule } from '@gateway/infrastructure/passport';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -20,6 +21,7 @@ import { AuthService } from './auth.service';
     MeasureModule,
     LogsModule,
     AppConfigModule,
+    GatewayAuthModule,
     ClientsModule.registerAsync([
       {
         imports: [AppConfigModule],

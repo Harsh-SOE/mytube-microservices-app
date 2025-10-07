@@ -1,7 +1,9 @@
-import { SagaSignupDto } from '@app/contracts/saga';
+import { Providers } from '@gateway/proxies/auth/enums';
+import { LocalSignupRequestDto } from '@gateway/proxies/auth/request';
 
-export const SagaSignupDtoStub = (): SagaSignupDto => {
+export const LocalSignupDtoStub = (): LocalSignupRequestDto => {
   return {
+    provider: Providers.GOOGLE,
     userName: 'test-username',
     email: 'test@gmail.com',
     fullName: 'test-fullname',

@@ -40,7 +40,7 @@ export class PersistanceService
 
   async onModuleInit() {
     this.$on('query', (e) => {
-      Logger.log('--- MongoDB Query ---');
+      Logger.log('--- Database Query ---');
       Logger.log(`Operation: ${e.query}`);
       Logger.log(`Params: ${e.params}`);
       Logger.log(`Duration: ${e.duration}ms`);
@@ -51,6 +51,7 @@ export class PersistanceService
   }
 
   async onModuleDestroy() {
+    await this.cleanDB();
     await this.$disconnect();
     console.log('Successfully disconnected from the database.');
   }

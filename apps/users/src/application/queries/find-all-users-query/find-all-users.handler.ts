@@ -15,7 +15,8 @@ export class FindAllUsersHandler implements IQueryHandler<FindAllUsersQuery> {
     return {
       userFoundResponse: allUsers.map((user) => ({
         ...user,
-        dob: user.dob.toISOString(),
+        dob: user.dob?.toISOString(),
+        phoneNumber: user.phoneNumber ?? undefined,
       })),
     };
   }

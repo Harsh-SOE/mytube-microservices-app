@@ -11,7 +11,7 @@ import {
 } from '../response';
 
 import {
-  SignupRequestStub,
+  LocalSignupRequestStub,
   SigninRequestStub,
   ChangePasswordRequestStub,
   ChangePasswordRequestResponseStub,
@@ -41,16 +41,20 @@ describe('UserController', () => {
 
   /* signup */
   describe('signup', () => {
-    describe('When signup is called', () => {
+    describe('When local signup is called', () => {
       let signupResponse: SignupRequestResponse;
-      const signupRequestInput = SignupRequestStub();
+      const localSignupRequestInput = LocalSignupRequestStub();
       const signupRequestExpectedResponse = SignupRequestResponseStub();
       beforeEach(async () => {
-        signupResponse = await authController.signupLocal(signupRequestInput);
+        signupResponse = await authController.signupLocal(
+          localSignupRequestInput,
+        );
       });
 
       test('then it should call auth service, with all correct paramters', () => {
-        expect(authService.signup).toHaveBeenCalledWith(signupRequestInput);
+        expect(authService.signupLocal).toHaveBeenCalledWith(
+          localSignupRequestInput,
+        );
       });
 
       test('then it should return the UserSignup response', () => {

@@ -14,7 +14,11 @@ export class FindUserByIdHandler implements IQueryHandler<FindUserByIdQuery> {
     userFindByIdDto,
   }: FindUserByIdQuery): Promise<UserFoundResponse> {
     const { id } = userFindByIdDto;
-    const user = await this.userRepo.findOneByid(id);
-    return { ...user, dob: user.dob.toISOString() };
+    const user = await this.userRepo.findById(id);
+    return {
+      ...user,
+      dob: user.dob?.toISOString(),
+      phoneNumber: user.phoneNumber ?? undefined,
+    };
   }
 }

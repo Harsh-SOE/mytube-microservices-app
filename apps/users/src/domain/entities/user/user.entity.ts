@@ -1,75 +1,96 @@
 import {
-  UserAvatarImage,
-  UserCoverImage,
+  UserHandle,
   UserDOB,
   UserEmail,
-  UserFullName,
-  UserName,
+  UserPhoneNumber,
+  UserThemePreference,
+  UserLanguagePreference,
+  UserRegion,
 } from '@users/domain/value-objects';
 
 export class UserEntity {
   constructor(
     private readonly id: string,
-    private userName: UserName,
+    private readonly userAuthId: string,
+    private readonly handle: UserHandle,
     private email: UserEmail,
-    private fullName: UserFullName,
     private dob: UserDOB,
-    private avatar: UserAvatarImage,
-    private coverImage: UserCoverImage,
+    private phoneNumber: UserPhoneNumber,
+    private isPhoneNumberVerified: boolean,
+    private notification: boolean,
+    private themePreference: UserThemePreference,
+    private languagePreference: UserLanguagePreference,
+    private isOnBoardingComplete: boolean,
+    private region: UserRegion,
   ) {}
 
   public getId(): string {
     return this.id;
   }
 
-  public getUserName(): string {
-    return this.userName.getValue();
+  public getUserAuthId() {
+    return this.userAuthId;
   }
 
-  public getFullName(): string {
-    return this.fullName.getValue();
+  public getUserHandle(): string {
+    return this.handle.getValue();
   }
 
   public getEmail(): string {
     return this.email.getValue();
   }
 
-  public getDob(): Date {
+  public getDob(): Date | undefined {
     return this.dob.getValue();
   }
 
-  public getAvatar(): string {
-    return this.avatar.getValue();
+  public getPhoneNumber(): string | undefined {
+    return this.phoneNumber.getValue();
   }
 
-  public getCoverImage(): string | undefined {
-    return this.coverImage.getValue();
+  public getIsPhoneNumberVerified(): boolean {
+    return this.isPhoneNumberVerified;
+  }
+
+  public getNotification(): boolean {
+    return this.notification;
+  }
+
+  public getThemePreference(): string {
+    return this.themePreference.getValue();
+  }
+
+  public getLanguagePreference(): string {
+    return this.languagePreference.getValue();
+  }
+
+  public getIsOnBoardingComplete(): boolean {
+    return this.isOnBoardingComplete;
+  }
+
+  public getRegion(): string {
+    return this.region.getValue();
   }
 
   public getSnapshot() {
     return {
       id: this.id,
-      userName: this.userName.getValue(),
+      userAuthId: this.userAuthId,
+      handle: this.handle.getValue(),
       email: this.email.getValue(),
-      fullName: this.fullName.getValue(),
       dob: this.dob.getValue(),
-      avatar: this.avatar.getValue(),
-      coverImage: this.coverImage?.getValue(),
+      phoneNumber: this.phoneNumber.getValue(),
+      isPhoneNumbetVerified: this.isPhoneNumberVerified,
+      notification: this.notification,
+      themePreference: this.themePreference.getValue(),
+      languagePreference: this.languagePreference.getValue(),
+      isOnBoardingComplete: this.isOnBoardingComplete,
+      region: this.region.getValue(),
     };
-  }
-
-  public updateUserName(newUserName: string): void {
-    this.userName = UserName.create(newUserName);
-    return;
   }
 
   public updateEmail(newEmail: string): void {
     this.email = UserEmail.create(newEmail);
-    return;
-  }
-
-  public updateFullName(newFullName: string): void {
-    this.fullName = UserFullName.create(newFullName);
     return;
   }
 
@@ -78,13 +99,44 @@ export class UserEntity {
     return;
   }
 
-  public updateAvatar(newAvatar: string): void {
-    this.avatar = UserAvatarImage.create(newAvatar);
+  public updatePhoneNumber(newPhoneNumber: string): void {
+    this.phoneNumber = UserPhoneNumber.create(newPhoneNumber);
+    this.isPhoneNumberVerified = false;
     return;
   }
 
-  public updateCoverImage(newCoverImage: string): void {
-    this.coverImage = UserCoverImage.create(newCoverImage);
+  public verifyPhoneNumber(): void {
+    if (this.isPhoneNumberVerified) {
+      throw new Error(`Phone number is already verified`);
+    }
+    this.isPhoneNumberVerified = true;
+    return;
+  }
+
+  public updateNotificationStatus(newNotificationStatus: boolean): void {
+    this.notification = newNotificationStatus;
+    return;
+  }
+
+  public updateThemePreference(newThemePreference: string): void {
+    this.themePreference = UserThemePreference.create(newThemePreference);
+    return;
+  }
+
+  public updateLanguagePreference(newLanguagePreference: string): void {
+    this.languagePreference = UserLanguagePreference.create(
+      newLanguagePreference,
+    );
+    return;
+  }
+
+  public updateOnBoardingStatus(newOnBoardingStatus: boolean): void {
+    this.isOnBoardingComplete = newOnBoardingStatus;
+    return;
+  }
+
+  public updateRegion(newRegion: string): void {
+    this.region = UserRegion.create(newRegion);
     return;
   }
 }

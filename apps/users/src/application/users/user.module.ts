@@ -4,15 +4,18 @@ import { CqrsModule } from '@nestjs/cqrs';
 
 import { CLIENT_PROVIDER } from '@app/clients/constant';
 
-import { AppConfigModule, AppConfigService } from '@users/config';
+import {
+  AppConfigModule,
+  AppConfigService,
+} from '@users/infrastructure/config';
 import { UserCommandHandlers } from '@users/application/commands';
 import { UserQueryHandlers } from '@users/application/queries';
-import { UserEventHandlers } from '@users/domain/domain-events';
+import { UserEventHandlers } from '@users/domain/events';
 import {
   UserQueryRepository,
   UserCommandRepository,
 } from '@users/infrastructure/repository';
-import { UserEntityPersistanceACL } from '@users/infrastructure/anti-corruption';
+import { UserAggregatePersistanceACL } from '@users/infrastructure/anti-corruption';
 import { PersistanceService } from '@users/infrastructure/persistance';
 import { UserAggregateFactory } from '@users/domain/factories';
 
@@ -45,7 +48,7 @@ import { LogsModule } from '@users/infrastructure/logs';
     UserCommandRepository,
     UserQueryRepository,
     UserAggregateFactory,
-    UserEntityPersistanceACL,
+    UserAggregatePersistanceACL,
     ...UserCommandHandlers,
     ...UserEventHandlers,
     ...UserQueryHandlers,

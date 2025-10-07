@@ -11,7 +11,7 @@ import { LIKE_PACKAGE_NAME } from '@app/contracts/likes';
 import { VIDEO_PACKAGE_NAME } from '@app/contracts/videos';
 import { SAGA_PACKAGE_NAME } from '@app/contracts/saga';
 import { VIEWS_PACKAGE_NAME } from '@app/contracts/views';
-import { COMMENT_PACKAGE_NAME } from '@app/contracts/comments/comments';
+import { COMMENT_PACKAGE_NAME } from '@app/contracts/comments';
 
 @Injectable()
 export class AppConfigService {
@@ -209,11 +209,27 @@ export class AppConfigService {
     };
   }
 
-  get OAUTH_CLIENT_ID() {
-    return this.configService.getOrThrow<string>('OAUTH_CLIENT_ID');
+  get AUTH0_CLIENT_ID() {
+    return this.configService.getOrThrow<string>('AUTH0_CLIENT_ID');
   }
 
-  get OAUTH_CLIENT_SECRET() {
-    return this.configService.getOrThrow<string>('OAUTH_CLIENT_SECRET');
+  get AUTH0_CLIENT_SECRET() {
+    return this.configService.getOrThrow<string>('AUTH0_CLIENT_SECRET');
+  }
+
+  get AUTH0_CLIENT_DOMAIN() {
+    return this.configService.getOrThrow<string>('AUTH0_CLIENT_DOMAIN');
+  }
+
+  get AUTH0_DATABASE_NAME() {
+    return this.configService.getOrThrow<string>('AUTH0_DATABASE_NAME');
+  }
+
+  get AUTH0_CALLBACK_URL() {
+    return this.configService.getOrThrow<string>('AUTH0_CALLBACK_URL');
+  }
+
+  get EXPRESS_SESSION_SECRET() {
+    return this.configService.getOrThrow<string>('EXPRESS_SESSION_SECRET');
   }
 }

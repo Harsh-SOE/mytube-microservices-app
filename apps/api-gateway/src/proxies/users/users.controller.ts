@@ -9,7 +9,7 @@ import {
 
 import { JwtUserPayload } from '@app/contracts/jwt';
 
-import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
+import { GatewayJwtGuard } from '@gateway/infrastructure/passport';
 import { User } from '@gateway/utils/decorators';
 
 import { UpdateUserRequestDto } from './request';
@@ -20,11 +20,18 @@ import {
 } from './response';
 import { UsersService } from './users.service';
 import { USER_API } from './api';
+import { Auth0ProfileUser } from '@gateway/infrastructure/passport/payloads';
 
 @UseGuards(GatewayJwtGuard)
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
+
+  @Get(USER_API.SAVE_USER)
+  saveUserInDatabase(auth0ProfileUser: Auth0ProfileUser) {
+    // save user in the database by calling the user service...
+    return this.userService.saveUserInDatabase(auth0ProfileUser);
+  }
 
   @Patch(USER_API.UPDATE_DETAILS)
   updateUserDetails(
