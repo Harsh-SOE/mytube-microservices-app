@@ -1,10 +1,9 @@
-import { UserUpdateDto } from '@app/contracts/users';
+import { UserUpdateProfileDto } from '@app/contracts/users';
 
-export const UserUpdateDtoStub = (): UserUpdateDto => {
+export const UserUpdateDtoStub = (): UserUpdateProfileDto => {
   return {
     id: '123abc',
-    email: 'updated-test@gmail.com',
-    dob: '2003-03-24',
-    fullName: 'updated-fullname',
+    dob: '2003-02-24',
+    phoneNumber: '0123456789',
   };
 };

@@ -53,6 +53,10 @@ export interface UserFindByIdDto {
   id: string;
 }
 
+export interface UserFindByAuthIdDto {
+  authId: string;
+}
+
 export interface UserUpdateByIdDto {
   id: string;
   email?: string | undefined;
@@ -136,6 +140,8 @@ export interface UserServiceClient {
 
   findAllUsers(request: Empty): Observable<UsersFoundResponse>;
 
+  findUserByAuthId(request: UserFindByAuthIdDto): Observable<UserFoundResponse>;
+
   updateUserProfileById(request: UserUpdateByIdDto): Observable<UserProfileUpdatedResponse>;
 }
 
@@ -182,6 +188,10 @@ export interface UserServiceController {
 
   findAllUsers(request: Empty): Promise<UsersFoundResponse> | Observable<UsersFoundResponse> | UsersFoundResponse;
 
+  findUserByAuthId(
+    request: UserFindByAuthIdDto,
+  ): Promise<UserFoundResponse> | Observable<UserFoundResponse> | UserFoundResponse;
+
   updateUserProfileById(
     request: UserUpdateByIdDto,
   ): Promise<UserProfileUpdatedResponse> | Observable<UserProfileUpdatedResponse> | UserProfileUpdatedResponse;
@@ -198,6 +208,7 @@ export function UserServiceControllerMethods() {
       "verifyPhoneNumber",
       "findOneUserById",
       "findAllUsers",
+      "findUserByAuthId",
       "updateUserProfileById",
     ];
     for (const method of grpcMethods) {

@@ -7,7 +7,7 @@ import winston from 'winston';
 
 import { VIDEO_SERVICE_NAME, VideoServiceClient } from '@app/contracts/videos';
 import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
-import { JwtUserPayload } from '@app/contracts/jwt';
+import { UserAuthPayload } from '@app/contracts/auth';
 
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
 
@@ -40,7 +40,7 @@ export class VideoService implements OnModuleInit {
 
   async createVideo(
     video: CreateVideoRequestDto,
-    user: JwtUserPayload,
+    user: UserAuthPayload,
   ): Promise<PublishedVideoRequestResponse> {
     this.logger.log(
       'info',

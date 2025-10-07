@@ -9,7 +9,7 @@ import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
-import { GatewayAuthModule } from '@gateway/infrastructure/passport';
+import { GatewayAuthModule } from '@gateway/infrastructure/auth';
 
 import { CloudService } from './cloud.service';
 import { CloudController } from './cloud.controller';

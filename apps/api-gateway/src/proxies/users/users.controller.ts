@@ -4,15 +4,14 @@ import {
   Delete,
   Get,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 
-import { JwtUserPayload } from '@app/contracts/jwt';
-
-import { GatewayJwtGuard } from '@gateway/infrastructure/passport';
+import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
 import { User } from '@gateway/utils/decorators';
 
-import { UpdateUserRequestDto } from './request';
+import { SaveUserProfileDto, UpdateUserRequestDto } from './request';
 import {
   DeleteUserRequestResponse,
   FindUserRequestResponse,
@@ -20,37 +19,38 @@ import {
 } from './response';
 import { UsersService } from './users.service';
 import { USER_API } from './api';
-import { Auth0ProfileUser } from '@gateway/infrastructure/passport/payloads';
+import { UserAuthPayload } from '@app/contracts/auth';
 
 @UseGuards(GatewayJwtGuard)
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @Get(USER_API.SAVE_USER)
-  saveUserInDatabase(auth0ProfileUser: Auth0ProfileUser) {
-    // save user in the database by calling the user service...
-    return this.userService.saveUserInDatabase(auth0ProfileUser);
+  @Post(USER_API.SAVE_USER)
+  async saveUserInDatabase(saveUserProfileDto: SaveUserProfileDto): Promise<{
+    token: string;
+  }> {
+    return await this.userService.saveUserInDatabase(saveUserProfileDto);
   }
 
   @Patch(USER_API.UPDATE_DETAILS)
   updateUserDetails(
     @Body() updateUserDto: UpdateUserRequestDto,
-    @User() loggedInUser: JwtUserPayload,
+    @User() loggedInUser: UserAuthPayload,
   ): Promise<UpdatedUserRequestResponse> {
     return this.userService.updateUserDetails(loggedInUser.id, updateUserDto);
   }
 
   @Delete(USER_API.DELETE_USER)
   deleteUser(
-    @User() loggedInUser: JwtUserPayload,
+    @User() loggedInUser: UserAuthPayload,
   ): Promise<DeleteUserRequestResponse> {
     return this.userService.deleteUser(loggedInUser);
   }
 
   @Get(USER_API.GET_CURRENTLY_LOGGED_IN_USER)
   GetCurrentlySignedInUser(
-    @User() loggedInUser: JwtUserPayload,
+    @User() loggedInUser: UserAuthPayload,
   ): Promise<FindUserRequestResponse> {
     return this.userService.getCurrentlyLoggedInUser(loggedInUser.id);
   }

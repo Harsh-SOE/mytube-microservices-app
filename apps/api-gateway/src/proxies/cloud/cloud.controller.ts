@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
-import { GatewayJwtGuard } from '@gateway/infrastructure/passport';
+import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
 
 import { PreSignedUrlRequestDto, StreamFileRequestDto } from './request';
 import { PreSignedUrlRequestResponse } from './response';

@@ -1,21 +1,20 @@
 import {
   IsDateString,
-  IsEmail,
-  IsNotEmpty,
+  // IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
 
 export class UpdateUserRequestDto {
-  @IsOptional()
-  @IsEmail()
-  email?: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // id: string;
 
-  @IsOptional()
   @IsString()
-  fullName?: string;
+  @IsOptional()
+  phoneNumber?: string;
 
   @IsDateString()
-  @IsNotEmpty()
+  @IsOptional()
   dob?: string;
 }

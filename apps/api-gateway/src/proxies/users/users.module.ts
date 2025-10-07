@@ -28,13 +28,6 @@ import { UsersService } from './users.service';
         useFactory: (configService: AppConfigService) =>
           configService.USER_SERVICE_OPTIONS,
       },
-      {
-        name: CLIENT_PROVIDER.AUTH,
-        imports: [AppConfigModule],
-        inject: [AppConfigService],
-        useFactory: (configService: AppConfigService) =>
-          configService.AUTH_SERVICE_OPTIONS,
-      },
     ]),
   ],
 })

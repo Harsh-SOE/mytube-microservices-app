@@ -8,9 +8,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { JwtUserPayload } from '@app/contracts/jwt';
+import { UserAuthPayload } from '@app/contracts/auth';
 
-import { GatewayJwtGuard } from '@gateway/infrastructure/passport';
+import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
 import { User } from '@gateway/utils/decorators';
 
 import { CreateVideoRequestDto, UpdateVideoRequestDto } from './request';
@@ -38,7 +38,7 @@ export class VideoController {
   @Post(VIDEO_API.PUBLISH_VIDEO)
   createVideo(
     @Body() createBookDto: CreateVideoRequestDto,
-    @User() user: JwtUserPayload,
+    @User() user: UserAuthPayload,
   ): Promise<PublishedVideoRequestResponse> {
     return this.videoService.createVideo(createBookDto, user);
   }

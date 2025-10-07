@@ -9,7 +9,7 @@ import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
-import { GatewayAuthModule } from '@gateway/infrastructure/passport';
+import { GatewayAuthModule } from '@gateway/infrastructure/auth';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -26,16 +26,9 @@ import { AuthService } from './auth.service';
       {
         imports: [AppConfigModule],
         inject: [AppConfigService],
-        name: CLIENT_PROVIDER.AUTH,
+        name: CLIENT_PROVIDER.USER,
         useFactory: (configService: AppConfigService) =>
-          configService.AUTH_SERVICE_OPTIONS,
-      },
-      {
-        imports: [AppConfigModule],
-        inject: [AppConfigService],
-        name: CLIENT_PROVIDER.SAGA,
-        useFactory: (configService: AppConfigService) =>
-          configService.SAGA_SERVICE_OPTIONS,
+          configService.USER_SERVICE_OPTIONS,
       },
     ]),
   ],

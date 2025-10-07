@@ -44,6 +44,10 @@ message UserFindByIdDto {
   string id = 1;
 }
 
+message UserFindByAuthIdDto {
+  string authId = 1;
+}
+
 message UserUpdateByIdDto {
   string id = 1;
   optional string email = 3;
@@ -117,5 +121,6 @@ service UserService {
   rpc verifyPhoneNumber(UserVerifyPhoneNumberDto) returns (UserPhoneNumberVerifiedResponse) {}
   rpc findOneUserById(UserFindByIdDto) returns (UserFoundResponse) {}
   rpc findAllUsers(Empty) returns (UsersFoundResponse) {}
+  rpc findUserByAuthId(UserFindByAuthIdDto) returns (UserFoundResponse) {}
   rpc updateUserProfileById(UserUpdateByIdDto) returns (UserProfileUpdatedResponse) {}
 }

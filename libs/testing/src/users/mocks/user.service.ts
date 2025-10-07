@@ -4,10 +4,10 @@ import { UserFoundResponseStub, UserUpdateResponseStub } from '../stubs';
 
 export const UserGrpcServiceMock = (): Pick<
   UserServiceClient,
-  'updateUserProfile' | 'findOneUserById' | 'findAllUsers'
+  'updateProfile' | 'findOneUserById' | 'findAllUsers'
 > => {
   return {
-    updateUserProfile: jest.fn().mockReturnValue(of(UserUpdateResponseStub())),
+    updateProfile: jest.fn().mockReturnValue(of(UserUpdateResponseStub())),
     findAllUsers: jest.fn().mockReturnValue(of([UserFoundResponseStub()])),
     findOneUserById: jest.fn().mockReturnValue(of(UserFoundResponseStub())),
   };

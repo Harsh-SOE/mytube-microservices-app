@@ -16,8 +16,6 @@ import { AppConfigService } from './config.service';
         PUBLIC_KEY: joi.string().required(),
         ACCESS_TOKEN_EXPIRY: joi.string().required(),
         GRAFANA_LOKI_URL: joi.string().required(),
-        AUTH_SERVICE_HOST: joi.string().required(),
-        AUTH_SERVICE_PORT: joi.number().required(),
         CLOUD_SERVICE_HOST: joi.string().required(),
         CLOUD_SERVICE_PORT: joi.number().required(),
         USER_SERVICE_HOST: joi.string().required(),

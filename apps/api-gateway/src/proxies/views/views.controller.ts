@@ -1,9 +1,9 @@
 import { Controller, Param, Post, UseGuards } from '@nestjs/common';
 
-import { JwtUserPayload } from '@app/contracts/jwt';
-
 import { User } from '@gateway/utils/decorators';
-import { GatewayJwtGuard } from '@gateway/infrastructure/passport';
+import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
+
+import { UserAuthPayload } from '@app/contracts/auth';
 
 import { VIEWS_API } from './api';
 import { WatchService } from './views.service';
@@ -17,7 +17,7 @@ export class WatchController {
   @Post(VIEWS_API.VIEW_VIDEO)
   watchVideo(
     @Param('videoId') videoId: string,
-    @User() user: JwtUserPayload,
+    @User() user: UserAuthPayload,
   ): Promise<ViewsVideoResponse> {
     console.log(`Request recieved for video: ${videoId}`);
     return this.watchService.watchVideo(videoId, user.id);

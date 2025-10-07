@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
 import { join } from 'path';
 
-import { AUTH_PACKAGE_NAME } from '@app/contracts/auth';
 import { CLOUD_PACKAGE_NAME } from '@app/contracts/cloud';
 import { USER_PACKAGE_NAME } from '@app/contracts/users';
 import { LIKE_PACKAGE_NAME } from '@app/contracts/likes';
@@ -32,25 +31,6 @@ export class AppConfigService {
   get JWT_PUBLIC_KEY() {
     const publicKey = this.configService.getOrThrow<string>('PUBLIC_KEY');
     return Buffer.from(publicKey, 'base64').toString('utf8');
-  }
-
-  get AUTH_SERVICE_PORT() {
-    return this.configService.getOrThrow<number>('AUTH_SERVICE_PORT');
-  }
-
-  get AUTH_SERVICE_HOST() {
-    return this.configService.getOrThrow<string>('AUTH_SERVICE_HOST');
-  }
-
-  get AUTH_SERVICE_OPTIONS(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        protoPath: join(__dirname, '../proto/auth.proto'),
-        package: AUTH_PACKAGE_NAME,
-        url: `${this.AUTH_SERVICE_HOST}:${this.AUTH_SERVICE_PORT}`,
-      },
-    };
   }
 
   get CLOUD_SERVICE_PORT() {
@@ -231,5 +211,14 @@ export class AppConfigService {
 
   get EXPRESS_SESSION_SECRET() {
     return this.configService.getOrThrow<string>('EXPRESS_SESSION_SECRET');
+  }
+
+  get JWT_PRIVATE_KEY() {
+    const privateKey = this.configService.getOrThrow<string>('PRIVATE_KEY');
+    return Buffer.from(privateKey, 'base64').toString('utf8');
+  }
+
+  get JWT_ACCESS_TOKEN_EXPIRY() {
+    return this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_EXPIRY');
   }
 }

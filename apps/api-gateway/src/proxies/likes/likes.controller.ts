@@ -7,9 +7,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { JwtUserPayload } from '@app/contracts/jwt';
+import { UserAuthPayload } from '@app/contracts/auth';
 
-import { GatewayJwtGuard } from '@gateway/infrastructure/passport';
+import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
 import { User } from '@gateway/utils/decorators';
 
 import {
@@ -27,7 +27,7 @@ export class LikesController {
 
   @Post(LIKE_API.LIKE_VIDEO)
   likeVideo(
-    @User() loggedInUser: JwtUserPayload,
+    @User() loggedInUser: UserAuthPayload,
     @Query('videoId') videoId: string,
     @Body() likeStatus: VideoLikeStatusCreatedDto,
   ): Promise<VideoLikedStatusCreatedRequestResponse> {

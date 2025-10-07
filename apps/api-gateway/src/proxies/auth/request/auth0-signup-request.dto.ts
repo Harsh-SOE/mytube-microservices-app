@@ -1,22 +1,16 @@
 import {
   IsDateString,
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Providers } from '../enums';
 
 export class Auth0SignupRequestDto {
   @IsOptional()
   @IsString()
   providerId: string;
-
-  @IsNotEmpty()
-  @IsEnum(Providers)
-  provider: Providers = Providers.GOOGLE;
 
   @IsNotEmpty()
   @IsString()

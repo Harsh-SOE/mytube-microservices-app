@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test } from '@nestjs/testing';
 
-import { JwtUserPayloadStub } from '@gateway/proxies/auth/test';
-
 import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import {
@@ -14,6 +12,7 @@ import {
   FindUserRequestResponse,
   UpdatedUserRequestResponse,
 } from '../response';
+import { JwtUserPayloadStub } from 'libs/auth';
 
 jest.mock('../users.service');
 

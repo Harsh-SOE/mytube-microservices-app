@@ -6,6 +6,13 @@ export const FindUserRequestResponseStub = (): FindUserRequestResponse => {
     dob: '2003-03-24',
     email: 'test@gmail.com',
     fullName: 'test-fullname',
-    userName: 'test-fullname',
+    handle: 'test-handle',
+    phoneNumber: '9876543210',
+    isPhoneNumberVerified: false,
+    languagePreference: 'en',
+    notification: true,
+    onBoardingComplete: false,
+    region: 'IN',
+    themePreference: 'SYSTEM',
   };
 };

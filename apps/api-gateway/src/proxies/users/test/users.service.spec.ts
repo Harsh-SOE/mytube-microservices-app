@@ -94,7 +94,7 @@ describe('UsersService', () => {
       });
 
       test('then it should call usersService', () => {
-        expect(userService.updateUserProfile).toHaveBeenCalledWith({
+        expect(userService.updateProfile).toHaveBeenCalledWith({
           id: '123abc',
           ...usersUpdateRequestDtoStub,
         });
@@ -125,7 +125,7 @@ describe('UsersService', () => {
       test('then userService should be defined and its function findUserById should also be defined', () => {
         expect(userService).toBeDefined();
         expect(userService == UserGrpcServiceMock()).toBe(true);
-        expect(userService.updateUserProfile).toBeDefined();
+        expect(userService.updateProfile).toBeDefined();
         expect(typeof userService.findOneUserById).toBe('function');
       });
 

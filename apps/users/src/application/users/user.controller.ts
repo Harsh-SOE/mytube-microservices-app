@@ -19,6 +19,7 @@ import {
   UserUpdateProfileDto,
   UserCreateProfileDto,
   UserProfileCreatedResponse,
+  UserFindByAuthIdDto,
 } from '@app/contracts/users';
 import { GrpcAppExceptionFilter } from '@app/utils';
 
@@ -100,5 +101,14 @@ export class UserController implements UserServiceController {
 
   findOneUserById(userFindByDto: UserFindByIdDto): Promise<UserFoundResponse> {
     return this.userService.findOneUserById(userFindByDto);
+  }
+
+  findUserByAuthId(
+    userFindByAuthIdDto: UserFindByAuthIdDto,
+  ):
+    | Promise<UserFoundResponse>
+    | Observable<UserFoundResponse>
+    | UserFoundResponse {
+    return this.userService.findUserByAuthId(userFindByAuthIdDto);
   }
 }

@@ -1,18 +1,12 @@
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
-import { Providers } from '../enums';
 
 export class LocalSignupRequestDto {
-  @IsNotEmpty()
-  @IsEnum(Providers)
-  provider: Providers = Providers.LOCAL;
-
   @IsNotEmpty()
   @IsString()
   userName: string;

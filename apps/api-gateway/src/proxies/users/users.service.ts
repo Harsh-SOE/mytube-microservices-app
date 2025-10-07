@@ -5,6 +5,7 @@ import {
   NotImplementedException,
   OnModuleInit,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import winston from 'winston';
@@ -13,17 +14,16 @@ import { firstValueFrom } from 'rxjs';
 
 import { USER_SERVICE_NAME, UserServiceClient } from '@app/contracts/users';
 import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
-import { JwtUserPayload } from '@app/contracts/jwt';
+import { UserAuthPayload } from '@app/contracts/auth';
 
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
 
-import { UpdateUserRequestDto } from './request';
+import { SaveUserProfileDto, UpdateUserRequestDto } from './request';
 import {
   DeleteUserRequestResponse,
   FindUserRequestResponse,
   UpdatedUserRequestResponse,
 } from './response';
-import { Auth0ProfileUser } from '@gateway/infrastructure/passport/payloads';
 
 @Injectable()
 export class UsersService implements OnModuleInit {
@@ -33,13 +33,28 @@ export class UsersService implements OnModuleInit {
     @Inject(CLIENT_PROVIDER.USER) private readonly userClient: ClientGrpc,
     @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
     @InjectMetric(REQUESTS_COUNTER) private readonly counter: Counter,
+    private jwtService: JwtService,
   ) {}
 
   onModuleInit() {
     this.userService = this.userClient.getService(USER_SERVICE_NAME);
   }
 
-  async saveUserInDatabase(auth0ProfileUser: Auth0ProfileUser) {}
+  async saveUserInDatabase(saveUserProfileDto: SaveUserProfileDto) {
+    const response$ = this.userService.createProfile({
+      authId: saveUserProfileDto.authId,
+      email: saveUserProfileDto.email,
+      handle: saveUserProfileDto.handle,
+    });
+    const createdUserProfile = await firstValueFrom(response$);
+    const userPayload: UserAuthPayload = {
+      id: createdUserProfile.userId,
+      email: saveUserProfileDto.email,
+      authId: saveUserProfileDto.authId,
+      handle: saveUserProfileDto.handle,
+    };
+    return { token: this.jwtService.sign(userPayload) };
+  }
 
   async updateUserDetails(
     userId: string,
@@ -52,14 +67,14 @@ export class UsersService implements OnModuleInit {
       `GATEWAY::UPDATE_USER:: Update Request has been made:${JSON.stringify(userUpdateDto)}`,
     );
 
-    const response$ = this.userService.updateUserProfile({
-      id: userId,
+    const response$ = this.userService.updateProfile({
       ...userUpdateDto,
+      id: userId,
     });
     return await firstValueFrom(response$);
   }
 
-  deleteUser(user: JwtUserPayload): Promise<DeleteUserRequestResponse> {
+  deleteUser(user: UserAuthPayload): Promise<DeleteUserRequestResponse> {
     // INFO: NOT IMPLEMENTED: Implement saga distributed transaction
     throw new NotImplementedException(`Delete user is not yet implemented!`);
   }

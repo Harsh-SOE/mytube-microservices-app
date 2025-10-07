@@ -1,7 +1,7 @@
 import {
   UserFindByIdDto,
   UserServiceClient,
-  UserUpdateDto,
+  UserUpdateProfileDto,
 } from '@app/contracts/users';
 import { of } from 'rxjs';
 import { UserFoundResponseStub, UserUpdateResponseStub } from '../stubs';
@@ -11,12 +11,12 @@ import { UserNotFoundGrpcException } from '@app/errors';
 // TODO: Should also test case where database connection was dropped or any other database error occured
 export const UserGrpcServiceMock = (): Pick<
   UserServiceClient,
-  'updateUserProfile' | 'findOneUserById' | 'findAllUsers'
+  'updateProfile' | 'findOneUserById' | 'findAllUsers'
 > => {
   return {
-    updateUserProfile: jest
+    updateProfile: jest
       .fn()
-      .mockImplementation((userUpdateDto: UserUpdateDto) => {
+      .mockImplementation((userUpdateDto: UserUpdateProfileDto) => {
         // this error should never happen as service trust the gateway, and will always recieve only the valid data
         if (!userUpdateDto || userUpdateDto.id) {
           throw new BadRequestException(`id is required for updating a user`);

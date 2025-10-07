@@ -6,6 +6,7 @@ import { WINSTON_LOGGER } from '@app/clients/constant';
 
 import {
   FindAllUsersQuery,
+  FindUserByAuthIdQuery,
   FindUserByIdQuery,
 } from '@users/application/queries';
 
@@ -14,6 +15,7 @@ import {
   UserChangePreferredLanguageDto,
   UserChangePreferredThemeDto,
   UserCreateProfileDto,
+  UserFindByAuthIdDto,
   UserFindByIdDto,
   UserFoundResponse,
   UserNotificationStatusChangedResponse,
@@ -124,6 +126,14 @@ export class UserService {
 
     return await this.queryBus.execute<FindAllUsersQuery, UsersFoundResponse>(
       new FindAllUsersQuery(),
+    );
+  }
+
+  findUserByAuthId(
+    userFindByAuthIdDto: UserFindByAuthIdDto,
+  ): Promise<UserFoundResponse> {
+    return this.queryBus.execute<FindUserByAuthIdQuery, UserFoundResponse>(
+      new FindUserByAuthIdQuery(userFindByAuthIdDto),
     );
   }
 }
