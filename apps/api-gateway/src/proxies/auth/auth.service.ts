@@ -1,17 +1,17 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { JwtService } from '@nestjs/jwt';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { firstValueFrom } from 'rxjs';
 import { Counter } from 'prom-client';
 import winston from 'winston';
 
 import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
+import { UserAuthPayload } from '@app/contracts/auth';
 
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
-import { USER_PACKAGE_NAME, UserServiceClient } from '@app/contracts/users';
+import { USER_SERVICE_NAME, UserServiceClient } from '@app/contracts/users';
 import { Auth0ProfileUser } from '@gateway/infrastructure/auth/payloads';
-import { firstValueFrom } from 'rxjs';
-import { UserAuthPayload } from '@app/contracts/auth';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -25,8 +25,7 @@ export class AuthService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.userService =
-      this.userClient.getService<UserServiceClient>(USER_PACKAGE_NAME);
+    this.userService = this.userClient.getService(USER_SERVICE_NAME);
   }
 
   async onAuthRedirect(userAuthCredentials: Auth0ProfileUser): Promise<{

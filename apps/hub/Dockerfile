@@ -23,6 +23,8 @@ COPY nest-cli.json ./nest-cli.json
 COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.build.json ./tsconfig.build.json
 
+RUN npx prisma generate --schema ./apps/hub/prisma/schema.prisma
+
 RUN npx nest build hub
 
 FROM base AS development
@@ -46,8 +48,16 @@ WORKDIR /home/node/app
 COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/dist/apps/hub ./apps/hub
 
+# copy the prisma schema and generated client
+COPY --from=builder /usr/src/app/apps/hub/generated/prisma ./apps/hub/generated/prisma
+COPY --from=builder /usr/src/app/apps/hub/prisma/schema.prisma ./apps/hub/prisma/schema.prisma
+
 COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
 
+USER root
+RUN chown -R node:node /home/node/app/apps/hub/prisma
+RUN chown -R node:node /home/node/app/apps/hub/generated
+RUN chown -R node:node /home/node/app/node_modules/prisma
 USER node
 
 CMD ["node", "apps/hub/src/main.js"]

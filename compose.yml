@@ -633,7 +633,7 @@ services:
       context: .
       dockerfile: apps/hub/Dockerfile
       target: production
-    image: mytube-user:latest
+    image: mytube-hub:latest
     env_file:
       - apps/hub/.env
     depends_on:
@@ -647,7 +647,7 @@ services:
       - app
 
   hub-migrate:
-    image: mytube-user:latest
+    image: mytube-hub:latest
     container_name: hub-database-migrate
     depends_on:
       hub-database:

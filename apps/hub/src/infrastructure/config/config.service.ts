@@ -31,7 +31,7 @@ export class AppConfigService {
       options: {
         package: [HUB_PACKAGE_NAME, GRPC_HEALTH_V1_PACKAGE_NAME],
         protoPath: [
-          join(__dirname, '../proto/channel.proto'),
+          join(__dirname, '../proto/hub.proto'),
           join(__dirname, '../proto/health.proto'),
         ],
         url: `0.0.0.0:${this.SERVICE_PORT}`,

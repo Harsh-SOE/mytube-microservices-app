@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 
 import { HubAggregatePersistanceACL } from '@hub/infrastructure/anti-corruption';
 import { HubAggregateFactory } from '@hub/domain/factories';
@@ -21,7 +22,7 @@ import { HubEventHandler } from '../events';
 import { HubQueryHandler } from '../query';
 
 @Module({
-  imports: [PersistanceModule],
+  imports: [PersistanceModule, CqrsModule],
   providers: [
     HubService,
     PersistanceService,

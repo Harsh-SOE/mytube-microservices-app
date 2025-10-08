@@ -26,7 +26,6 @@ export class AppHealthController implements HealthController {
     | Promise<HealthCheckResponse>
     | Observable<HealthCheckResponse>
     | HealthCheckResponse {
-    console.log(`Hi`);
     return { status: HealthCheckResponse_ServingStatus.SERVING };
   }
 }
