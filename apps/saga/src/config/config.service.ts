@@ -6,7 +6,6 @@ import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
 import { SAGA_PACKAGE_NAME } from '@app/contracts/saga';
 import { USER_PACKAGE_NAME } from '@app/contracts/users';
-import { AUTH_PACKAGE_NAME } from '@app/contracts/auth';
 import { GRPC_HEALTH_V1_PACKAGE_NAME } from '@app/contracts/health';
 import { ReflectionService } from '@grpc/reflection';
 
@@ -41,26 +40,6 @@ export class AppConfigService {
         protoPath: join(__dirname, '../proto/users.proto'),
         package: USER_PACKAGE_NAME,
         url: `${this.USER_SERVICE_HOST}:${this.USER_SERVICE_PORT}`,
-      },
-    };
-    return options;
-  }
-
-  get AUTH_SERVICE_PORT() {
-    return this.configService.getOrThrow<number>('AUTH_SERVICE_PORT');
-  }
-
-  get AUTH_SERVICE_HOST() {
-    return this.configService.getOrThrow<string>('AUTH_SERVICE_HOST');
-  }
-
-  get AUTH_SERVICE_OPTIONS() {
-    const options: GrpcOptions = {
-      transport: Transport.GRPC,
-      options: {
-        protoPath: join(__dirname, '../proto/auth.proto'),
-        package: AUTH_PACKAGE_NAME,
-        url: `${this.AUTH_SERVICE_HOST}:${this.AUTH_SERVICE_PORT}`,
       },
     };
     return options;

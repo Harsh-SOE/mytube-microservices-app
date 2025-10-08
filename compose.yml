@@ -53,39 +53,6 @@ services:
       start_period: 10s
     logging: *logging
 
-  auth-database:
-    container_name: auth-database
-    image: docker.io/bitnami/mongodb:8.0
-    ports:
-      - "27021:27017"
-    volumes:
-      - auth-database-volume:/bitnami/mongodb
-    env_file:
-      - apps/auth/.env
-    environment:
-      MONGODB_ROOT_USER: harsh
-      MONGODB_ROOT_PASSWORD: harsh123
-      MONGODB_REPLICA_SET_NAME: rs0
-    networks:
-      - auth-database-network
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "mongosh",
-          "-u",
-          "harsh",
-          "-p",
-          "harsh123",
-          "--eval",
-          "db.adminCommand('ping')",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    logging: *logging
-
   views-database:
     container_name: views-database
     image: postgres:latest
@@ -126,6 +93,29 @@ services:
       POSTGRES_DB: comments
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U harsh -d comments"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging: *logging
+
+  hub-database:
+    container_name: hub-database
+    image: postgres:latest
+    env_file:
+      - apps/hub/.env
+    ports:
+      - 5438:5432
+    volumes:
+      - hub-database-volume:/var/lib/postgresql/data
+    networks:
+      - hub-database-network
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: hub
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U harsh -d hub"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -201,8 +191,6 @@ services:
     depends_on:
       users:
         condition: service_healthy
-      auth:
-        condition: service_healthy
       cloud:
         condition: service_healthy
     logging: *logging
@@ -254,7 +242,7 @@ services:
     networks:
       - openfga
     ports:
-      - "5435:5432"
+      - "8:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
@@ -325,8 +313,6 @@ services:
       - gateway-db
       - app
     depends_on:
-      auth:
-        condition: service_healthy
       users:
         condition: service_healthy
       cloud:
@@ -423,25 +409,6 @@ services:
       - videos-database-network
       - app
 
-  auth:
-    build:
-      context: .
-      dockerfile: apps/auth/Dockerfile
-      target: production
-    container_name: auth
-    image: mytube-auth:latest
-    env_file:
-      - apps/auth/.env
-    depends_on:
-      auth-database:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-    networks:
-      - app
-      - auth-database-network
-    healthcheck: *grpc-healthcheck
-
   cloud:
     container_name: cloud
     build:
@@ -521,8 +488,6 @@ services:
     env_file:
       - apps/saga/.env
     depends_on:
-      auth:
-        condition: service_healthy
       users:
         condition: service_healthy
     networks:
@@ -662,6 +627,48 @@ services:
       - app
     healthcheck: *grpc-healthcheck
 
+  hub:
+    container_name: hub
+    build:
+      context: .
+      dockerfile: apps/hub/Dockerfile
+      target: production
+    image: mytube-user:latest
+    env_file:
+      - apps/hub/.env
+    depends_on:
+      hub-database:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck: *grpc-healthcheck
+    networks:
+      - hub-database-network
+      - app
+
+  hub-migrate:
+    image: mytube-user:latest
+    container_name: hub-database-migrate
+    depends_on:
+      hub-database:
+        condition: service_healthy
+    env_file:
+      - apps/hub/.env
+    entrypoint:
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "dev",
+        "--name",
+        "initialize",
+        "--schema",
+        "apps/hub/prisma/schema.prisma",
+      ]
+    networks:
+      - hub-database-network
+      - app
+
 #-------------------------------------------------------------------------------------------------------------#
 #                                                  VOLUMES                                                    #
 #-------------------------------------------------------------------------------------------------------------#
@@ -670,9 +677,9 @@ volumes:
   users-database-volume: {}
   videos-database-volume: {}
   likes-database-volume: {}
-  auth-database-volume: {}
   views-database-volume: {}
   comments-database-volume: {}
+  hub-database-volume: {}
   grafana-storage: {}
   ffmpeg-videos: {}
   transcoder-volume: {}
@@ -685,8 +692,8 @@ volumes:
 networks:
   users-database-network: {}
   videos-database-network: {}
+  hub-database-network: {}
   likes-database-network: {}
-  auth-database-network: {}
   views-database-network: {}
   comments-database-network: {}
   openfga: {}

@@ -16,8 +16,6 @@ import { join } from 'path';
         GRAFANA_LOKI_URL: joi.string().required(),
         USER_SERVICE_PORT: joi.number().required(),
         USER_SERVICE_HOST: joi.string().required(),
-        AUTH_SERVICE_PORT: joi.number().required(),
-        AUTH_SERVICE_HOST: joi.string().required(),
       }),
     }),
   ],

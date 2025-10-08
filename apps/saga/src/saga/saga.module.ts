@@ -18,13 +18,6 @@ import { LogsModule } from '../logs/logs.module';
       {
         imports: [AppConfigModule],
         inject: [AppConfigService],
-        name: CLIENT_PROVIDER.AUTH,
-        useFactory: (configService: AppConfigService) =>
-          configService.AUTH_SERVICE_OPTIONS,
-      },
-      {
-        imports: [AppConfigModule],
-        inject: [AppConfigService],
         name: CLIENT_PROVIDER.USER,
         useFactory: (configService: AppConfigService) =>
           configService.USER_SERVICE_OPTIONS,

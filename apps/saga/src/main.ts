@@ -10,12 +10,6 @@ async function bootstrap() {
   app.connectMicroservice<GrpcOptions>(configService.GRPC_OPTIONS);
   await app.listen(configService.HTTP_PORT, '0.0.0.0');
   await app.startAllMicroservices();
-  console.log(
-    `SAGA service started with an HTTP server running at PORT:${configService.HTTP_PORT}`,
-  );
-  console.log(
-    `SAGA service started with an GRPC server running at PORT:${configService.SERVICE_PORT}`,
-  );
 }
 bootstrap()
   .then(() => {

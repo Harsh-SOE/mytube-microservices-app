@@ -16,10 +16,7 @@ import { SagaExceptionFilter } from '../filters';
 export class SagaController implements SagaServiceController {
   constructor(private readonly sagaService: SagaService) {}
 
-  userSignupFlow(
-    authSignupUserDto: SagaSignupDto,
-  ): Promise<SagaSignupResponse> {
-    console.log(`Request recieved`);
+  userSignupFlow(authSignupUserDto: SagaSignupDto): SagaSignupResponse {
     return this.sagaService.userSignupFlow(authSignupUserDto);
   }
 }

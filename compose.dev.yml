@@ -22,24 +22,6 @@ services:
     #     - action: rebuild
     #       path: package*.json
 
-  auth:
-    image: auth-dev
-    build:
-      target: development
-    command: yarn start:dev auth
-    volumes:
-      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
-      - .:/usr/src/app # Mount source code
-    # develop: &hot-reload
-    #   watch:
-    #     - path: .
-    #       action: sync
-    #       target: /usr/src/app
-    #       ignore:
-    #         - node_modules
-    #     - action: rebuild
-    #       path: package*.json
-
   users:
     image: users-dev
     build:
@@ -81,6 +63,24 @@ services:
     build:
       target: development
     command: yarn start:dev cloud
+    volumes:
+      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
+      - .:/usr/src/app # Mount source code
+    # develop: &hot-reload
+    #   watch:
+    #     - path: .
+    #       action: sync
+    #       target: /usr/src/app
+    #       ignore:
+    #         - node_modules
+    #     - action: rebuild
+    #       path: package*.json
+
+  hub:
+    image: hub-dev
+    build:
+      target: development
+    command: yarn start:dev hub
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code
