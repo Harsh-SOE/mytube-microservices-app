@@ -26,11 +26,11 @@ export class AppHealthService implements OnModuleInit, OnModuleDestroy {
     this.admin = this.kafka.admin();
   }
 
-  async onModuleDestroy() {
+  async onModuleInit() {
     await this.admin.connect();
   }
 
-  async onModuleInit() {
+  async onModuleDestroy() {
     await this.admin.disconnect();
   }
 
@@ -38,6 +38,7 @@ export class AppHealthService implements OnModuleInit, OnModuleDestroy {
     const indicator = this.healthIndicator.check(key);
     try {
       const topics = await this.admin.listTopics();
+      console.log(`Kafka service is healthy with topics: ${topics.join(', ')}`);
       return indicator.up({ health: 'OK', topics: topics });
     } catch (error) {
       console.error(error);

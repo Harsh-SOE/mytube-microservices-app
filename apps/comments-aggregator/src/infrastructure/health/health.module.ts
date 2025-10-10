@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppHealthController } from './health.controller';
-import { AppHealthService } from './health.service';
 import { TerminusModule } from '@nestjs/terminus';
 
+import { AppHealthController } from './health.controller';
+import { AppHealthService } from './health.service';
+
+import { AppConfigModule } from '../config';
+
 @Module({
-  imports: [TerminusModule],
+  imports: [TerminusModule, AppConfigModule],
   controllers: [AppHealthController],
   providers: [AppHealthService],
 })

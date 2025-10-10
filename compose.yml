@@ -213,6 +213,7 @@ services:
       - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
     networks:
       - observer
+      - services
     deploy:
       resources:
         reservations:
@@ -260,7 +261,8 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
     networks:
-      - app
+      - observer
+      - services
     deploy:
       resources:
         reservations:
@@ -277,7 +279,8 @@ services:
     ports:
       - 3100:3100
     networks:
-      - app
+      - observer
+      - services
     deploy:
       resources:
         reservations:
@@ -300,7 +303,7 @@ services:
     volumes:
       - cache:/usr/src/cache/data
     networks:
-      - app
+      - services
       - cache
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -715,7 +718,7 @@ services:
         condition: service_healthy
       views-database:
         condition: service_healthy
-      views-migrate:
+      views-aggregator-migrate:
         condition: service_completed_successfully
 
   views-aggregator-migrate:
@@ -901,7 +904,7 @@ services:
       dockerfile: apps/cloud/Dockerfile
       target: production
     env_file:
-      - apps/cloud/.
+      - apps/cloud/.env
     environment:
       - KAFKAJS_NO_PARTITIONER_WARNING=1
     networks:

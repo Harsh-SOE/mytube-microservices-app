@@ -1,0 +1,3246 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>books documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">books documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content miscellaneous-variables">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Miscellaneous</li>
+  <li class="breadcrumb-item">Variables</li>
+</ol>
+
+<section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                        <li>
+                            <a href="#BearerAuth" title="apps/api-gateway/src/utils/decorators/bearer-auth.token.ts" ><b>BearerAuth</b>&nbsp;&nbsp;&nbsp;(apps/.../bearer-auth.token.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#ClientGrpcLikeStatusEnumMapper" title="apps/api-gateway/src/proxies/likes/mappers/client-grpc/client-grpc-like-status.enum.mapper.ts" ><b>ClientGrpcLikeStatusEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../client-grpc-like-status.enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#ClientGrpcVideoPublishEnumMapper" title="apps/api-gateway/src/proxies/videos/mappers/client-grpc/client-grpc-video-publish.enum.mapper.ts" ><b>ClientGrpcVideoPublishEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../client-grpc-video-publish.enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#ClientGrpcVideoVisibilityEnumMapper" title="apps/api-gateway/src/proxies/videos/mappers/client-grpc/client-grpc-video-visibility.enum.mapper.ts" ><b>ClientGrpcVideoVisibilityEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../client-grpc-video-visibility.enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CLOUD_PACKAGE_NAME" title="libs/contracts/src/cloud/cloud.ts" ><b>CLOUD_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../cloud.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CLOUD_SERVICE_NAME" title="libs/contracts/src/cloud/cloud.ts" ><b>CLOUD_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../cloud.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#cmd" title="scripts/generate-client.script.ts" ><b>cmd</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-client.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#cmd" title="scripts/generate-migrations.script.ts" ><b>cmd</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-migrations.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#cmd" title="scripts/generate-prototype.script.ts" ><b>cmd</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-prototype.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#cmd" title="scripts/init-prisma.script.ts" ><b>cmd</b>&nbsp;&nbsp;&nbsp;(scripts/.../init-prisma.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#COMMENT_PACKAGE_NAME" title="libs/contracts/src/comments/comments.ts" ><b>COMMENT_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../comments.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#COMMENT_SERVICE_NAME" title="libs/contracts/src/comments/comments.ts" ><b>COMMENT_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../comments.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CounterMock" title="libs/testing/src/measure/mocks/counter.ts" ><b>CounterMock</b>&nbsp;&nbsp;&nbsp;(libs/.../counter.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#customLevels" title="apps/users/src/infrastructure/logs/utils/level.utils.ts" ><b>customLevels</b>&nbsp;&nbsp;&nbsp;(apps/.../level.utils.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#DeleteUserRequestDtoStub" title="apps/api-gateway/src/proxies/users/test/stubs/request/delete-user-request.dto.stub.ts" ><b>DeleteUserRequestDtoStub</b>&nbsp;&nbsp;&nbsp;(apps/.../delete-user-request.dto.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#DeleteUserRequestResponseStub" title="apps/api-gateway/src/proxies/users/test/stubs/response/delete-user-request.response.stub.ts" ><b>DeleteUserRequestResponseStub</b>&nbsp;&nbsp;&nbsp;(apps/.../delete-user-request.response.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#DomainToGrpcThemeEnumMapper" title="apps/users/src/infrastructure/anti-corruption/enums-acl/grpc-persistance/theme-enum.mapper.ts" ><b>DomainToGrpcThemeEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../theme-enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#EMAIL_PACKAGE_NAME" title="libs/contracts/src/email/email.ts" ><b>EMAIL_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../email.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#EMAIL_SERVICE_NAME" title="libs/contracts/src/email/email.ts" ><b>EMAIL_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../email.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#FindUserByIdRequestDtoStub" title="apps/api-gateway/src/proxies/users/test/stubs/request/find-user-by-id-request.dto.stub.ts" ><b>FindUserByIdRequestDtoStub</b>&nbsp;&nbsp;&nbsp;(apps/.../find-user-by-id-request.dto.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#FindUserRequestResponseStub" title="apps/api-gateway/src/proxies/users/test/stubs/response/find-user-request.response.stub.ts" ><b>FindUserRequestResponseStub</b>&nbsp;&nbsp;&nbsp;(apps/.../find-user-request.response.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GATEWAY_AUTH0_GAURD_STRATEGY" title="apps/api-gateway/src/infrastructure/auth/constants/index.ts" ><b>GATEWAY_AUTH0_GAURD_STRATEGY</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GATEWAY_GAURD_STRATEGY" title="apps/api-gateway/src/infrastructure/auth/constants/index.ts" ><b>GATEWAY_GAURD_STRATEGY</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GRPC_HEALTH_V1_PACKAGE_NAME" title="libs/contracts/src/health/health.ts" ><b>GRPC_HEALTH_V1_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../health.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcClientLikeStatusEnumMapper" title="apps/api-gateway/src/proxies/likes/mappers/grpc-client/client-grpc-like-status.enum.mapper.ts" ><b>GrpcClientLikeStatusEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../client-grpc-like-status.enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcClientVideoPublishEnumMapper" title="apps/api-gateway/src/proxies/videos/mappers/grpc-client/gprc-grpc-video-publish.enum.mapper.ts" ><b>GrpcClientVideoPublishEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../gprc-grpc-video-publish.enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcClientVideoVisibilityEnumMapper" title="apps/api-gateway/src/proxies/videos/mappers/grpc-client/gprc-grpc-video-visibility.enum.mapper.ts" ><b>GrpcClientVideoVisibilityEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../gprc-grpc-video-visibility.enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcDomainLikeStatusEnumMapper" title="apps/likes-aggregator/src/infrastructure/anti-corruption/enums/grpc-domain/grpc-domain-like-status.enum.mapper.ts" ><b>GrpcDomainLikeStatusEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../grpc-domain-like-status.enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcPersistanceLikeStatusEnumMapper" title="apps/likes-aggregator/src/infrastructure/anti-corruption/enums/grpc-persistance/grpc-persistance-like-status.enum.mapper.ts" ><b>GrpcPersistanceLikeStatusEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../grpc-persistance-like-status.enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcToDomainPublishEnumMapper" title="apps/videos/src/infrastructure/anti-corruption/enums-acl/grpc-domain/publish-enum-mapper.acl.ts" ><b>GrpcToDomainPublishEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../publish-enum-mapper.acl.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcToDomainThemeEnumMapper" title="apps/users/src/infrastructure/anti-corruption/enums-acl/grpc-domain/theme-enum.mapper.ts" ><b>GrpcToDomainThemeEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../theme-enum.mapper.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcToDomainVisibilityEnumMapper" title="apps/videos/src/infrastructure/anti-corruption/enums-acl/grpc-domain/visibility-enum-mapper.acl.ts" ><b>GrpcToDomainVisibilityEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../visibility-enum-mapper.acl.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcToPersistancePublishEnumMapper" title="apps/videos/src/infrastructure/anti-corruption/enums-acl/grpc-persistance/publish-enum-mapper.acl.ts" ><b>GrpcToPersistancePublishEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../publish-enum-mapper.acl.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GrpcToPersistanceVisibilityEnumMapper" title="apps/videos/src/infrastructure/anti-corruption/enums-acl/grpc-persistance/visibility-enum-mapper.acl.ts" ><b>GrpcToPersistanceVisibilityEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../visibility-enum-mapper.acl.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#HEALTH_SERVICE_NAME" title="libs/contracts/src/health/health.ts" ><b>HEALTH_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../health.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#HUB_PACKAGE_NAME" title="libs/contracts/src/hub/hub.ts" ><b>HUB_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../hub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#HUB_SERVICE_NAME" title="libs/contracts/src/hub/hub.ts" ><b>HUB_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../hub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#HubCommandHandlers" title="apps/hub/src/application/commands/index.ts" ><b>HubCommandHandlers</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#HubEventHandler" title="apps/hub/src/application/events/index.ts" ><b>HubEventHandler</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#HubQueryHandler" title="apps/hub/src/application/query/index.ts" ><b>HubQueryHandler</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#JwtUserPayloadStub" title="libs/auth/user-payload.stub.ts" ><b>JwtUserPayloadStub</b>&nbsp;&nbsp;&nbsp;(libs/.../user-payload.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#LIKE_PACKAGE_NAME" title="libs/contracts/src/likes/likes.ts" ><b>LIKE_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../likes.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#LIKE_SERVICE_NAME" title="libs/contracts/src/likes/likes.ts" ><b>LIKE_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../likes.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#LocalSignupDtoStub" title="libs/testing/src/saga/stubs/request/saga-signup.dto.stub.ts" ><b>LocalSignupDtoStub</b>&nbsp;&nbsp;&nbsp;(libs/.../saga-signup.dto.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#LoggerMock" title="libs/testing/src/logs/mocks/logger.ts" ><b>LoggerMock</b>&nbsp;&nbsp;&nbsp;(libs/.../logger.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#migrationName" title="scripts/generate-migrations.script.ts" ><b>migrationName</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-migrations.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#outPath" title="scripts/generate-prototype.script.ts" ><b>outPath</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-prototype.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/cloud/cloud.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../cloud.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/comments/comments.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../comments.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/email/email.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../email.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/health/health.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../health.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/hub/hub.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../hub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/likes/likes.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../likes.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/saga/saga.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../saga.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/users/users.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../users.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/videos/videos.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../videos.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protobufPackage" title="libs/contracts/src/views/views.ts" ><b>protobufPackage</b>&nbsp;&nbsp;&nbsp;(libs/.../views.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protoPath" title="scripts/generate-prototype.script.ts" ><b>protoPath</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-prototype.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#protoRoot" title="scripts/generate-prototype.script.ts" ><b>protoRoot</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-prototype.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#PublishPersistanceToGrpcEnumMapper" title="apps/videos/src/application/queries/adapter/enums-mappers/publish-enum-mapper.acl.ts" ><b>PublishPersistanceToGrpcEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../publish-enum-mapper.acl.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#REQUEST_PROCESSING_TIME" title="apps/api-gateway/src/infrastructure/measure/custom/constants.ts" ><b>REQUEST_PROCESSING_TIME</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#requestCounter" title="apps/api-gateway/src/infrastructure/measure/custom/metrics.ts" ><b>requestCounter</b>&nbsp;&nbsp;&nbsp;(apps/.../metrics.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#REQUESTS_COUNTER" title="apps/api-gateway/src/infrastructure/measure/custom/constants.ts" ><b>REQUESTS_COUNTER</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#requestTimer" title="apps/api-gateway/src/infrastructure/measure/custom/metrics.ts" ><b>requestTimer</b>&nbsp;&nbsp;&nbsp;(apps/.../metrics.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SAGA_PACKAGE_NAME" title="libs/contracts/src/saga/saga.ts" ><b>SAGA_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../saga.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SAGA_SERVICE_NAME" title="libs/contracts/src/saga/saga.ts" ><b>SAGA_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../saga.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SagaClientMock" title="libs/testing/src/saga/mocks/saga.client.ts" ><b>SagaClientMock</b>&nbsp;&nbsp;&nbsp;(libs/.../saga.client.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SagaGrpcServiceMock" title="libs/testing/src/saga/mocks/saga.service.ts" ><b>SagaGrpcServiceMock</b>&nbsp;&nbsp;&nbsp;(libs/.../saga.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SagaSignupResponseStub" title="libs/testing/src/saga/stubs/response/saga-signup.response.stub.ts" ><b>SagaSignupResponseStub</b>&nbsp;&nbsp;&nbsp;(libs/.../saga-signup.response.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#serviceName" title="scripts/generate-client.script.ts" ><b>serviceName</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-client.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#serviceName" title="scripts/generate-migrations.script.ts" ><b>serviceName</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-migrations.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#serviceName" title="scripts/generate-prototype.script.ts" ><b>serviceName</b>&nbsp;&nbsp;&nbsp;(scripts/.../generate-prototype.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#serviceName" title="scripts/init-prisma.script.ts" ><b>serviceName</b>&nbsp;&nbsp;&nbsp;(scripts/.../init-prisma.script.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#totalRequestForUser" title="apps/users/src/infrastructure/measure/custom/metrics.ts" ><b>totalRequestForUser</b>&nbsp;&nbsp;&nbsp;(apps/.../metrics.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UpdatedUserRequestResponseStub" title="apps/api-gateway/src/proxies/users/test/stubs/response/update-user-request.response.stub.ts" ><b>UpdatedUserRequestResponseStub</b>&nbsp;&nbsp;&nbsp;(apps/.../update-user-request.response.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UpdateUserRequestDtoStub" title="apps/api-gateway/src/proxies/users/test/stubs/request/update-user-request.dto.stub.ts" ><b>UpdateUserRequestDtoStub</b>&nbsp;&nbsp;&nbsp;(apps/.../update-user-request.dto.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#User" title="apps/api-gateway/src/utils/decorators/user.decorator.ts" ><b>User</b>&nbsp;&nbsp;&nbsp;(apps/.../user.decorator.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#USER_PACKAGE_NAME" title="libs/contracts/src/users/users.ts" ><b>USER_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../users.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#USER_SERVICE_NAME" title="libs/contracts/src/users/users.ts" ><b>USER_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../users.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#userClientMock" title="libs/testing/src/users/mocks/user.client.ts" ><b>userClientMock</b>&nbsp;&nbsp;&nbsp;(libs/.../user.client.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserCommandHandlers" title="apps/users/src/application/commands/index.ts" ><b>UserCommandHandlers</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserEventHandlers" title="apps/users/src/domain/events/index.ts" ><b>UserEventHandlers</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserFindByIdDtoStub" title="libs/testing/src/users/stubs/requests/users-find-by-id.dto.stub.ts" ><b>UserFindByIdDtoStub</b>&nbsp;&nbsp;&nbsp;(libs/.../users-find-by-id.dto.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserFoundResponseStub" title="libs/testing/src/users/stubs/response/users-found.response.stub.ts" ><b>UserFoundResponseStub</b>&nbsp;&nbsp;&nbsp;(libs/.../users-found.response.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserGrpcServiceMock" title="libs/testing/src/users/mocks/user.mock.service.ts" ><b>UserGrpcServiceMock</b>&nbsp;&nbsp;&nbsp;(libs/.../user.mock.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserGrpcServiceMock" title="libs/testing/src/users/mocks/user.service.ts" ><b>UserGrpcServiceMock</b>&nbsp;&nbsp;&nbsp;(libs/.../user.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserQueryHandlers" title="apps/users/src/application/queries/index.ts" ><b>UserQueryHandlers</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UsersService" title="apps/api-gateway/src/proxies/users/__mocks__/users.service.ts" ><b>UsersService</b>&nbsp;&nbsp;&nbsp;(apps/.../users.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserUpdateDtoStub" title="libs/testing/src/users/stubs/requests/users-update.dto.stub.ts" ><b>UserUpdateDtoStub</b>&nbsp;&nbsp;&nbsp;(libs/.../users-update.dto.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserUpdateResponseStub" title="libs/testing/src/users/stubs/response/users-update.response.stub.ts" ><b>UserUpdateResponseStub</b>&nbsp;&nbsp;&nbsp;(libs/.../users-update.response.stub.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#VIDEO_PACKAGE_NAME" title="libs/contracts/src/videos/videos.ts" ><b>VIDEO_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../videos.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#VIDEO_SERVICE_NAME" title="libs/contracts/src/videos/videos.ts" ><b>VIDEO_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../videos.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#videoCommandHandlers" title="apps/videos/src/application/commands/index.ts" ><b>videoCommandHandlers</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#videoEventHandler" title="apps/videos/src/domain/domain-events/index.ts" ><b>videoEventHandler</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#videoQueryHandler" title="apps/videos/src/application/queries/index.ts" ><b>videoQueryHandler</b>&nbsp;&nbsp;&nbsp;(apps/.../index.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#VIEWS_PACKAGE_NAME" title="libs/contracts/src/views/views.ts" ><b>VIEWS_PACKAGE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../views.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#VIEWS_SERVICE_NAME" title="libs/contracts/src/views/views.ts" ><b>VIEWS_SERVICE_NAME</b>&nbsp;&nbsp;&nbsp;(libs/.../views.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#VisibilityPersistanceToGrpcEnumMapper" title="apps/videos/src/application/queries/adapter/enums-mappers/visibility-enum-mapper.acl.ts" ><b>VisibilityPersistanceToGrpcEnumMapper</b>&nbsp;&nbsp;&nbsp;(apps/.../visibility-enum-mapper.acl.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#WINSTON_LOGGER" title="libs/clients/src/constant.ts" ><b>WINSTON_LOGGER</b>&nbsp;&nbsp;&nbsp;(libs/.../constant.ts)</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <h3>apps/api-gateway/src/utils/decorators/bearer-auth.token.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="BearerAuth"></a>
+                    <span class="name">
+                        <span ><b>BearerAuth</b></span>
+                        <a href="#BearerAuth"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>createParamDecorator(
+  (data: unknown, context: ExecutionContext): unknown &#x3D;&gt; {
+    const ctx &#x3D; context.switchToHttp();
+    const request &#x3D; ctx.getRequest&lt;Request&gt;();
+    const authHeader &#x3D; request.headers[&#x27;authorization&#x27;];
+    return authHeader?.split(&#x27; &#x27;)[1];
+  },
+)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/likes/mappers/client-grpc/client-grpc-like-status.enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ClientGrpcLikeStatusEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>ClientGrpcLikeStatusEnumMapper</b></span>
+                        <a href="#ClientGrpcLikeStatusEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  LikeRequestStatus,
+  LikeTransportStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/videos/mappers/client-grpc/client-grpc-video-publish.enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ClientGrpcVideoPublishEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>ClientGrpcVideoPublishEnumMapper</b></span>
+                        <a href="#ClientGrpcVideoPublishEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoRequestPublishStatus,
+  VideoTransportPublishStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/videos/mappers/client-grpc/client-grpc-video-visibility.enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ClientGrpcVideoVisibilityEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>ClientGrpcVideoVisibilityEnumMapper</b></span>
+                        <a href="#ClientGrpcVideoVisibilityEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoRequestVisibilityStatus,
+  VideoTransportVisibilityStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/cloud/cloud.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CLOUD_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>CLOUD_PACKAGE_NAME</b></span>
+                        <a href="#CLOUD_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Cloud&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CLOUD_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>CLOUD_SERVICE_NAME</b></span>
+                        <a href="#CLOUD_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;CloudService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Cloud&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>scripts/generate-client.script.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cmd"></a>
+                    <span class="name">
+                        <span ><b>cmd</b></span>
+                        <a href="#cmd"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x60;npx prisma generate --schema ./apps/${serviceName}/prisma/schema.prisma&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="serviceName"></a>
+                    <span class="name">
+                        <span ><b>serviceName</b></span>
+                        <a href="#serviceName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>process.argv[2]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>scripts/generate-migrations.script.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cmd"></a>
+                    <span class="name">
+                        <span ><b>cmd</b></span>
+                        <a href="#cmd"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x60;docker exec -u 0 -it ${serviceName} sh -c &#x27;npx prisma migrate dev --schema ./apps/${serviceName}/prisma/schema.prisma --name ${migrationName}&#x27;&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="migrationName"></a>
+                    <span class="name">
+                        <span ><b>migrationName</b></span>
+                        <a href="#migrationName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>process.argv[3]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="serviceName"></a>
+                    <span class="name">
+                        <span ><b>serviceName</b></span>
+                        <a href="#serviceName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>process.argv[2]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>scripts/generate-prototype.script.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cmd"></a>
+                    <span class="name">
+                        <span ><b>cmd</b></span>
+                        <a href="#cmd"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x60;protoc -I&#x3D;${protoRoot} --plugin&#x3D;./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out&#x3D;${outPath} --ts_proto_opt&#x3D;useOptionals&#x3D;none,useDate&#x3D;false,nestJs&#x3D;true ${protoPath}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="outPath"></a>
+                    <span class="name">
+                        <span ><b>outPath</b></span>
+                        <a href="#outPath"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x60;libs/contracts/src/${serviceName}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protoPath"></a>
+                    <span class="name">
+                        <span ><b>protoPath</b></span>
+                        <a href="#protoPath"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x60;libs/proto/${serviceName}.proto&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protoRoot"></a>
+                    <span class="name">
+                        <span ><b>protoRoot</b></span>
+                        <a href="#protoRoot"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x60;libs/proto&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="serviceName"></a>
+                    <span class="name">
+                        <span ><b>serviceName</b></span>
+                        <a href="#serviceName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>process.argv[2]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>scripts/init-prisma.script.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cmd"></a>
+                    <span class="name">
+                        <span ><b>cmd</b></span>
+                        <a href="#cmd"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x60;sh -c &#x27;echo Initializing prisma for ${serviceName} &amp;&amp; cd apps/${serviceName} &amp;&amp; npx prisma init &amp;&amp; cd ../../&#x27;&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="serviceName"></a>
+                    <span class="name">
+                        <span ><b>serviceName</b></span>
+                        <a href="#serviceName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>process.argv[2]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/comments/comments.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="COMMENT_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>COMMENT_PACKAGE_NAME</b></span>
+                        <a href="#COMMENT_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Comment&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="COMMENT_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>COMMENT_SERVICE_NAME</b></span>
+                        <a href="#COMMENT_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;CommentService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Comment&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/measure/mocks/counter.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CounterMock"></a>
+                    <span class="name">
+                        <span ><b>CounterMock</b></span>
+                        <a href="#CounterMock"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>() &#x3D;&gt; ({
+  inc: jest.fn(),
+})</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/users/src/infrastructure/logs/utils/level.utils.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="customLevels"></a>
+                    <span class="name">
+                        <span ><b>customLevels</b></span>
+                        <a href="#customLevels"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  levels: {
+    alert: 0,
+    error: 1,
+    warn: 2,
+    info: 3,
+    debug: 4,
+    database: 5,
+    cache: 6,
+    messageBroker: 7,
+  },
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/users/test/stubs/request/delete-user-request.dto.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="DeleteUserRequestDtoStub"></a>
+                    <span class="name">
+                        <span ><b>DeleteUserRequestDtoStub</b></span>
+                        <a href="#DeleteUserRequestDtoStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): DeleteUserRequestDto &#x3D;&gt; {
+  return {
+    id: &#x27;123abc&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/users/test/stubs/response/delete-user-request.response.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="DeleteUserRequestResponseStub"></a>
+                    <span class="name">
+                        <span ><b>DeleteUserRequestResponseStub</b></span>
+                        <a href="#DeleteUserRequestResponseStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): DeleteUserRequestResponse &#x3D;&gt; {
+  return {
+    response: &#x27;deleted&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/users/src/infrastructure/anti-corruption/enums-acl/grpc-persistance/theme-enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="DomainToGrpcThemeEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>DomainToGrpcThemeEnumMapper</b></span>
+                        <a href="#DomainToGrpcThemeEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  DomainThemePreference,
+  UserTransportThemePreferences
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/email/email.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="EMAIL_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>EMAIL_PACKAGE_NAME</b></span>
+                        <a href="#EMAIL_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Email&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="EMAIL_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>EMAIL_SERVICE_NAME</b></span>
+                        <a href="#EMAIL_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;EmailService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Email&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/users/test/stubs/request/find-user-by-id-request.dto.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="FindUserByIdRequestDtoStub"></a>
+                    <span class="name">
+                        <span ><b>FindUserByIdRequestDtoStub</b></span>
+                        <a href="#FindUserByIdRequestDtoStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): FindUserByIdRequestDto &#x3D;&gt; {
+  return {
+    id: &#x27;123abc&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/users/test/stubs/response/find-user-request.response.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="FindUserRequestResponseStub"></a>
+                    <span class="name">
+                        <span ><b>FindUserRequestResponseStub</b></span>
+                        <a href="#FindUserRequestResponseStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): FindUserRequestResponse &#x3D;&gt; {
+  return {
+    id: &#x27;123abc&#x27;,
+    dob: &#x27;2003-03-24&#x27;,
+    email: &#x27;test@gmail.com&#x27;,
+    fullName: &#x27;test-fullname&#x27;,
+    handle: &#x27;test-handle&#x27;,
+    phoneNumber: &#x27;9876543210&#x27;,
+    isPhoneNumberVerified: false,
+    languagePreference: &#x27;en&#x27;,
+    notification: true,
+    onBoardingComplete: false,
+    region: &#x27;IN&#x27;,
+    themePreference: &#x27;SYSTEM&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/infrastructure/auth/constants/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GATEWAY_AUTH0_GAURD_STRATEGY"></a>
+                    <span class="name">
+                        <span ><b>GATEWAY_AUTH0_GAURD_STRATEGY</b></span>
+                        <a href="#GATEWAY_AUTH0_GAURD_STRATEGY"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;auth0&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GATEWAY_GAURD_STRATEGY"></a>
+                    <span class="name">
+                        <span ><b>GATEWAY_GAURD_STRATEGY</b></span>
+                        <a href="#GATEWAY_GAURD_STRATEGY"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;gateway-gaurd-strategy&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/health/health.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GRPC_HEALTH_V1_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>GRPC_HEALTH_V1_PACKAGE_NAME</b></span>
+                        <a href="#GRPC_HEALTH_V1_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;grpc.health.v1&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="HEALTH_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>HEALTH_SERVICE_NAME</b></span>
+                        <a href="#HEALTH_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Health&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;grpc.health.v1&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/likes/mappers/grpc-client/client-grpc-like-status.enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcClientLikeStatusEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcClientLikeStatusEnumMapper</b></span>
+                        <a href="#GrpcClientLikeStatusEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  LikeTransportStatus,
+  LikeRequestStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/videos/mappers/grpc-client/gprc-grpc-video-publish.enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcClientVideoPublishEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcClientVideoPublishEnumMapper</b></span>
+                        <a href="#GrpcClientVideoPublishEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoTransportPublishStatus,
+  VideoRequestPublishStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/videos/mappers/grpc-client/gprc-grpc-video-visibility.enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcClientVideoVisibilityEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcClientVideoVisibilityEnumMapper</b></span>
+                        <a href="#GrpcClientVideoVisibilityEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoTransportVisibilityStatus,
+  VideoRequestVisibilityStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/likes-aggregator/src/infrastructure/anti-corruption/enums/grpc-domain/grpc-domain-like-status.enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcDomainLikeStatusEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcDomainLikeStatusEnumMapper</b></span>
+                        <a href="#GrpcDomainLikeStatusEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  LikeTransportStatus,
+  LikeDomainStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/likes-aggregator/src/infrastructure/anti-corruption/enums/grpc-persistance/grpc-persistance-like-status.enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcPersistanceLikeStatusEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcPersistanceLikeStatusEnumMapper</b></span>
+                        <a href="#GrpcPersistanceLikeStatusEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  LikeTransportStatus,
+  LikePersistanceStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/infrastructure/anti-corruption/enums-acl/grpc-domain/publish-enum-mapper.acl.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcToDomainPublishEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcToDomainPublishEnumMapper</b></span>
+                        <a href="#GrpcToDomainPublishEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoTransportPublishStatus,
+  VideoDomainPublishStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/users/src/infrastructure/anti-corruption/enums-acl/grpc-domain/theme-enum.mapper.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcToDomainThemeEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcToDomainThemeEnumMapper</b></span>
+                        <a href="#GrpcToDomainThemeEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  UserTransportThemePreferences,
+  DomainThemePreference
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/infrastructure/anti-corruption/enums-acl/grpc-domain/visibility-enum-mapper.acl.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcToDomainVisibilityEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcToDomainVisibilityEnumMapper</b></span>
+                        <a href="#GrpcToDomainVisibilityEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoTransportVisibilityStatus,
+  VideoDomainVisibiltyStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/infrastructure/anti-corruption/enums-acl/grpc-persistance/publish-enum-mapper.acl.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcToPersistancePublishEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcToPersistancePublishEnumMapper</b></span>
+                        <a href="#GrpcToPersistancePublishEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoTransportPublishStatus,
+  VideoPersistancePublishStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/infrastructure/anti-corruption/enums-acl/grpc-persistance/visibility-enum-mapper.acl.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GrpcToPersistanceVisibilityEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>GrpcToPersistanceVisibilityEnumMapper</b></span>
+                        <a href="#GrpcToPersistanceVisibilityEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoTransportVisibilityStatus,
+  VideoDomainVisibiltyStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/hub/hub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="HUB_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>HUB_PACKAGE_NAME</b></span>
+                        <a href="#HUB_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Hub&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="HUB_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>HUB_SERVICE_NAME</b></span>
+                        <a href="#HUB_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;HubService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Hub&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/hub/src/application/commands/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="HubCommandHandlers"></a>
+                    <span class="name">
+                        <span ><b>HubCommandHandlers</b></span>
+                        <a href="#HubCommandHandlers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+  ActivateMonitizationCommandHandler,
+  CreateHubCommandHandler,
+  UpdateHubCommandHandler,
+  VerifyHubCommand,
+]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/hub/src/application/events/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="HubEventHandler"></a>
+                    <span class="name">
+                        <span ><b>HubEventHandler</b></span>
+                        <a href="#HubEventHandler"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+  HubCreatedEventHandler,
+  HubMonitizedEventHandler,
+  HubUpdatedEventHandler,
+]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/hub/src/application/query/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="HubQueryHandler"></a>
+                    <span class="name">
+                        <span ><b>HubQueryHandler</b></span>
+                        <a href="#HubQueryHandler"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[FindHubByIdQueryHandler]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/auth/user-payload.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="JwtUserPayloadStub"></a>
+                    <span class="name">
+                        <span ><b>JwtUserPayloadStub</b></span>
+                        <a href="#JwtUserPayloadStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): UserAuthPayload &#x3D;&gt; {
+  return {
+    id: &#x27;123abc&#x27;,
+    authId: &#x27;auth-id&#x27;,
+    email: &#x27;test@gmail.com&#x27;,
+    handle: &#x27;test-handle&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/likes/likes.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="LIKE_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>LIKE_PACKAGE_NAME</b></span>
+                        <a href="#LIKE_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Like&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="LIKE_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>LIKE_SERVICE_NAME</b></span>
+                        <a href="#LIKE_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;LikeService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Like&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/saga/stubs/request/saga-signup.dto.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="LocalSignupDtoStub"></a>
+                    <span class="name">
+                        <span ><b>LocalSignupDtoStub</b></span>
+                        <a href="#LocalSignupDtoStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): LocalSignupRequestDto &#x3D;&gt; {
+  return {
+    provider: Providers.GOOGLE,
+    userName: &#x27;test-username&#x27;,
+    email: &#x27;test@gmail.com&#x27;,
+    fullName: &#x27;test-fullname&#x27;,
+    dob: &#x27;2003-03-24&#x27;,
+    password: &#x27;Test@2025&#x27;,
+    avatar: &#x27;test-avatar&#x27;,
+    coverImage: &#x27;test-cover&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/logs/mocks/logger.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="LoggerMock"></a>
+                    <span class="name">
+                        <span ><b>LoggerMock</b></span>
+                        <a href="#LoggerMock"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>() &#x3D;&gt; ({
+  info: jest.fn(),
+})</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/saga/saga.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Saga&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SAGA_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>SAGA_PACKAGE_NAME</b></span>
+                        <a href="#SAGA_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Saga&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SAGA_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>SAGA_SERVICE_NAME</b></span>
+                        <a href="#SAGA_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;SagaService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/users/users.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;User&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="USER_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>USER_PACKAGE_NAME</b></span>
+                        <a href="#USER_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;User&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="USER_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>USER_SERVICE_NAME</b></span>
+                        <a href="#USER_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;UserService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/videos/videos.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Video&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="VIDEO_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>VIDEO_PACKAGE_NAME</b></span>
+                        <a href="#VIDEO_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Video&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="VIDEO_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>VIDEO_SERVICE_NAME</b></span>
+                        <a href="#VIDEO_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;VideoService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/contracts/src/views/views.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="protobufPackage"></a>
+                    <span class="name">
+                        <span ><b>protobufPackage</b></span>
+                        <a href="#protobufPackage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Views&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="VIEWS_PACKAGE_NAME"></a>
+                    <span class="name">
+                        <span ><b>VIEWS_PACKAGE_NAME</b></span>
+                        <a href="#VIEWS_PACKAGE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;Views&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="VIEWS_SERVICE_NAME"></a>
+                    <span class="name">
+                        <span ><b>VIEWS_SERVICE_NAME</b></span>
+                        <a href="#VIEWS_SERVICE_NAME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&quot;ViewsService&quot;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/application/queries/adapter/enums-mappers/publish-enum-mapper.acl.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="PublishPersistanceToGrpcEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>PublishPersistanceToGrpcEnumMapper</b></span>
+                        <a href="#PublishPersistanceToGrpcEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoPersistancePublishStatus,
+  VideoTransportPublishStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/infrastructure/measure/custom/constants.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="REQUEST_PROCESSING_TIME"></a>
+                    <span class="name">
+                        <span ><b>REQUEST_PROCESSING_TIME</b></span>
+                        <a href="#REQUEST_PROCESSING_TIME"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;request_processing_time&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="REQUESTS_COUNTER"></a>
+                    <span class="name">
+                        <span ><b>REQUESTS_COUNTER</b></span>
+                        <a href="#REQUESTS_COUNTER"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;requests_counter&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/infrastructure/measure/custom/metrics.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="requestCounter"></a>
+                    <span class="name">
+                        <span ><b>requestCounter</b></span>
+                        <a href="#requestCounter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>makeCounterProvider({
+  name: REQUESTS_COUNTER,
+  help: &#x27;This metrics will provide the count of total request request recieved by the gateway&#x27;,
+  labelNames: [&#x27;method&#x27;, &#x27;route&#x27;, &#x27;status_code&#x27;],
+})</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="requestTimer"></a>
+                    <span class="name">
+                        <span ><b>requestTimer</b></span>
+                        <a href="#requestTimer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>makeHistogramProvider({
+  name: REQUEST_PROCESSING_TIME,
+  help: &#x27;This metric tells the total time that it takes for a request made by the client to finally return the response&#x27;,
+  labelNames: [&#x27;method&#x27;, &#x27;route&#x27;, &#x27;status_code&#x27;],
+  buckets: [1, 20, 50, 100, 200, 300, 500, 1000, 2000, 3000],
+})</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/saga/mocks/saga.client.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SagaClientMock"></a>
+                    <span class="name">
+                        <span ><b>SagaClientMock</b></span>
+                        <a href="#SagaClientMock"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): Pick&lt;ClientGrpc, &#x27;getService&#x27;&gt; &#x3D;&gt; {
+  return { getService: jest.fn().mockReturnValue(SagaGrpcServiceMock()) };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/saga/mocks/saga.service.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SagaGrpcServiceMock"></a>
+                    <span class="name">
+                        <span ><b>SagaGrpcServiceMock</b></span>
+                        <a href="#SagaGrpcServiceMock"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): Pick&lt;
+  SagaServiceClient,
+  &#x27;userSignupFlow&#x27;
+&gt; &#x3D;&gt; ({
+  userSignupFlow: jest.fn().mockReturnValue(of(SagaSignupResponseStub())),
+})</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/saga/stubs/response/saga-signup.response.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SagaSignupResponseStub"></a>
+                    <span class="name">
+                        <span ><b>SagaSignupResponseStub</b></span>
+                        <a href="#SagaSignupResponseStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): SagaSignupResponse &#x3D;&gt; {
+  return {
+    response: &#x27;user created&#x27;,
+    userId: &#x27;123abc&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/users/src/infrastructure/measure/custom/metrics.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="totalRequestForUser"></a>
+                    <span class="name">
+                        <span ><b>totalRequestForUser</b></span>
+                        <a href="#totalRequestForUser"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>makeCounterProvider({
+  name: &#x27;total_requests_for_user&#x27;,
+  help: &#x27;This metric will provide the total request recieved by the user service&#x27;,
+  labelNames: [&#x27;method&#x27;, &#x27;route&#x27;, &#x27;status_code&#x27;],
+})</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/users/test/stubs/response/update-user-request.response.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UpdatedUserRequestResponseStub"></a>
+                    <span class="name">
+                        <span ><b>UpdatedUserRequestResponseStub</b></span>
+                        <a href="#UpdatedUserRequestResponseStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): UpdatedUserRequestResponse &#x3D;&gt; {
+    return {
+      response: &#x27;user updated&#x27;,
+    };
+  }</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/users/test/stubs/request/update-user-request.dto.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UpdateUserRequestDtoStub"></a>
+                    <span class="name">
+                        <span ><b>UpdateUserRequestDtoStub</b></span>
+                        <a href="#UpdateUserRequestDtoStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): UpdateUserRequestDto &#x3D;&gt; {
+  return {
+    dob: &#x27;2004-03-24&#x27;,
+    phoneNumber: &#x27;9876543210&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/utils/decorators/user.decorator.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="User"></a>
+                    <span class="name">
+                        <span ><b>User</b></span>
+                        <a href="#User"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>createParamDecorator(
+  (data: keyof UserAuthPayload, context: ExecutionContext) &#x3D;&gt; {
+    const httpContext &#x3D; context.switchToHttp();
+    const request &#x3D; httpContext.getRequest&lt;Request&gt;();
+    const extractedUser &#x3D; request.user as UserAuthPayload;
+    return data ? extractedUser[data] : extractedUser;
+  },
+)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/users/mocks/user.client.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userClientMock"></a>
+                    <span class="name">
+                        <span ><b>userClientMock</b></span>
+                        <a href="#userClientMock"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): Pick&lt;ClientGrpc, &#x27;getService&#x27;&gt; &#x3D;&gt; {
+  return {
+    getService: jest.fn().mockReturnValue(UserGrpcServiceMock()),
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/users/src/application/commands/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserCommandHandlers"></a>
+                    <span class="name">
+                        <span ><b>UserCommandHandlers</b></span>
+                        <a href="#UserCommandHandlers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+  ChangeLanguageCommandHandler,
+  ChangeNotificationCommandHandler,
+  ChangeThemeCommandHandler,
+  CompleteSignupCommandHandler,
+  UpdateProfileCommandHandler,
+  VerifyPhoneNumberCommandHandler,
+]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/users/src/domain/events/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserEventHandlers"></a>
+                    <span class="name">
+                        <span ><b>UserEventHandlers</b></span>
+                        <a href="#UserEventHandlers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+  CompleteProfileEventHandler,
+  ChangeLanguageEventHandler,
+  ChangeNotificationStatusEventHandler,
+  ChangeThemeEventHandler,
+  UpdateProfileEventHandler,
+  PhoneNumberVerfiedEventHandler,
+  OnBoardingCompletedEventHandler,
+]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/users/stubs/requests/users-find-by-id.dto.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserFindByIdDtoStub"></a>
+                    <span class="name">
+                        <span ><b>UserFindByIdDtoStub</b></span>
+                        <a href="#UserFindByIdDtoStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): UserFindByIdDto &#x3D;&gt; {
+  return {
+    id: &#x27;123abc&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/users/stubs/response/users-found.response.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserFoundResponseStub"></a>
+                    <span class="name">
+                        <span ><b>UserFoundResponseStub</b></span>
+                        <a href="#UserFoundResponseStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): UserFoundResponse &#x3D;&gt; {
+  return {
+    id: &#x27;123abc&#x27;,
+    authUserId: &#x27;test_id&#x27;,
+    handle: &#x27;test-handle&#x27;,
+    email: &#x27;test@gmail.com&#x27;,
+    dob: &#x27;2003-03-24&#x27;,
+    phoneNumber: &#x27;9876543210&#x27;,
+    isPhoneNumberVerified: false,
+    languagePreference: &#x27;en&#x27;,
+    notification: true,
+    themePreference: &#x27;SYSTEM&#x27;,
+    onBoardingComplete: false,
+    region: &#x27;IN&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/users/mocks/user.mock.service.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserGrpcServiceMock"></a>
+                    <span class="name">
+                        <span ><b>UserGrpcServiceMock</b></span>
+                        <a href="#UserGrpcServiceMock"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): Pick&lt;
+  UserServiceClient,
+  &#x27;updateProfile&#x27; | &#x27;findOneUserById&#x27; | &#x27;findAllUsers&#x27;
+&gt; &#x3D;&gt; {
+  return {
+    updateProfile: jest
+      .fn()
+      .mockImplementation((userUpdateDto: UserUpdateProfileDto) &#x3D;&gt; {
+        // this error should never happen as service trust the gateway, and will always recieve only the valid data
+        if (!userUpdateDto || userUpdateDto.id) {
+          throw new BadRequestException(&#x60;id is required for updating a user&#x60;);
+        }
+
+        const id &#x3D; userUpdateDto.id;
+        if (id &#x3D;&#x3D;&#x3D; &#x27;non-exsistent-user-id&#x27;) {
+          throw new UserNotFoundGrpcException(
+            &#x60;User with id:${id} was not found in the database&#x60;,
+          );
+        }
+      })
+      .mockReturnValue(of(UserUpdateResponseStub())),
+    findAllUsers: jest.fn().mockReturnValue(of([UserFoundResponseStub()])),
+    findOneUserById: jest
+      .fn()
+      .mockImplementation((userFindByIdDto: UserFindByIdDto) &#x3D;&gt; {
+        // this error should never happen as service trust the gateway, and will always recieve only the valid data
+        if (!userFindByIdDto || !userFindByIdDto.id) {
+          throw new BadRequestException(
+            &#x60;id is required inorder to find a user&#x60;,
+          );
+        }
+        // 1. User not found exception
+        const id &#x3D; userFindByIdDto.id;
+        if (id &#x3D;&#x3D;&#x3D; &#x27;non-exsistent-user-id&#x27;) {
+          throw new UserNotFoundGrpcException(
+            &#x60;User with id:${id} was not found in the database&#x60;,
+          );
+        }
+        // TODO: 2. Database error
+      })
+      .mockReturnValue(of(UserFoundResponseStub())),
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/users/mocks/user.service.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserGrpcServiceMock"></a>
+                    <span class="name">
+                        <span ><b>UserGrpcServiceMock</b></span>
+                        <a href="#UserGrpcServiceMock"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): Pick&lt;
+  UserServiceClient,
+  &#x27;updateProfile&#x27; | &#x27;findOneUserById&#x27; | &#x27;findAllUsers&#x27;
+&gt; &#x3D;&gt; {
+  return {
+    updateProfile: jest.fn().mockReturnValue(of(UserUpdateResponseStub())),
+    findAllUsers: jest.fn().mockReturnValue(of([UserFoundResponseStub()])),
+    findOneUserById: jest.fn().mockReturnValue(of(UserFoundResponseStub())),
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/users/src/application/queries/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserQueryHandlers"></a>
+                    <span class="name">
+                        <span ><b>UserQueryHandlers</b></span>
+                        <a href="#UserQueryHandlers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+  FindUserByIdHandler,
+  FindAllUsersHandler,
+  FindUserByAuthIdQueryHandler,
+]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/api-gateway/src/proxies/users/__mocks__/users.service.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UsersService"></a>
+                    <span class="name">
+                        <span ><b>UsersService</b></span>
+                        <a href="#UsersService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>jest.fn().mockReturnValue({
+  updateUserDetails: jest
+    .fn()
+    .mockReturnValue(UpdatedUserRequestResponseStub()),
+
+  deleteUser: jest.fn().mockReturnValue(DeleteUserRequestResponseStub()),
+
+  getCurrentlyLoggedInUser: jest
+    .fn()
+    .mockReturnValue(FindUserRequestResponseStub()),
+
+  getAllRegisteredUser: jest
+    .fn()
+    .mockReturnValue([FindUserRequestResponseStub()]),
+})</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/users/stubs/requests/users-update.dto.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserUpdateDtoStub"></a>
+                    <span class="name">
+                        <span ><b>UserUpdateDtoStub</b></span>
+                        <a href="#UserUpdateDtoStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): UserUpdateProfileDto &#x3D;&gt; {
+  return {
+    id: &#x27;123abc&#x27;,
+    dob: &#x27;2003-02-24&#x27;,
+    phoneNumber: &#x27;0123456789&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/testing/src/users/stubs/response/users-update.response.stub.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserUpdateResponseStub"></a>
+                    <span class="name">
+                        <span ><b>UserUpdateResponseStub</b></span>
+                        <a href="#UserUpdateResponseStub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(): UserUpdateProfileResponse &#x3D;&gt; {
+  return {
+    response: &#x27;user updated successfully&#x27;,
+    userId: &#x27;123abc&#x27;,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/application/commands/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="videoCommandHandlers"></a>
+                    <span class="name">
+                        <span ><b>videoCommandHandlers</b></span>
+                        <a href="#videoCommandHandlers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[PublishVideoHandler, EditVideoHandler]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/domain/domain-events/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="videoEventHandler"></a>
+                    <span class="name">
+                        <span ><b>videoEventHandler</b></span>
+                        <a href="#videoEventHandler"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[VideoCreatedDomainEventHandler]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/application/queries/index.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="videoQueryHandler"></a>
+                    <span class="name">
+                        <span ><b>videoQueryHandler</b></span>
+                        <a href="#videoQueryHandler"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[FindVideoHandler]</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/videos/src/application/queries/adapter/enums-mappers/visibility-enum-mapper.acl.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="VisibilityPersistanceToGrpcEnumMapper"></a>
+                    <span class="name">
+                        <span ><b>VisibilityPersistanceToGrpcEnumMapper</b></span>
+                        <a href="#VisibilityPersistanceToGrpcEnumMapper"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;
+  VideoPersistanceVisibilityStatus,
+  VideoTransportVisibilityStatus
+&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/clients/src/constant.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="WINSTON_LOGGER"></a>
+                    <span class="name">
+                        <span ><b>WINSTON_LOGGER</b></span>
+                        <a href="#WINSTON_LOGGER"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;WINSTON_LOGGER&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-variables';
+            var COMPODOC_CURRENT_PAGE_URL = 'variables.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

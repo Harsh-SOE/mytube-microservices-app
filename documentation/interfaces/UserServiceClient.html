@@ -1,0 +1,1209 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>books documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">books documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  UserServiceClient</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>libs/contracts/src/users/users.ts</code>
+        </p>
+
+
+
+
+        <section data-compodoc="block-index">
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Methods</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#changeNotificationStatus" 
+>
+                                        changeNotificationStatus
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#changePreferredLanguage" 
+>
+                                        changePreferredLanguage
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#changePreferredTheme" 
+>
+                                        changePreferredTheme
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#createProfile" 
+>
+                                        createProfile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#findAllUsers" 
+>
+                                        findAllUsers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#findOneUserById" 
+>
+                                        findOneUserById
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#findUserByAuthId" 
+>
+                                        findUserByAuthId
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#updateProfile" 
+>
+                                        updateProfile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#updateUserProfileById" 
+>
+                                        updateUserProfileById
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#verifyPhoneNumber" 
+>
+                                        verifyPhoneNumber
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="changeNotificationStatus"></a>
+                    <span class="name">
+                        <span ><b>changeNotificationStatus</b></span>
+                        <a href="#changeNotificationStatus"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>changeNotificationStatus(request: <a href="../interfaces/UserChangeNotificationStatusDto.html" target="_self">UserChangeNotificationStatusDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="131"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:131</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserChangeNotificationStatusDto.html" target="_self" >UserChangeNotificationStatusDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserNotificationStatusChangedResponse.html" target="_self" >Observable&lt;UserNotificationStatusChangedResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="changePreferredLanguage"></a>
+                    <span class="name">
+                        <span ><b>changePreferredLanguage</b></span>
+                        <a href="#changePreferredLanguage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>changePreferredLanguage(request: <a href="../interfaces/UserChangePreferredLanguageDto.html" target="_self">UserChangePreferredLanguageDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="133"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:133</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserChangePreferredLanguageDto.html" target="_self" >UserChangePreferredLanguageDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserPreferredLanguageChangedResponse.html" target="_self" >Observable&lt;UserPreferredLanguageChangedResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="changePreferredTheme"></a>
+                    <span class="name">
+                        <span ><b>changePreferredTheme</b></span>
+                        <a href="#changePreferredTheme"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>changePreferredTheme(request: <a href="../interfaces/UserChangePreferredThemeDto.html" target="_self">UserChangePreferredThemeDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="135"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:135</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserChangePreferredThemeDto.html" target="_self" >UserChangePreferredThemeDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserPreferredThemeChangedResponse.html" target="_self" >Observable&lt;UserPreferredThemeChangedResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createProfile"></a>
+                    <span class="name">
+                        <span ><b>createProfile</b></span>
+                        <a href="#createProfile"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>createProfile(request: <a href="../interfaces/UserCreateProfileDto.html" target="_self">UserCreateProfileDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="127"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:127</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserCreateProfileDto.html" target="_self" >UserCreateProfileDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserProfileCreatedResponse.html" target="_self" >Observable&lt;UserProfileCreatedResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findAllUsers"></a>
+                    <span class="name">
+                        <span ><b>findAllUsers</b></span>
+                        <a href="#findAllUsers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>findAllUsers(request: <a href="../interfaces/Empty.html" target="_self">Empty</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="141"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:141</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Empty.html" target="_self" >Empty</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UsersFoundResponse.html" target="_self" >Observable&lt;UsersFoundResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findOneUserById"></a>
+                    <span class="name">
+                        <span ><b>findOneUserById</b></span>
+                        <a href="#findOneUserById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>findOneUserById(request: <a href="../interfaces/UserFindByIdDto.html" target="_self">UserFindByIdDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="139"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:139</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserFindByIdDto.html" target="_self" >UserFindByIdDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserFoundResponse.html" target="_self" >Observable&lt;UserFoundResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findUserByAuthId"></a>
+                    <span class="name">
+                        <span ><b>findUserByAuthId</b></span>
+                        <a href="#findUserByAuthId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>findUserByAuthId(request: <a href="../interfaces/UserFindByAuthIdDto.html" target="_self">UserFindByAuthIdDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="143"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:143</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserFindByAuthIdDto.html" target="_self" >UserFindByAuthIdDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserFoundResponse.html" target="_self" >Observable&lt;UserFoundResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateProfile"></a>
+                    <span class="name">
+                        <span ><b>updateProfile</b></span>
+                        <a href="#updateProfile"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>updateProfile(request: <a href="../interfaces/UserUpdateProfileDto.html" target="_self">UserUpdateProfileDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="129"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:129</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserUpdateProfileDto.html" target="_self" >UserUpdateProfileDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserUpdateProfileResponse.html" target="_self" >Observable&lt;UserUpdateProfileResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateUserProfileById"></a>
+                    <span class="name">
+                        <span ><b>updateUserProfileById</b></span>
+                        <a href="#updateUserProfileById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>updateUserProfileById(request: <a href="../interfaces/UserUpdateByIdDto.html" target="_self">UserUpdateByIdDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="145"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:145</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserUpdateByIdDto.html" target="_self" >UserUpdateByIdDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserProfileUpdatedResponse.html" target="_self" >Observable&lt;UserProfileUpdatedResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="verifyPhoneNumber"></a>
+                    <span class="name">
+                        <span ><b>verifyPhoneNumber</b></span>
+                        <a href="#verifyPhoneNumber"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>verifyPhoneNumber(request: <a href="../interfaces/UserVerifyPhoneNumberDto.html" target="_self">UserVerifyPhoneNumberDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="137"
+                                    class="link-to-prism">libs/contracts/src/users/users.ts:137</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>request</td>
+                                            <td>
+                                                            <code><a href="../interfaces/UserVerifyPhoneNumberDto.html" target="_self" >UserVerifyPhoneNumberDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/UserPhoneNumberVerifiedResponse.html" target="_self" >Observable&lt;UserPhoneNumberVerifiedResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { GrpcMethod, GrpcStreamMethod } from &quot;@nestjs/microservices&quot;;
+import { Observable } from &quot;rxjs&quot;;
+
+export const protobufPackage &#x3D; &quot;User&quot;;
+
+export enum UserTransportThemePreferences {
+  LIGHT &#x3D; 0,
+  DARK &#x3D; 1,
+  SYSTEM &#x3D; 2,
+  UNRECOGNIZED &#x3D; -1,
+}
+
+export interface UserCreateProfileDto {
+  authId: string;
+  email: string;
+  handle: string;
+}
+
+export interface UserUpdateProfileDto {
+  id: string;
+  dob?: string | undefined;
+  phoneNumber?: string | undefined;
+}
+
+export interface UserChangeNotificationStatusDto {
+  id: string;
+  notificationStatus: boolean;
+}
+
+export interface UserChangePreferredThemeDto {
+  id: string;
+  themePerference: UserTransportThemePreferences;
+}
+
+export interface UserChangePreferredLanguageDto {
+  id: string;
+  language: string;
+}
+
+export interface UserVerifyPhoneNumberDto {
+  id: string;
+  phoneNumber: string;
+}
+
+export interface UserFindByIdDto {
+  id: string;
+}
+
+export interface UserFindByAuthIdDto {
+  authId: string;
+}
+
+export interface UserUpdateByIdDto {
+  id: string;
+  email?: string | undefined;
+  fullName?: string | undefined;
+  dob?: string | undefined;
+}
+
+export interface UserProfileCreatedResponse {
+  response: string;
+  userId: string;
+}
+
+export interface UserUpdateProfileResponse {
+  response: string;
+  userId: string;
+}
+
+export interface UserNotificationStatusChangedResponse {
+  response: string;
+  status: boolean;
+}
+
+export interface UserPreferredLanguageChangedResponse {
+  response: string;
+  language: string;
+}
+
+export interface UserPreferredThemeChangedResponse {
+  response: string;
+  theme: string;
+}
+
+export interface UserPhoneNumberVerifiedResponse {
+  response: string;
+  verified: boolean;
+}
+
+export interface UserFoundResponse {
+  id: string;
+  authUserId: string;
+  email: string;
+  handle: string;
+  dob?: string | undefined;
+  phoneNumber?: string | undefined;
+  isPhoneNumberVerified: boolean;
+  notification: boolean;
+  languagePreference: string;
+  themePreference: string;
+  region: string;
+  onBoardingComplete: boolean;
+}
+
+export interface UsersFoundResponse {
+  userFoundResponse: UserFoundResponse[];
+}
+
+export interface UserProfileUpdatedResponse {
+  response: string;
+  userId: string;
+}
+
+export interface Empty {
+}
+
+export const USER_PACKAGE_NAME &#x3D; &quot;User&quot;;
+
+export interface UserServiceClient {
+  createProfile(request: UserCreateProfileDto): Observable&lt;UserProfileCreatedResponse&gt;;
+
+  updateProfile(request: UserUpdateProfileDto): Observable&lt;UserUpdateProfileResponse&gt;;
+
+  changeNotificationStatus(request: UserChangeNotificationStatusDto): Observable&lt;UserNotificationStatusChangedResponse&gt;;
+
+  changePreferredLanguage(request: UserChangePreferredLanguageDto): Observable&lt;UserPreferredLanguageChangedResponse&gt;;
+
+  changePreferredTheme(request: UserChangePreferredThemeDto): Observable&lt;UserPreferredThemeChangedResponse&gt;;
+
+  verifyPhoneNumber(request: UserVerifyPhoneNumberDto): Observable&lt;UserPhoneNumberVerifiedResponse&gt;;
+
+  findOneUserById(request: UserFindByIdDto): Observable&lt;UserFoundResponse&gt;;
+
+  findAllUsers(request: Empty): Observable&lt;UsersFoundResponse&gt;;
+
+  findUserByAuthId(request: UserFindByAuthIdDto): Observable&lt;UserFoundResponse&gt;;
+
+  updateUserProfileById(request: UserUpdateByIdDto): Observable&lt;UserProfileUpdatedResponse&gt;;
+}
+
+export interface UserServiceController {
+  createProfile(
+    request: UserCreateProfileDto,
+  ): Promise&lt;UserProfileCreatedResponse&gt; | Observable&lt;UserProfileCreatedResponse&gt; | UserProfileCreatedResponse;
+
+  updateProfile(
+    request: UserUpdateProfileDto,
+  ): Promise&lt;UserUpdateProfileResponse&gt; | Observable&lt;UserUpdateProfileResponse&gt; | UserUpdateProfileResponse;
+
+  changeNotificationStatus(
+    request: UserChangeNotificationStatusDto,
+  ):
+    | Promise&lt;UserNotificationStatusChangedResponse&gt;
+    | Observable&lt;UserNotificationStatusChangedResponse&gt;
+    | UserNotificationStatusChangedResponse;
+
+  changePreferredLanguage(
+    request: UserChangePreferredLanguageDto,
+  ):
+    | Promise&lt;UserPreferredLanguageChangedResponse&gt;
+    | Observable&lt;UserPreferredLanguageChangedResponse&gt;
+    | UserPreferredLanguageChangedResponse;
+
+  changePreferredTheme(
+    request: UserChangePreferredThemeDto,
+  ):
+    | Promise&lt;UserPreferredThemeChangedResponse&gt;
+    | Observable&lt;UserPreferredThemeChangedResponse&gt;
+    | UserPreferredThemeChangedResponse;
+
+  verifyPhoneNumber(
+    request: UserVerifyPhoneNumberDto,
+  ):
+    | Promise&lt;UserPhoneNumberVerifiedResponse&gt;
+    | Observable&lt;UserPhoneNumberVerifiedResponse&gt;
+    | UserPhoneNumberVerifiedResponse;
+
+  findOneUserById(
+    request: UserFindByIdDto,
+  ): Promise&lt;UserFoundResponse&gt; | Observable&lt;UserFoundResponse&gt; | UserFoundResponse;
+
+  findAllUsers(request: Empty): Promise&lt;UsersFoundResponse&gt; | Observable&lt;UsersFoundResponse&gt; | UsersFoundResponse;
+
+  findUserByAuthId(
+    request: UserFindByAuthIdDto,
+  ): Promise&lt;UserFoundResponse&gt; | Observable&lt;UserFoundResponse&gt; | UserFoundResponse;
+
+  updateUserProfileById(
+    request: UserUpdateByIdDto,
+  ): Promise&lt;UserProfileUpdatedResponse&gt; | Observable&lt;UserProfileUpdatedResponse&gt; | UserProfileUpdatedResponse;
+}
+
+export function UserServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] &#x3D; [
+      &quot;createProfile&quot;,
+      &quot;updateProfile&quot;,
+      &quot;changeNotificationStatus&quot;,
+      &quot;changePreferredLanguage&quot;,
+      &quot;changePreferredTheme&quot;,
+      &quot;verifyPhoneNumber&quot;,
+      &quot;findOneUserById&quot;,
+      &quot;findAllUsers&quot;,
+      &quot;findUserByAuthId&quot;,
+      &quot;updateUserProfileById&quot;,
+    ];
+    for (const method of grpcMethods) {
+      const descriptor: any &#x3D; Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod(&quot;UserService&quot;, method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] &#x3D; [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any &#x3D; Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod(&quot;UserService&quot;, method)(constructor.prototype[method], method, descriptor);
+    }
+  };
+}
+
+export const USER_SERVICE_NAME &#x3D; &quot;UserService&quot;;
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'UserServiceClient.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

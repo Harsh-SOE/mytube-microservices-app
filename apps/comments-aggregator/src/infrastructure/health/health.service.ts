@@ -26,11 +26,11 @@ export class AppHealthService implements OnModuleInit, OnModuleDestroy {
     this.admin = this.kafka.admin();
   }
 
-  async onModuleDestroy() {
+  async onModuleInit() {
     await this.admin.connect();
   }
 
-  async onModuleInit() {
+  async onModuleDestroy() {
     await this.admin.disconnect();
   }
 

@@ -1,0 +1,1699 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>books documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">books documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >HubCommandRepository</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#createMany" >createMany</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#createOne" >createOne</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#deleteMany" >deleteMany</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#deleteOne" >deleteOne</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#deleteOneById" >deleteOneById</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#loadManyAggregate" >loadManyAggregate</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#loadOneAggregate" >loadOneAggregate</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#loadOneAggregateById" >loadOneAggregateById</a>
+                            </li>
+                            <li>
+                                <a href="#toPrismaFilter" >toPrismaFilter</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#updateMany" >updateMany</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#updateOne" >updateOne</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#updateOneById" >updateOneById</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                                <span class="modifier">Public</span>
+                        <code>constructor(channelEntityPeristanceACL: <a href="../injectables/HubAggregatePersistanceACL.html" target="_self">HubAggregatePersistanceACL</a>, peristanceService: <a href="../injectables/PersistanceService.html" target="_self">PersistanceService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:20</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>channelEntityPeristanceACL</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/HubAggregatePersistanceACL.html" target="_self" >HubAggregatePersistanceACL</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>peristanceService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/PersistanceService.html" target="_self" >PersistanceService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createMany"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>createMany</b></span>
+                        <a href="#createMany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createMany(domains: <a href="../injectables/HubAggregate.html" target="_self">HubAggregate[]</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="172"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:172</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>domains</td>
+                                            <td>
+                                                            <code><a href="../injectables/HubAggregate.html" target="_self" >HubAggregate[]</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;number&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createOne"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>createOne</b></span>
+                        <a href="#createOne"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createOne(domain: <a href="../injectables/HubAggregate.html" target="_self">HubAggregate</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="157"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:157</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>domain</td>
+                                            <td>
+                                                            <code><a href="../injectables/HubAggregate.html" target="_self" >HubAggregate</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../injectables/HubAggregate.html" target="_self" >Promise&lt;HubAggregate&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteMany"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>deleteMany</b></span>
+                        <a href="#deleteMany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>deleteMany(filter: <a href="../undefineds/DatabaseFilter.html" target="_self">DatabaseFilter&lt;Hub&gt;</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="277"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:277</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#DatabaseFilter" target="_self" >DatabaseFilter&lt;Hub&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;number&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteOne"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>deleteOne</b></span>
+                        <a href="#deleteOne"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>deleteOne(filter: <a href="../undefineds/DatabaseFilter.html" target="_self">DatabaseFilter&lt;Hub&gt;</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="248"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:248</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#DatabaseFilter" target="_self" >DatabaseFilter&lt;Hub&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;boolean&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteOneById"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>deleteOneById</b></span>
+                        <a href="#deleteOneById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>deleteOneById(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="264"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:264</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;boolean&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadManyAggregate"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>loadManyAggregate</b></span>
+                        <a href="#loadManyAggregate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadManyAggregate(filter: <a href="../undefineds/DatabaseFilter.html" target="_self">DatabaseFilter&lt;Hub&gt;</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="138"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:138</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#DatabaseFilter" target="_self" >DatabaseFilter&lt;Hub&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../injectables/HubAggregate.html" target="_self" >Promise&lt;HubAggregate[]&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadOneAggregate"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>loadOneAggregate</b></span>
+                        <a href="#loadOneAggregate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadOneAggregate(filter: <a href="../undefineds/DatabaseFilter.html" target="_self">DatabaseFilter&lt;Hub&gt;</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="123"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:123</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#DatabaseFilter" target="_self" >DatabaseFilter&lt;Hub&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../injectables/HubAggregate.html" target="_self" >Promise&lt;HubAggregate&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadOneAggregateById"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>loadOneAggregateById</b></span>
+                        <a href="#loadOneAggregateById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadOneAggregateById(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="106"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:106</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../injectables/HubAggregate.html" target="_self" >Promise&lt;HubAggregate&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toPrismaFilter"></a>
+                    <span class="name">
+                        <span ><b>toPrismaFilter</b></span>
+                        <a href="#toPrismaFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toPrismaFilter(filter: <a href="../undefineds/DatabaseFilter.html" target="_self">DatabaseFilter&lt;Hub&gt;</a>, mode: "many" | "unique")</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="61"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:61</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Converts a generic <code>DatabaseFilter&lt;Hub&gt;</code> object into a Prisma-compatible filter object
+(<code>Prisma.HubWhereInput</code> or <code>Prisma.HubWhereUniqueInput</code>) for querying the database.</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-none">            as well as logical operators (`and`, `or`, `not`) for complex queries.</code></pre></div><ul>
+<li><code>&#39;unique&#39;</code>: Generates a filter suitable for unique queries (e.g., <code>findUnique</code>). Only direct field matches are included.</li>
+<li><code>&#39;many&#39;</code>: Generates a filter suitable for multi-record queries (e.g., <code>findMany</code>). Supports logical operators (<code>AND</code>, <code>OR</code>, <code>NOT</code>).</li>
+</ul>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-html">// Example DatabaseFilter&lt;Hub&gt;:
+const filter: DatabaseFilter&lt;Hub&gt; = {
+  id: &#39;123&#39;,
+```html
+  and: [
+    { field: &#39;age&#39;, operator: &#39;gte&#39;, value: 18 },
+    { field: &#39;isActive&#39;, operator: &#39;equals&#39;, value: true }
+  ],
+  or: [
+    { field: &#39;role&#39;, operator: &#39;equals&#39;, value: &#39;admin&#39; }
+  ],
+  not: [
+    { field: &#39;deletedAt&#39;, operator: &#39;not&#39;, value: null }
+  ]
+};</code></pre></div><p>// Usage:
+const prismaFilter = toPrismaFilter(filter, &#39;many&#39;);</p>
+<p>// Modes:
+// - &#39;unique&#39;: Only direct field matches (e.g., { id: &#39;123&#39; }) are included.
+// - &#39;many&#39;: Supports logical operators (AND, OR, NOT) for complex queries.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#DatabaseFilter" target="_self" >DatabaseFilter&lt;Hub&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <ul>
+<li>The filter object describing the conditions to apply. This can include direct field matches,
+as well as logical operators (<code>and</code>, <code>or</code>, <code>not</code>) for complex queries.</li>
+</ul>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>mode</td>
+                                            <td>
+                                                        <code>&quot;many&quot; | &quot;unique&quot;</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <ul>
+<li>Specifies the type of filter to generate:</li>
+<li><code>&#39;unique&#39;</code>: Generates a filter suitable for unique queries (e.g., <code>findUnique</code>). Only direct field matches are included.</li>
+<li><code>&#39;many&#39;</code>: Generates a filter suitable for multi-record queries (e.g., <code>findMany</code>). Supports logical operators (<code>AND</code>, <code>OR</code>, <code>NOT</code>).</li>
+</ul>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Prisma.HubWhereInput | Prisma.HubWhereUniqueInput</code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>A Prisma filter object (<code>Prisma.HubWhereInput</code> or <code>Prisma.HubWhereUniqueInput</code>) that can be used in Prisma queries.</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateMany"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>updateMany</b></span>
+                        <a href="#updateMany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateMany(filter: <a href="../undefineds/DatabaseFilter.html" target="_self">DatabaseFilter&lt;Hub&gt;</a>, domainAggregate: <a href="../injectables/HubAggregate.html" target="_self">HubAggregate</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="225"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:225</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#DatabaseFilter" target="_self" >DatabaseFilter&lt;Hub&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>domainAggregate</td>
+                                            <td>
+                                                            <code><a href="../injectables/HubAggregate.html" target="_self" >HubAggregate</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;number&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateOne"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>updateOne</b></span>
+                        <a href="#updateOne"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateOne(filter: <a href="../undefineds/DatabaseFilter.html" target="_self">DatabaseFilter&lt;Hub&gt;</a>, domainAggregate: <a href="../injectables/HubAggregate.html" target="_self">HubAggregate</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="188"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:188</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#DatabaseFilter" target="_self" >DatabaseFilter&lt;Hub&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>domainAggregate</td>
+                                            <td>
+                                                            <code><a href="../injectables/HubAggregate.html" target="_self" >HubAggregate</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../injectables/HubAggregate.html" target="_self" >Promise&lt;HubAggregate&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateOneById"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>updateOneById</b></span>
+                        <a href="#updateOneById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateOneById(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, domainAggregate: <a href="../injectables/HubAggregate.html" target="_self">HubAggregate</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@LogExecutionTime()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="208"
+                                    class="link-to-prism">apps/hub/src/infrastructure/repository/command/hub-command.repository.impl.ts:208</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>domainAggregate</td>
+                                            <td>
+                                                            <code><a href="../injectables/HubAggregate.html" target="_self" >HubAggregate</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../injectables/HubAggregate.html" target="_self" >Promise&lt;HubAggregate&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
+
+import { LogExecutionTime } from &#x27;@app/utils&#x27;;
+import { UserNotFoundGrpcException } from &#x27;@app/errors&#x27;;
+import {
+  DatabaseFilter,
+  handlePrismaPersistanceOperation,
+} from &#x27;@app/infrastructure&#x27;;
+
+import { HubAggregate } from &#x27;@hub/domain/aggregates&#x27;;
+import { Hub, Prisma } from &#x27;@peristance/hub&#x27;;
+import { PersistanceService } from &#x27;@hub/infrastructure/persistance&#x27;;
+import { HubAggregatePersistanceACL } from &#x27;@hub/infrastructure/anti-corruption&#x27;;
+
+import { IHubCommandRepository } from &#x27;./prisma-entity-command.repository&#x27;;
+
+@Injectable()
+export class HubCommandRepository
+  implements IHubCommandRepository&lt;HubAggregate, Hub&gt;
+{
+  public constructor(
+    private readonly channelEntityPeristanceACL: HubAggregatePersistanceACL,
+    private readonly peristanceService: PersistanceService,
+  ) {}
+
+  /**
+   * Converts a generic &#x60;DatabaseFilter&lt;Hub&gt;&#x60; object into a Prisma-compatible filter object
+   * (&#x60;Prisma.HubWhereInput&#x60; or &#x60;Prisma.HubWhereUniqueInput&#x60;) for querying the database.
+   *
+   * @param filter - The filter object describing the conditions to apply. This can include direct field matches,
+   *                 as well as logical operators (&#x60;and&#x60;, &#x60;or&#x60;, &#x60;not&#x60;) for complex queries.
+   * @param mode - Specifies the type of filter to generate:
+   *   - &#x60;&#x27;unique&#x27;&#x60;: Generates a filter suitable for unique queries (e.g., &#x60;findUnique&#x60;). Only direct field matches are included.
+   *   - &#x60;&#x27;many&#x27;&#x60;: Generates a filter suitable for multi-record queries (e.g., &#x60;findMany&#x60;). Supports logical operators (&#x60;AND&#x60;, &#x60;OR&#x60;, &#x60;NOT&#x60;).
+   * @returns A Prisma filter object (&#x60;Prisma.HubWhereInput&#x60; or &#x60;Prisma.HubWhereUniqueInput&#x60;) that can be used in Prisma queries.
+   *
+   * @example
+   * // Example DatabaseFilter&lt;Hub&gt;:
+   * const filter: DatabaseFilter&lt;Hub&gt; &#x3D; {
+   *   id: &#x27;123&#x27;,
+   *   email: &#x27;user@example.com&#x27;,
+   *   and: [
+   *     { field: &#x27;age&#x27;, operator: &#x27;gte&#x27;, value: 18 },
+   *     { field: &#x27;isActive&#x27;, operator: &#x27;equals&#x27;, value: true }
+   *   ],
+   *   or: [
+   *     { field: &#x27;role&#x27;, operator: &#x27;equals&#x27;, value: &#x27;admin&#x27; }
+   *   ],
+   *   not: [
+   *     { field: &#x27;deletedAt&#x27;, operator: &#x27;not&#x27;, value: null }
+   *   ]
+   * };
+   *
+   * // Usage:
+   * const prismaFilter &#x3D; toPrismaFilter(filter, &#x27;many&#x27;);
+   *
+   * // Modes:
+   * // - &#x27;unique&#x27;: Only direct field matches (e.g., { id: &#x27;123&#x27; }) are included.
+   * // - &#x27;many&#x27;: Supports logical operators (AND, OR, NOT) for complex queries.
+   */
+  toPrismaFilter(
+    filter: DatabaseFilter&lt;Hub&gt;,
+    mode: &#x27;many&#x27; | &#x27;unique&#x27;,
+  ): Prisma.HubWhereInput | Prisma.HubWhereUniqueInput {
+    const prismaFilter: Prisma.HubWhereInput | Prisma.HubWhereUniqueInput &#x3D; {};
+
+    (Object.keys(filter) as Array&lt;keyof Hub&gt;).forEach((key) &#x3D;&gt; {
+      const value &#x3D; filter[key];
+      if (value !&#x3D;&#x3D; undefined) {
+        prismaFilter[key as string] &#x3D; value;
+      }
+    });
+
+    if (mode &#x3D;&#x3D;&#x3D; &#x27;unique&#x27;) return prismaFilter;
+
+    if (filter.and) {
+      prismaFilter.AND &#x3D; filter.and.map((filterCondition) &#x3D;&gt; ({
+        [filterCondition.field]: {
+          [filterCondition.operator]: [filterCondition.value],
+        },
+      }));
+    }
+
+    if (filter.or) {
+      prismaFilter.OR &#x3D; filter.or.map((filterCondition) &#x3D;&gt; ({
+        [filterCondition.field]: {
+          [filterCondition.operator]: [filterCondition.value],
+        },
+      }));
+    }
+
+    if (filter.not) {
+      prismaFilter.NOT &#x3D; filter.not.map((filterCondition) &#x3D;&gt; ({
+        [filterCondition.field]: {
+          [filterCondition.operator]: [filterCondition.value],
+        },
+      }));
+    }
+
+    console.log(prismaFilter);
+
+    return prismaFilter;
+  }
+
+  @LogExecutionTime()
+  async loadOneAggregateById(id: string): Promise&lt;HubAggregate&gt; {
+    const findUserOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.findUnique({
+        where: { id },
+      });
+    };
+    const foundChannel &#x3D;
+      await handlePrismaPersistanceOperation(findUserOperation);
+    if (!foundChannel) {
+      throw new UserNotFoundGrpcException(
+        &#x60;Channel with id: ${id} was not found...&#x60;,
+      );
+    }
+    return this.channelEntityPeristanceACL.toAggregate(foundChannel);
+  }
+
+  @LogExecutionTime()
+  async loadOneAggregate(filter: DatabaseFilter&lt;Hub&gt;): Promise&lt;HubAggregate&gt; {
+    const findUserOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.findFirst({
+        where: { ...this.toPrismaFilter(filter, &#x27;unique&#x27;) },
+      });
+    };
+    const foundChannel &#x3D;
+      await handlePrismaPersistanceOperation(findUserOperation);
+    if (!foundChannel) {
+      throw new UserNotFoundGrpcException(&#x60;Channel not found...&#x60;);
+    }
+    return this.channelEntityPeristanceACL.toAggregate(foundChannel);
+  }
+
+  @LogExecutionTime()
+  async loadManyAggregate(
+    filter: DatabaseFilter&lt;Hub&gt;,
+  ): Promise&lt;HubAggregate[]&gt; {
+    const findUserOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.findMany({
+        where: { ...this.toPrismaFilter(filter, &#x27;many&#x27;) },
+      });
+    };
+    const foundChannels &#x3D;
+      await handlePrismaPersistanceOperation(findUserOperation);
+    if (!foundChannels) {
+      throw new UserNotFoundGrpcException(&#x60;Channels not found...&#x60;);
+    }
+    return foundChannels.map((user) &#x3D;&gt;
+      this.channelEntityPeristanceACL.toAggregate(user),
+    );
+  }
+
+  @LogExecutionTime()
+  public async createOne(domain: HubAggregate): Promise&lt;HubAggregate&gt; {
+    const createdEntityOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.create({
+        data: {
+          ...this.channelEntityPeristanceACL.toPersistance(domain),
+        },
+      });
+    };
+    const createdEntity &#x3D; await handlePrismaPersistanceOperation(
+      createdEntityOperation,
+    );
+    return this.channelEntityPeristanceACL.toAggregate(createdEntity);
+  }
+
+  @LogExecutionTime()
+  public async createMany(domains: HubAggregate[]): Promise&lt;number&gt; {
+    const createdEntityOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.createMany({
+        data: domains.map((domain) &#x3D;&gt;
+          this.channelEntityPeristanceACL.toPersistance(domain),
+        ),
+      });
+    };
+
+    const createdEntity &#x3D; await handlePrismaPersistanceOperation(
+      createdEntityOperation,
+    );
+    return createdEntity.count;
+  }
+
+  @LogExecutionTime()
+  public async updateOne(
+    filter: DatabaseFilter&lt;Hub&gt;,
+    domainAggregate: HubAggregate,
+  ): Promise&lt;HubAggregate&gt; {
+    const updateDomainOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.update({
+        where: this.toPrismaFilter(
+          filter,
+          &#x27;unique&#x27;,
+        ) as Prisma.HubWhereUniqueInput,
+        data: this.channelEntityPeristanceACL.toPersistance(domainAggregate),
+      });
+    };
+    const updatedDomainResult &#x3D; await handlePrismaPersistanceOperation(
+      updateDomainOperation,
+    );
+    return this.channelEntityPeristanceACL.toAggregate(updatedDomainResult);
+  }
+
+  @LogExecutionTime()
+  public async updateOneById(
+    id: string,
+    domainAggregate: HubAggregate,
+  ): Promise&lt;HubAggregate&gt; {
+    const updateDomainOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.update({
+        where: { id },
+        data: this.channelEntityPeristanceACL.toPersistance(domainAggregate),
+      });
+    };
+    const updatedDomainResult &#x3D; await handlePrismaPersistanceOperation(
+      updateDomainOperation,
+    );
+    return this.channelEntityPeristanceACL.toAggregate(updatedDomainResult);
+  }
+
+  @LogExecutionTime()
+  public async updateMany(
+    filter: DatabaseFilter&lt;Hub&gt;,
+    domainAggregate: HubAggregate,
+  ): Promise&lt;number&gt; {
+    const updateEntitiesOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.updateMany({
+        where: this.toPrismaFilter(filter, &#x27;many&#x27;) as Prisma.HubWhereInput,
+        data: this.channelEntityPeristanceACL.toPersistance(domainAggregate),
+      });
+    };
+
+    const updatedEntitiesResult &#x3D; await handlePrismaPersistanceOperation(
+      updateEntitiesOperation,
+    );
+    if (!updatedEntitiesResult.count) {
+      throw new UserNotFoundGrpcException(
+        &#x60;No channels with filter: ${JSON.stringify(filter)} were found in the database&#x60;,
+      );
+    }
+    return updatedEntitiesResult.count;
+  }
+
+  @LogExecutionTime()
+  public async deleteOne(filter: DatabaseFilter&lt;Hub&gt;): Promise&lt;boolean&gt; {
+    const deleteEntityOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.delete({
+        where: this.toPrismaFilter(
+          filter,
+          &#x27;unique&#x27;,
+        ) as Prisma.HubWhereUniqueInput,
+      });
+    };
+    const deletedEntity &#x3D; await handlePrismaPersistanceOperation(
+      deleteEntityOperation,
+    );
+    return deletedEntity ? true : false;
+  }
+
+  @LogExecutionTime()
+  public async deleteOneById(id: string): Promise&lt;boolean&gt; {
+    const deleteEntityOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.delete({
+        where: { id },
+      });
+    };
+    const deletedEntity &#x3D; await handlePrismaPersistanceOperation(
+      deleteEntityOperation,
+    );
+    return deletedEntity ? true : false;
+  }
+
+  @LogExecutionTime()
+  public async deleteMany(filter: DatabaseFilter&lt;Hub&gt;): Promise&lt;number&gt; {
+    const deleteEntityOperation &#x3D; async () &#x3D;&gt; {
+      return await this.peristanceService.hub.deleteMany({
+        where: this.toPrismaFilter(filter, &#x27;many&#x27;) as Prisma.HubWhereInput,
+      });
+    };
+    const deletedEntityResponse &#x3D; await handlePrismaPersistanceOperation(
+      deleteEntityOperation,
+    );
+    if (!deletedEntityResponse.count)
+      throw new UserNotFoundGrpcException(
+        &#x60;Channel with filter: ${JSON.stringify(filter)} was not found in the database&#x60;,
+      );
+    return deletedEntityResponse.count;
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'HubCommandRepository.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

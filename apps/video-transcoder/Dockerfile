@@ -2,10 +2,7 @@ FROM node:24-alpine AS base
 
 WORKDIR /usr/src/app
 
-RUN apk add --no-cache ffmpeg curl && \
-    curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe && \
-    chmod +x /usr/local/bin/grpc_health_probe && \
-    apk del curl
+RUN apk add --no-cache ffmpeg curl
 
 COPY package.json yarn.lock ./
 
