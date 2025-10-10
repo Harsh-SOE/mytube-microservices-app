@@ -33,6 +33,8 @@ export class AuthService implements OnModuleInit {
     token: string | undefined;
     userAuthCred: Auth0ProfileUser;
   }> {
+    console.log(userAuthCredentials);
+
     const response$ = this.userService.findUserByAuthId({
       authId: userAuthCredentials.providerId,
     });

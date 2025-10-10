@@ -15,6 +15,7 @@ export class AuthController {
   @Get(AUTH_API.AUTHENTICATE)
   signup() {}
 
+  @UseGuards(Auth0OAuthGaurd)
   @Get(AUTH_API.AUTH0_REDIRECT)
   onAuthRedirect(@User() auth0User: Auth0ProfileUser): Promise<{
     response: string;

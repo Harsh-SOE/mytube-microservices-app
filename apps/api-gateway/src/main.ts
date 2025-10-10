@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { GatewayExceptionFilter } from './utils/filter/gateway.filter';
 import { AppConfigService } from './infrastructure/config/config.service';
 import session from 'express-session';
+import passport from 'passport'; // default import
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,17 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  passport.serializeUser((user: any, done) => {
+    done(null, user);
+  });
+
+  passport.deserializeUser((user: any, done) => {
+    done(null, user);
+  });
 
   await app.listen(configService.PORT, '0.0.0.0');
 }

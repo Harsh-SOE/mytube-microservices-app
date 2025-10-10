@@ -2,6 +2,8 @@ FROM node:24-alpine AS base
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache curl
+
 COPY package.json yarn.lock ./
 
 FROM base AS build-dependencies
