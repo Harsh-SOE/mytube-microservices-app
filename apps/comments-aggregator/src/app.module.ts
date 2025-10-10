@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppConfigModule } from './infrastructure/config/config.module';
-import { CommentAggregatorCacheModule } from './infrastructure/cache/cache.module';
-import { PersistanceModule } from './infrastructure/persistance/persistance.module';
-import { CommentsAggregatorModule } from './application/comments-aggregator/comments-aggregator.module';
+import { AppConfigModule } from './infrastructure/config';
+import { CommentAggregatorCacheModule } from './infrastructure/cache';
+import { PersistanceModule } from './infrastructure/persistance';
+import { CommentsAggregatorModule } from './application/comments-aggregator';
+import { AppHealthModule } from './infrastructure/health';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { CommentsAggregatorModule } from './application/comments-aggregator/comm
     CommentAggregatorCacheModule,
     PersistanceModule,
     CommentsAggregatorModule,
+    AppHealthModule,
   ],
 })
 export class AppModule {}

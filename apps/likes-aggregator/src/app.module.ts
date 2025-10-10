@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 
 import { LogsModule } from './infrastructure/logs';
 
-import { AppConfigModule } from './config/config.module';
-import { PersistanceModule } from './infrastructure/persistance/persistance.module';
-import { LikesConsumerModule } from './application/likes-consumer/likes-consumer.module';
-import { AggregatorCacheModule } from './infrastructure/cache/cache.module';
+import { AppConfigModule } from './config';
+import { PersistanceModule } from './infrastructure/persistance';
+import { LikesConsumerModule } from './application/likes-consumer';
+import { AggregatorCacheModule } from './infrastructure/cache';
+import { AppHealthModule } from './infrastructure/health';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AggregatorCacheModule } from './infrastructure/cache/cache.module';
     AppConfigModule,
     LogsModule,
     AggregatorCacheModule,
+    AppHealthModule,
   ],
 })
 export class AggregatorModule {}

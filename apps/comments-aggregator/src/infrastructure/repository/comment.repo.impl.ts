@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ICommentRepo } from './comment.repo';
 import { CommentAggregate } from '../../domain/aggregates';
 import { Comment } from 'apps/comments-aggregator/generated/prisma';
-import { PersistanceService } from '../persistance/persistance.service';
+import { PersistanceService } from '../persistance';
 import { CommentAggregatePersistance } from '../anti-corruption/comment';
 
 @Injectable()

@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 
 import { ViewsConsumerController } from './views-consumer.controller';
 import { ViewsConsumerService } from './views-consumer.service';
-import { AppConfigModule, AppConfigService } from '@views-aggregator/config';
+import {
+  AppConfigModule,
+  AppConfigService,
+} from '@views-aggregator/infrastructure/config';
 import { PersistanceModule } from '@views-aggregator/infrastructure/persistance';
 import { CqrsModule } from '@nestjs/cqrs';
 import { LogsModule } from '@views-aggregator/infrastructure/logs';

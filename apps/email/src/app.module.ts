@@ -5,9 +5,16 @@ import { EmailModule } from './email/email.module';
 import { AppConfigModule } from './config/config.module';
 import { MeasureModule } from './measure/measure.module';
 import { LogsModule } from './logs/logs.module';
+import { AppHealthModule } from './health';
 
 @Module({
-  imports: [EmailModule, AppConfigModule, MeasureModule, LogsModule],
+  imports: [
+    EmailModule,
+    AppConfigModule,
+    MeasureModule,
+    LogsModule,
+    AppHealthModule,
+  ],
   providers: [EmailService],
   controllers: [EmailController],
 })

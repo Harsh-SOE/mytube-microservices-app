@@ -4,8 +4,8 @@ services:
   #-------------------------------------------------------------------------------------------------------------#
 
   users-database:
-    container_name: users-database
     image: postgres:latest
+    container_name: users-database
     env_file:
       - apps/users/.env
     environment:
@@ -24,6 +24,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    deploy: &postgres-resources
+      resources:
+        reservations:
+          memory: "512M"
+          cpus: "0.5"
+        limits:
+          memory: "1G"
+          cpus: "1"
     logging: &logging
       driver: "local"
       options:
@@ -31,95 +39,99 @@ services:
         max-file: "3"
 
   videos-database:
-    container_name: videos-database
     image: postgres:latest
+    container_name: videos-database
     env_file:
       - apps/videos/.env
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: videos
     ports:
       - 5434:5432
     volumes:
       - videos-database-volume:/var/lib/postgresql/data
     networks:
       - videos-database-network
-    environment:
-      POSTGRES_USER: harsh
-      POSTGRES_PASSWORD: harsh123
-      POSTGRES_DB: videos
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U harsh -d videos"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+    deploy: *postgres-resources
     logging: *logging
 
   views-database:
-    container_name: views-database
     image: postgres:latest
+    container_name: views-database
     env_file:
       - apps/views-aggregator/.env
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: views
     ports:
       - 5437:5432
     volumes:
       - views-database-volume:/var/lib/postgresql/data
     networks:
       - views-database-network
-    environment:
-      POSTGRES_USER: harsh
-      POSTGRES_PASSWORD: harsh123
-      POSTGRES_DB: views
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U harsh -d views"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+    deploy: *postgres-resources
     logging: *logging
 
   comments-database:
-    container_name: comments-database
     image: postgres:latest
+    container_name: comments-database
     env_file:
       - apps/comments-aggregator/.env
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: comments
     ports:
       - 5436:5432
     volumes:
       - comments-database-volume:/var/lib/postgresql/data
     networks:
       - comments-database-network
-    environment:
-      POSTGRES_USER: harsh
-      POSTGRES_PASSWORD: harsh123
-      POSTGRES_DB: comments
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U harsh -d comments"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+    deploy: *postgres-resources
     logging: *logging
 
   hub-database:
-    container_name: hub-database
     image: postgres:latest
+    container_name: hub-database
     env_file:
       - apps/hub/.env
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: hub
     ports:
       - 5438:5432
     volumes:
       - hub-database-volume:/var/lib/postgresql/data
     networks:
       - hub-database-network
-    environment:
-      POSTGRES_USER: harsh
-      POSTGRES_PASSWORD: harsh123
-      POSTGRES_DB: hub
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U harsh -d hub"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+    deploy: *postgres-resources
     logging: *logging
 
   #-------------------------------------------------------------------------------------------------------------#
@@ -127,8 +139,8 @@ services:
   #-------------------------------------------------------------------------------------------------------------#
 
   kafka:
-    container_name: kafka
     image: obsidiandynamics/kafka
+    container_name: kafka
     restart: "no"
     environment:
       KAFKA_LISTENERS: "INTERNAL://:29092"
@@ -140,12 +152,7 @@ services:
       KAFKA_RESTART_DELAY: "5"
       ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
     networks:
-      - app
-      - kafka_event_emitter
-    ulimits:
-      nofile:
-        soft: 65536
-        hard: 65536
+      - message-broker
     healthcheck:
       test:
         [
@@ -156,55 +163,112 @@ services:
       timeout: 30s
       retries: 5
       start_period: 120s
+    deploy:
+      resources:
+        reservations:
+          memory: "512M"
+          cpus: "0.5"
+        limits:
+          memory: "1G"
+          cpus: "1"
     logging: *logging
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
   kafdrop:
-    container_name: kafdrop
     image: obsidiandynamics/kafdrop
+    container_name: kafdrop
     restart: "no"
-    ports:
-      - "9999:9000"
     environment:
       KAFKA_BROKERCONNECT: "kafka:29092"
+    ports:
+      - "9999:9000"
+    networks:
+      - message-broker
+    deploy:
+      resources:
+        reservations:
+          memory: "256M"
+          cpus: "0.5"
+        limits:
+          memory: "512M"
+          cpus: "1"
+    logging: *logging
     depends_on:
       kafka:
         condition: service_healthy
-    networks:
-      - app
-      - kafka_event_emitter
-    logging: *logging
 
   #-------------------------------------------------------------------------------------------------------------#
   #                                          METRICS AND OBSERVABILITY                                          #
   #-------------------------------------------------------------------------------------------------------------#
 
   prom-server:
-    container_name: prom-server
     image: prom/prometheus
+    container_name: prom-server
     ports:
       - 9090:9090
     volumes:
       - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
     networks:
-      - metrics-and-logs-network
-      - app
+      - observer
+    deploy:
+      resources:
+        reservations:
+          memory: "256M"
+          cpus: "0.5"
+        limits:
+          memory: "512M"
+          cpus: "1"
+    logging: *logging
     depends_on:
+      gateway:
+        condition: service_healthy
       users:
+        condition: service_healthy
+      hub:
+        condition: service_healthy
+      videos:
+        condition: service_healthy
+      video-transcoder:
+        condition: service_healthy
+      likes:
+        condition: service_healthy
+      likes-aggregator:
+        condition: service_healthy
+      views:
+        condition: service_healthy
+      views-aggregator:
+        condition: service_healthy
+      comments:
+        condition: service_healthy
+      comments-aggregator:
         condition: service_healthy
       cloud:
         condition: service_healthy
-    logging: *logging
+      email:
+        condition: service_healthy
+      saga:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana-oss
     container_name: grafana
     ports:
       - 5555:3000
-    networks:
-      - metrics-and-logs-network
-      - app
     volumes:
       - grafana-storage:/var/lib/grafana
+    networks:
+      - app
+    deploy:
+      resources:
+        reservations:
+          memory: "256M"
+          cpus: "0.5"
+        limits:
+          memory: "512M"
+          cpus: "1"
     logging: *logging
 
   grafana-loki:
@@ -213,8 +277,15 @@ services:
     ports:
       - 3100:3100
     networks:
-      - metrics-and-logs-network
       - app
+    deploy:
+      resources:
+        reservations:
+          memory: "256M"
+          cpus: "0.5"
+        limits:
+          memory: "512M"
+          cpus: "0.5"
     logging: *logging
 
   #-------------------------------------------------------------------------------------------------------------#
@@ -222,14 +293,29 @@ services:
   #-------------------------------------------------------------------------------------------------------------#
 
   redis-cache:
-    container_name: redis-cache
     image: redis:alpine
+    container_name: redis-cache
     ports:
       - 6379:6379
     volumes:
       - cache:/usr/src/cache/data
     networks:
       - app
+      - cache
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    deploy:
+      resources:
+        reservations:
+          memory: "256M"
+          cpus: "0.25"
+        limits:
+          memory: "512M"
+          cpus: "0.5"
     logging: *logging
 
   #-------------------------------------------------------------------------------------------------------------#
@@ -239,24 +325,29 @@ services:
   postgres:
     image: postgres:17
     container_name: postgres
-    networks:
-      - openfga
-    ports:
-      - "8:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
+    ports:
+      - "5435:5432"
+    networks:
+      - authorization
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        reservations:
+          memory: "256M"
+          cpus: "0.25"
+        limits:
+          memory: "512M"
+          cpus: "0.5"
     logging: *logging
 
   migrate:
-    depends_on:
-      postgres:
-        condition: service_healthy
     image: openfga/openfga:latest
     container_name: migrate
     command: migrate
@@ -264,56 +355,104 @@ services:
       - OPENFGA_DATASTORE_ENGINE=postgres
       - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
     networks:
-      - openfga
-    logging:
-      driver: "local"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - authorization
+    deploy:
+      resources:
+        reservations:
+          memory: "256M"
+          cpus: "0.25"
+        limits:
+          memory: "512M"
+          cpus: "0.5"
+    logging: *logging
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   openfga:
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
     image: openfga/openfga:latest
     container_name: openfga
+    command: run
     environment:
       - OPENFGA_DATASTORE_ENGINE=postgres
       - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
       - OPENFGA_LOG_FORMAT=json
-    command: run
-    networks:
-      - openfga
     ports:
       - "8080:8080"
       - "8081:8081"
       - "3333:3000"
-    logging:
-      driver: "local"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    networks:
+      - authorization
+    deploy:
+      resources:
+        reservations:
+          memory: "256M"
+          cpus: "0.25"
+        limits:
+          memory: "512M"
+          cpus: "0.5"
+    logging: *logging
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
 
   #-------------------------------------------------------------------------------------------------------------#
   #                                              MICROSERVICES                                                  #
   #-------------------------------------------------------------------------------------------------------------#
 
   gateway:
+    image: mytube/gateway/production:latest
     container_name: gateway
     build:
       context: .
       dockerfile: apps/api-gateway/Dockerfile
       target: production
-    image: mytube-gateway:latest
     env_file:
       - apps/api-gateway/.env
     ports:
       - 3000:3000
     networks:
-      - gateway-db
-      - app
+      - services
+      - authorization
+      - cache
+      - message-broker
+      - observer
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthcheck/monitor"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    deploy: &service_resources
+      resources:
+        reservations:
+          cpus: "0.25"
+          memory: "256M"
+        limits:
+          cpus: "0.25"
+          memory: "512M"
     depends_on:
       users:
+        condition: service_healthy
+      hub:
+        condition: service_healthy
+      videos:
+        condition: service_healthy
+      video-transcoder:
+        condition: service_healthy
+      views:
+        condition: service_healthy
+      views-aggregator:
+        condition: service_healthy
+      likes:
+        condition: service_healthy
+      likes-aggregator:
+        condition: service_healthy
+      comments:
+        condition: service_healthy
+      comments-aggregator:
+        condition: service_healthy
+      email:
         condition: service_healthy
       cloud:
         condition: service_healthy
@@ -321,37 +460,52 @@ services:
         condition: service_healthy
 
   users:
+    image: mytube/users/production:latest
     container_name: users
     build:
       context: .
       dockerfile: apps/users/Dockerfile
       target: production
-    image: mytube-user:latest
     env_file:
       - apps/users/.env
-    depends_on:
-      users-database:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - users-database-network
     healthcheck: &grpc-healthcheck
       test: ["CMD", "grpc_health_probe", "-addr=:5000"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
-    networks:
-      - users-database-network
-      - app
-
-  users-migrate:
-    image: mytube-user:latest
-    container_name: users-database-migrate
+    deploy: *service_resources
     depends_on:
       users-database:
         condition: service_healthy
+      users-migrate:
+        condition: service_completed_successfully
+      email:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  users-migrate:
+    image: mytube/users/production:latest
+    container_name: users-database-migrate
     env_file:
       - apps/users/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - users-database-network
     entrypoint:
       [
         "npx",
@@ -363,297 +517,52 @@ services:
         "--schema",
         "apps/users/prisma/schema.prisma",
       ]
-    networks:
-      - users-database-network
-      - app
-
-  videos:
-    container_name: videos
-    build:
-      context: .
-      dockerfile: apps/videos/Dockerfile
-      target: production
-    image: mytube-video:latest
-    env_file:
-      - apps/videos/.env
     depends_on:
-      videos-database:
+      users-database:
         condition: service_healthy
-      kafka:
-        condition: service_healthy
-    networks:
-      - videos-database-network
-      - app
-    healthcheck: *grpc-healthcheck
-
-  videos-migrate:
-    image: mytube-video:latest
-    container_name: videos-database-migrate
-    depends_on:
-      videos-database:
-        condition: service_healthy
-    env_file:
-      - apps/videos/.env
-    entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "dev",
-        "--name",
-        "initialize",
-        "--schema",
-        "apps/videos/prisma/schema.prisma",
-      ]
-    networks:
-      - videos-database-network
-      - app
-
-  cloud:
-    container_name: cloud
-    build:
-      context: .
-      dockerfile: apps/cloud/Dockerfile
-      target: production
-    image: mytube-cloud:latest
-    env_file:
-      - apps/cloud/.env
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - app
-    healthcheck: *grpc-healthcheck
-
-  email:
-    container_name: email
-    build:
-      context: .
-      dockerfile: apps/email/Dockerfile
-      target: production
-    image: mytube-email:latest
-    depends_on:
-      kafka:
-        condition: service_healthy
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    env_file:
-      - apps/email/.env
-    networks:
-      - app
-
-  likes:
-    container_name: likes
-    build:
-      context: .
-      dockerfile: apps/likes/Dockerfile
-      target: production
-    image: mytube-like:latest
-    env_file:
-      - apps/likes/.env
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - app
-      - likes-database-network
-    healthcheck: *grpc-healthcheck
-
-  video-transcoder:
-    container_name: video-transcoder
-    build:
-      context: .
-      dockerfile: apps/video-transcoder/Dockerfile
-      target: production
-    image: mytube-video-transcoder:latest
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    depends_on:
-      kafka:
-        condition: service_healthy
-    env_file:
-      - apps/video-transcoder/.env
-    volumes:
-      - transcoder-volume:/home/node/transcoded-videos
-    networks:
-      - app
-
-  saga:
-    container_name: saga
-    build:
-      context: .
-      dockerfile: apps/saga/Dockerfile
-      target: production
-    image: mytube-saga:latest
-    env_file:
-      - apps/saga/.env
-    depends_on:
-      users:
-        condition: service_healthy
-    networks:
-      - app
-    healthcheck: *grpc-healthcheck
-
-  likes-aggregator:
-    container_name: likes-aggregator
-    build:
-      context: .
-      dockerfile: apps/likes-aggregator/Dockerfile
-      target: production
-    image: mytube-likes-aggregator:latest
-    depends_on:
-      kafka:
-        condition: service_healthy
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    env_file:
-      - apps/likes-aggregator/.env
-    networks:
-      - app
-
-  views:
-    container_name: views
-    build:
-      context: .
-      dockerfile: apps/views/Dockerfile
-      target: production
-    image: mytube-views:latest
-    env_file:
-      - apps/views/.env
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - app
-    healthcheck: *grpc-healthcheck
-
-  views-aggregator:
-    container_name: views-aggregator
-    build:
-      context: .
-      dockerfile: apps/views-aggregator/Dockerfile
-      target: production
-    image: mytube-views-aggregator:latest
-    depends_on:
-      kafka:
-        condition: service_healthy
-      views:
-        condition: service_healthy
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    env_file:
-      - apps/views-aggregator/.env
-    networks:
-      - app
-      - views-database-network
-
-  views-aggregator-migrate:
-    image: mytube-views-aggregator:latest
-    container_name: views-database-migrate
-    depends_on:
-      views-database:
-        condition: service_healthy
-    env_file:
-      - apps/views-aggregator/.env
-    entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "dev",
-        "--name",
-        "initialize",
-        "--schema",
-        "apps/views-aggregator/prisma/schema.prisma",
-      ]
-    networks:
-      - app
-      - views-database-network
-
-  comments-aggregator:
-    container_name: comments-aggregator
-    build:
-      context: .
-      dockerfile: apps/comments-aggregator/Dockerfile
-      target: production
-    image: mytube-comments-aggregator:latest
-    depends_on:
-      kafka:
-        condition: service_healthy
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    env_file:
-      - apps/comments-aggregator/.env
-    networks:
-      - app
-      - comments-database-network
-
-  comments-aggregator-migrate:
-    image: mytube-comments-aggregator:latest
-    container_name: comments-database-migrate
-    depends_on:
-      comments-database:
-        condition: service_healthy
-    env_file:
-      - apps/comments-aggregator/.env
-    entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "dev",
-        "--name",
-        "initialize",
-        "--schema",
-        "apps/comments-aggregator/prisma/schema.prisma",
-      ]
-    networks:
-      - app
-      - comments-database-network
-
-  comments:
-    container_name: comments
-    build:
-      context: .
-      dockerfile: apps/comments/Dockerfile
-      target: production
-    image: mytube-comments:latest
-    env_file:
-      - apps/comments/.env
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - app
-    healthcheck: *grpc-healthcheck
 
   hub:
+    image: mytube/hub/production:latest
     container_name: hub
     build:
       context: .
       dockerfile: apps/hub/Dockerfile
       target: production
-    image: mytube-hub:latest
     env_file:
       - apps/hub/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - hub-database-network
+    deploy: *service_resources
+    healthcheck: *grpc-healthcheck
     depends_on:
       hub-database:
+        condition: service_healthy
+      hub-migrate:
+        condition: service_completed_successfully
+      email:
         condition: service_healthy
       kafka:
         condition: service_healthy
-    healthcheck: *grpc-healthcheck
-    networks:
-      - hub-database-network
-      - app
+      redis-cache:
+        condition: service_healthy
 
   hub-migrate:
-    image: mytube-hub:latest
+    image: mytube/hub/production:latest
     container_name: hub-database-migrate
-    depends_on:
-      hub-database:
-        condition: service_healthy
     env_file:
       - apps/hub/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - hub-database-network
     entrypoint:
       [
         "npx",
@@ -665,39 +574,392 @@ services:
         "--schema",
         "apps/hub/prisma/schema.prisma",
       ]
+    depends_on:
+      hub-database:
+        condition: service_healthy
+
+  videos:
+    image: mytube/videos/production:latest
+    container_name: videos
+    build:
+      context: .
+      dockerfile: apps/videos/Dockerfile
+      target: production
+    env_file:
+      - apps/videos/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
     networks:
-      - hub-database-network
-      - app
+      - services
+      - cache
+      - message-broker
+      - observer
+      - videos-database-network
+    healthcheck: *grpc-healthcheck
+    deploy: *service_resources
+    depends_on:
+      videos-database:
+        condition: service_healthy
+      videos-migrate:
+        condition: service_completed_successfully
+      email:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  videos-migrate:
+    image: mytube/videos/production:latest
+    container_name: videos-database-migrate
+    env_file:
+      - apps/videos/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - videos-database-network
+    entrypoint:
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "dev",
+        "--name",
+        "initialize",
+        "--schema",
+        "apps/videos/prisma/schema.prisma",
+      ]
+    depends_on:
+      videos-database:
+        condition: service_healthy
+
+  video-transcoder:
+    image: mytube/video-transcoder/production:latest
+    container_name: video-transcoder
+    build:
+      context: .
+      dockerfile: apps/video-transcoder/Dockerfile
+      target: production
+    env_file:
+      - apps/video-transcoder/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    volumes:
+      - transcoder-volume:/home/node/transcoded-videos
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+    healthcheck: &message-broker-healthcheck
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy: *service_resources
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  views:
+    image: mytube/views/production:latest
+    container_name: views
+    build:
+      context: .
+      dockerfile: apps/views/Dockerfile
+      target: production
+    env_file:
+      - apps/views/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+    healthcheck: *grpc-healthcheck
+    deploy: *service_resources
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  views-aggregator:
+    image: mytube/views-aggregator/production:latest
+    container_name: views-aggregator
+    build:
+      context: .
+      dockerfile: apps/views-aggregator/Dockerfile
+      target: production
+    env_file:
+      - apps/views-aggregator/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - views-database-network
+    healthcheck: *message-broker-healthcheck
+    deploy: *service_resources
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+      views-database:
+        condition: service_healthy
+      views-migrate:
+        condition: service_completed_successfully
+
+  views-aggregator-migrate:
+    image: mytube/views-aggregator/production:latest
+    container_name: views-database-migrate
+    env_file:
+      - apps/views-aggregator/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - views-database-network
+    entrypoint:
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "dev",
+        "--name",
+        "initialize",
+        "--schema",
+        "apps/views-aggregator/prisma/schema.prisma",
+      ]
+    depends_on:
+      views-database:
+        condition: service_healthy
+
+  likes:
+    image: mytube/likes/production:latest
+    container_name: likes
+    build:
+      context: .
+      dockerfile: apps/likes/Dockerfile
+      target: production
+    env_file:
+      - apps/likes/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - observer
+      - message-broker
+    healthcheck: *grpc-healthcheck
+    deploy: *service_resources
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  likes-aggregator:
+    image: mytube/likes-aggregator/production:latest
+    container_name: likes-aggregator
+    build:
+      context: .
+      dockerfile: apps/likes-aggregator/Dockerfile
+      target: production
+    env_file:
+      - apps/likes-aggregator/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - observer
+      - message-broker
+    healthcheck: *message-broker-healthcheck
+    deploy: *service_resources
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  comments:
+    image: mytube/comments/production:latest
+    container_name: comments
+    build:
+      context: .
+      dockerfile: apps/comments/Dockerfile
+      target: production
+    env_file:
+      - apps/comments/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - observer
+      - message-broker
+    healthcheck: *grpc-healthcheck
+    deploy: *service_resources
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  comments-aggregator:
+    image: mytube/comments-aggregator/production:latest
+    container_name: comments-aggregator
+    build:
+      context: .
+      dockerfile: apps/comments-aggregator/Dockerfile
+      target: production
+    env_file:
+      - apps/comments-aggregator/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - comments-database-network
+    healthcheck: *message-broker-healthcheck
+    deploy: *service_resources
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+      comments-database:
+        condition: service_healthy
+      comments-aggregator-migrate:
+        condition: service_completed_successfully
+
+  comments-aggregator-migrate:
+    image: mytube/comments-aggregator/production:latest
+    container_name: comments-database-migrate
+    env_file:
+      - apps/comments-aggregator/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - comments-database-network
+    entrypoint:
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "dev",
+        "--name",
+        "initialize",
+        "--schema",
+        "apps/comments-aggregator/prisma/schema.prisma",
+      ]
+    depends_on:
+      comments-database:
+        condition: service_healthy
+
+  email:
+    image: mytube/email/production:latest
+    container_name: email
+    build:
+      context: .
+      dockerfile: apps/email/Dockerfile
+      target: production
+    env_file:
+      - apps/email/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+    healthcheck: *message-broker-healthcheck
+    deploy: *service_resources
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  cloud:
+    image: mytube/cloud/production:latest
+    container_name: cloud
+    build:
+      context: .
+      dockerfile: apps/cloud/Dockerfile
+      target: production
+    env_file:
+      - apps/cloud/.
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+    deploy: *service_resources
+    healthcheck: *grpc-healthcheck
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  saga:
+    image: mytube/saga/production:latest
+    container_name: saga
+    build:
+      context: .
+      dockerfile: apps/saga/Dockerfile
+      target: production
+    env_file:
+      - apps/saga/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+    healthcheck: *grpc-healthcheck
+    deploy: *service_resources
 
 #-------------------------------------------------------------------------------------------------------------#
 #                                                  VOLUMES                                                    #
 #-------------------------------------------------------------------------------------------------------------#
 
 volumes:
+  cache: {}
+  grafana-storage: {}
+  transcoder-volume: {}
   users-database-volume: {}
   videos-database-volume: {}
-  likes-database-volume: {}
   views-database-volume: {}
   comments-database-volume: {}
   hub-database-volume: {}
-  grafana-storage: {}
-  ffmpeg-videos: {}
-  transcoder-volume: {}
-  cache: {}
 
 #-------------------------------------------------------------------------------------------------------------#
 #                                                 NETWORKS                                                    #
 #-------------------------------------------------------------------------------------------------------------#
 
 networks:
+  services: {}
+  cache: {}
+  message-broker: {}
+  authorization: {}
+  observer: {}
   users-database-network: {}
   videos-database-network: {}
   hub-database-network: {}
-  likes-database-network: {}
   views-database-network: {}
   comments-database-network: {}
-  openfga: {}
-  app: {}
-  gateway-db: {}
-  metrics-and-logs-network: {}
-  kafka_event_emitter: {}

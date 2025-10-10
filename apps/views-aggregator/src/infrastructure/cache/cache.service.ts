@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
 
-import { AppConfigService } from '@views-aggregator/config';
+import { AppConfigService } from '@views-aggregator/infrastructure/config';
 import { ViewAggregateFactory } from '@views-aggregator/domain/factories';
 import { StreamData, WatchMessage } from '@views-aggregator/types';
 

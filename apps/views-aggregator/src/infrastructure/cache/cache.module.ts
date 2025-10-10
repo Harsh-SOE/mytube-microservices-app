@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { AppConfigModule } from '@views-aggregator/config';
+import { AppConfigModule } from '@views-aggregator/infrastructure/config';
 import { ViewAggregateFactory } from '@views-aggregator/domain/factories';
 
 import { ViewAggregatorCacheService } from './cache.service';
