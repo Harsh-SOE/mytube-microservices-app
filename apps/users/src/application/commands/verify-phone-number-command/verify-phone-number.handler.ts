@@ -1,14 +1,22 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
 import { UserPhoneNumberVerifiedResponse } from '@app/contracts/users';
+import {
+  USER_COMMAND_REROSITORY,
+  UserCommandRepositoryPort,
+} from '@users/application/ports';
 
 import { VerifyPhoneNumberCommand } from './verify-phone-number.command';
-import { UserCommandRepository } from '@users/infrastructure/repository';
 
 @CommandHandler(VerifyPhoneNumberCommand)
 export class VerifyPhoneNumberCommandHandler
   implements ICommandHandler<VerifyPhoneNumberCommand>
 {
-  constructor(private readonly userRepository: UserCommandRepository) {}
+  constructor(
+    @Inject(USER_COMMAND_REROSITORY)
+    private readonly userRepository: UserCommandRepositoryPort,
+  ) {}
 
   async execute({
     userVerifyPhoneNumberDto,

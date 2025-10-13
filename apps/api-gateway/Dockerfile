@@ -1,6 +1,6 @@
 FROM node:24-alpine AS base
 
-WORKDIR /usr/src/app
+WORKDIR /home/node
 
 RUN apk add --no-cache curl
 
@@ -8,11 +8,21 @@ COPY package.json yarn.lock ./
 
 FROM base AS build-dependencies
 
+# installs at /home/node/node_modules
+
 RUN yarn install --frozen-lockfile --production=false
 
 FROM base AS builder
 
-COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
+# file structure of builder:
+  # /home/node:
+    # apps/api-gateway
+    # node_modules
+    # libs
+    # nest-cli.json
+    # tsconfig.json
+
+COPY --from=build-dependencies /home/node/node_modules ./node_modules
 
 COPY apps/api-gateway ./apps/api-gateway
 COPY libs ./libs
@@ -22,11 +32,17 @@ COPY tsconfig.build.json ./tsconfig.build.json
 
 RUN npx nest build api-gateway
 
+# dist generated at /home/node/dist and contains:
+  # apps/api-gateway:
+    # src/main.js
+    # proto/*
+
 FROM base AS development
 
-ENV NODE_ENV=development
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /home/node/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "api-gateway"]
 
@@ -36,14 +52,23 @@ RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
-ENV NODE_ENV=production
+WORKDIR /home/node
 
-WORKDIR /home/node/app
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/dist/apps/api-gateway ./apps/api-gateway
+# file structure of production stage:
+  # /home/node:
+    # package.json
+    # yarn.lock
+    # node_modules
+    # apps/api-gateway:
+      # src/main.js
+      # proto
 
-COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
+COPY --from=base /home/node/package.json /home/node/yarn.lock ./
+COPY --from=production-dependencies /home/node/node_modules ./node_modules
+COPY --from=builder /home/node/dist/apps/api-gateway ./apps/api-gateway
 
 USER node
 

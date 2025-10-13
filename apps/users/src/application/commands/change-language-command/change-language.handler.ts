@@ -1,14 +1,22 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
-import { ChangeLanguageCommand } from './change-language.command';
+import { Inject } from '@nestjs/common';
+
 import { UserPreferredLanguageChangedResponse } from '@app/contracts/users';
-import { UserCommandRepository } from '@users/infrastructure/repository';
+
+import {
+  USER_COMMAND_REROSITORY,
+  UserCommandRepositoryPort,
+} from '@users/application/ports';
+
+import { ChangeLanguageCommand } from './change-language.command';
 
 @CommandHandler(ChangeLanguageCommand)
 export class ChangeLanguageCommandHandler
   implements ICommandHandler<ChangeLanguageCommand>
 {
   constructor(
-    private readonly userRepository: UserCommandRepository,
+    @Inject(USER_COMMAND_REROSITORY)
+    private readonly userRepository: UserCommandRepositoryPort,
     private eventPublisher: EventPublisher,
   ) {}
 

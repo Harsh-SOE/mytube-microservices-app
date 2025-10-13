@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { AppConfigModule } from './infrastructure/config';
 import { CommentAggregatorCacheModule } from './infrastructure/cache';
 import { PersistanceModule } from './infrastructure/persistance';

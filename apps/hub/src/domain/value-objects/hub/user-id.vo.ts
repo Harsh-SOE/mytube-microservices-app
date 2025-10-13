@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import z from 'zod';
 
-import { UserEntityInvalidInputException } from '@app/errors';
+import { EntityInvalidInputException } from '@app/errors';
 
 @Injectable()
 export class HubUserId {
@@ -14,7 +14,7 @@ export class HubUserId {
       HubUserId.hubUserIdValidationSchema.safeParse(value);
     if (!parsedHubUserId.success) {
       const errorMessage = parsedHubUserId.error.message;
-      throw new UserEntityInvalidInputException(
+      throw new EntityInvalidInputException(
         `Hub's UserId validation failed. Reason: ${errorMessage}`,
       );
     }

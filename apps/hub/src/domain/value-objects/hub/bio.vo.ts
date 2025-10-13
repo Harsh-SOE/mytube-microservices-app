@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
 
-import { UserEntityInvalidInputException } from '@app/errors';
+import { EntityInvalidInputException } from '@app/errors';
 
 @Injectable()
 export class HubBio {
@@ -14,7 +14,7 @@ export class HubBio {
 
     if (!parsedHubBio.success) {
       const errorMessage = parsedHubBio.error.message;
-      throw new UserEntityInvalidInputException(
+      throw new EntityInvalidInputException(
         `Hub's Bio validation failed. Reason: ${errorMessage}`,
       );
     }

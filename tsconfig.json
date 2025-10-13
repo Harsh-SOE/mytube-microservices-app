@@ -39,8 +39,15 @@
       "@cloud/*": ["apps/cloud/src/*"],
       "@comments/*": ["apps/comments/src/*"],
       "@gateway/*": ["apps/api-gateway/src/*"],
+      "@hub/*": ["apps/hub/src/*"],
       "@likes-aggregator/*": ["apps/likes-aggregator/src/*"],
       "@likes/*": ["apps/likes/src/*"],
+      "@transcoder/*": ["apps/video-transcoder/src/*"],
+      "@users/*": ["apps/users/src/*"],
+      "@videos/*": ["apps/videos/src/*"],
+      "@views-aggregator/*": ["apps/views-aggregator/src/*"],
+      "@views/*": ["apps/views/src/*"],
+      "@comments-aggregator/*": ["apps/comments-aggregator/src/*"],
       "@peristance/likes-aggregator": [
         "apps/likes-aggregator/generated/prisma"
       ],
@@ -51,12 +58,9 @@
         "apps/views-aggregator/generated/prisma"
       ],
       "@peristance/hub": ["apps/hub/generated/prisma"],
-      "@transcoder/*": ["apps/video-transcoder/src/*"],
-      "@users/*": ["apps/users/src/*"],
-      "@videos/*": ["apps/videos/src/*"],
-      "@views-aggregator/*": ["apps/views-aggregator/src/*"],
-      "@views/*": ["apps/views/src/*"],
-      "@hub/*": ["apps/hub/src/*"]
+      "@peristance/comments-aggregator": [
+        "apps/comments-aggregator/generated/prisma"
+      ]
     }
   }
 }

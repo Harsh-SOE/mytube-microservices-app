@@ -1,13 +1,23 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UpdateProfileCommand } from './update-profile.command';
-import { UserCommandRepository } from '@users/infrastructure/repository';
+
 import { UserProfileUpdatedResponse } from '@app/contracts/users';
+
+import {
+  USER_COMMAND_REROSITORY,
+  UserCommandRepositoryPort,
+} from '@users/application/ports';
+
+import { UpdateProfileCommand } from './update-profile.command';
 
 @CommandHandler(UpdateProfileCommand)
 export class UpdateProfileCommandHandler
   implements ICommandHandler<UpdateProfileCommand>
 {
-  constructor(private readonly userRepository: UserCommandRepository) {}
+  constructor(
+    @Inject(USER_COMMAND_REROSITORY)
+    private readonly userRepository: UserCommandRepositoryPort,
+  ) {}
 
   async execute({
     userUpdateProfileDto,

@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Controller } from '@nestjs/common';
+import { Observable } from 'rxjs';
+
 import {
   HealthCheckRequest,
   HealthCheckResponse,
@@ -6,8 +9,6 @@ import {
   HealthController,
   HealthControllerMethods,
 } from '@app/contracts/health';
-import { Controller } from '@nestjs/common';
-import { Observable } from 'rxjs';
 
 @Controller()
 @HealthControllerMethods()

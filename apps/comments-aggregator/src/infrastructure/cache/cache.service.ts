@@ -1,19 +1,29 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
-import { AppConfigService } from '../config/config.service';
-import { CommentMessage, StreamData } from '../../types';
-import { CommentAggregateFactory } from '../../domain/factories';
-import { CommentRepo } from '../repository/comment.repo.impl';
+
+import { CommentAggregate } from '@comments-aggregator/domain/aggregates';
+import { AppConfigService } from '@comments-aggregator/infrastructure/config';
+import { CommentMessage, StreamData } from '@comments-aggregator/types';
+import {
+  COMMENT_REPOSITORY,
+  CommentRepositoryPort,
+} from '@comments-aggregator/application/ports';
 
 @Injectable()
 export class CommentAggregatorCacheService
   extends Redis
   implements OnModuleInit
 {
+  /**
+   * Constructor for CommentAggregatorCacheService.
+   * It initializes the Redis connection and logs the events of connecting, connection established and errors.
+   * @param {AppConfigService} configService - The configuration service.
+   * @param {CommentRepositoryPort} commentRepository - The comment repository.
+   */
   public constructor(
     private configService: AppConfigService,
-    private commentRepository: CommentRepo,
-    private commentAggregateFactory: CommentAggregateFactory,
+    @Inject(COMMENT_REPOSITORY)
+    private commentRepository: CommentRepositoryPort,
   ) {
     super({
       host: configService.CACHE_SERVICE_HOST,
@@ -27,6 +37,12 @@ export class CommentAggregatorCacheService
     );
   }
 
+  /**
+   * This method is called when the module is initialized.
+   * It creates a redis stream if it does not already exist.
+   * If the stream already exists, it logs a warning message and skips creation.
+   * If an error occurs while creating the stream, it logs the error and throws it.
+   */
   async onModuleInit() {
     try {
       await this.xgroup(
@@ -48,6 +64,13 @@ export class CommentAggregatorCacheService
     }
   }
 
+  /**
+   * Buffers a comment message in a redis stream.
+   * This method is used to save comment messages in a redis stream before they are processed.
+   * The stream is configured in the AppConfigService.
+   * @param {CommentMessage} message - The comment message to be buffered.
+   * @returns {Promise<number>} - A promise that resolves with the number of messages buffered.
+   */
   async bufferCommentMessage(message: CommentMessage) {
     await this.xadd(
       this.configService.COMMENT_AGGREGATOR_CACHE_STREAM_KEY,
@@ -57,7 +80,16 @@ export class CommentAggregatorCacheService
     );
   }
 
-  async processBufferedMessages(consumerGroupName: string): Promise<number> {
+  /**
+   * Process buffered comment messages.
+   * This method reads the comment messages from a redis stream, extracts the messages and their IDs, and processes them.
+   * It then removes the processed messages from the redis stream.
+   * @param {string} consumerGroupName - The name of the consumer group.
+   * @returns {Promise<number>} - A promise that resolves with the number of messages processed.
+   */
+  public async processBufferedMessages(
+    consumerGroupName: string,
+  ): Promise<number> {
     const streamData = (await this.xreadgroup(
       'GROUP',
       this.configService.COMMENT_AGGREGATOR_CACHE_STREAM_GROUPNAME,
@@ -81,7 +113,21 @@ export class CommentAggregatorCacheService
     return await this.processMessages(ids, extractedMessages);
   }
 
-  extractMessageFromStream(stream: StreamData[]) {
+  /**
+   * Extracts the message from a redis stream.
+   * This method reads a redis stream, extracts the messages and their IDs, and returns them.
+   * The method is used to process the messages in the redis stream.
+   * @example
+   *  const streamData: StreamData[] = [
+   *    ['stream-key-1', [['id-1', ['comment-message-1', 'comment-message-2']]],
+   *  const { ids, extractedMessages } = this.extractMessageFromStream(streamData);
+   *  console.log(ids); // ['id-1']
+   *  console.log(extractedMessages); // [CommentMessage(comment-message-1), CommentMessage(comment-message-2)]
+   *
+   * @param {StreamData[]} stream - The redis stream data.
+   * @returns { { ids: string[], extractedMessages: CommentMessage[] } } - An object containing the IDs and the extracted messages.
+   */
+  public extractMessageFromStream(stream: StreamData[]) {
     const messages: CommentMessage[] = [];
     const ids: string[] = [];
     for (const [streamKey, entities] of stream) {
@@ -95,9 +141,16 @@ export class CommentAggregatorCacheService
     return { ids: ids, extractedMessages: messages };
   }
 
+  /**
+   * Process the comment messages.
+   * This method takes an array of IDs and an array of comment messages, processes them by saving them to the database, and then removes the processed messages from the redis stream.
+   * @param {string[]} ids - The IDs of the messages to be processed.
+   * @param {CommentMessage[]} messages - The comment messages to be processed.
+   * @returns {Promise<number>} - A promise that resolves with the number of messages processed.
+   */
   async processMessages(ids: string[], messages: CommentMessage[]) {
     const models = messages.map((message) =>
-      this.commentAggregateFactory.create(
+      CommentAggregate.create(
         message.userId,
         message.videoId,
         message.commentText,

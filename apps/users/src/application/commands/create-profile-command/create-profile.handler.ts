@@ -1,9 +1,13 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { v4 as uuidv4 } from 'uuid';
 
-import { UserCommandRepository } from '@users/infrastructure/repository';
-import { UserAggregateFactory } from '@users/domain/factories';
+import {
+  USER_COMMAND_REROSITORY,
+  UserCommandRepositoryPort,
+} from '@users/application/ports';
 
+import { UserAggregate } from '@users/domain/aggregates';
 import { UserProfileCreatedResponse } from '@app/contracts/users';
 
 import { CreateProfileCommand } from './create-profile.command';
@@ -13,8 +17,8 @@ export class CompleteSignupCommandHandler
   implements ICommandHandler<CreateProfileCommand>
 {
   constructor(
-    private readonly userAggregateFactory: UserAggregateFactory,
-    private readonly userRepository: UserCommandRepository,
+    @Inject(USER_COMMAND_REROSITORY)
+    private readonly userRepository: UserCommandRepositoryPort,
   ) {}
 
   async execute({
@@ -27,12 +31,7 @@ export class CompleteSignupCommandHandler
     const id = uuidv4();
 
     // create the aggregate using the factory
-    const userAggregate = this.userAggregateFactory.create(
-      id,
-      authId,
-      handle,
-      email,
-    );
+    const userAggregate = UserAggregate.create(id, authId, handle, email);
 
     // persist the aggregate...
     await this.userRepository.createOne(userAggregate);

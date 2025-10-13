@@ -1,9 +1,12 @@
+import { Injectable } from '@nestjs/common';
+
 import { CLOUD_PROVIDER } from '@app/contracts/cloud';
+
 import { AppConfigService } from '@cloud/infrastructure/config';
+
 import { AwsS3StorageAdapter } from './aws-storage.adapter';
 import { CloudinaryStorageAdapter } from './cloudinary-storage.adapter';
 import { GCPStorageAdapter } from './gcp-storage.adapter';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class StorageAdapter {

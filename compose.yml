@@ -723,7 +723,7 @@ services:
 
   views-aggregator-migrate:
     image: mytube/views-aggregator/production:latest
-    container_name: views-database-migrate
+    container_name: views-aggregator-migrate
     env_file:
       - apps/views-aggregator/.env
     networks:

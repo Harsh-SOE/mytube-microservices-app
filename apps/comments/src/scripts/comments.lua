@@ -1,5 +1,5 @@
--- KEYS[1] video with id: videoId on which user commented on set key (vcu:{videoId})
--- KEYS[2] video with id: videoId  on which user commented on counter key (vwc:{videoId})
+-- KEYS[1] video with id: videoId on which user commented on set key (video_comments_users_set:{videoId})
+-- KEYS[2] video with id: videoId  on which user commented on counter key (video_comments_counter:{videoId})
 -- ARGV[1] userId
 local comment = redis.call('SADD', KEYS[1], ARGV[1])
 if comment == 1 then

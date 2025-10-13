@@ -1,14 +1,24 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ChangeThemeCommand } from './change-theme.command';
+
 import { UserPreferredThemeChangedResponse } from '@app/contracts/users';
-import { UserCommandRepository } from '@users/infrastructure/repository';
+
 import { GrpcToDomainThemeEnumMapper } from '@users/infrastructure/anti-corruption';
+import {
+  USER_COMMAND_REROSITORY,
+  UserCommandRepositoryPort,
+} from '@users/application/ports';
+
+import { ChangeThemeCommand } from './change-theme.command';
 
 @CommandHandler(ChangeThemeCommand)
 export class ChangeThemeCommandHandler
   implements ICommandHandler<ChangeThemeCommand>
 {
-  constructor(private readonly userRepository: UserCommandRepository) {}
+  constructor(
+    @Inject(USER_COMMAND_REROSITORY)
+    private readonly userRepository: UserCommandRepositoryPort,
+  ) {}
 
   async execute({
     userChangePreferredThemeDto,

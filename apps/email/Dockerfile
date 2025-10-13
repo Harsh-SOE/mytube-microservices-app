@@ -1,6 +1,6 @@
 FROM node:24-alpine AS base
 
-WORKDIR /usr/src/app
+WORKDIR /home/node
 
 RUN apk add --no-cache curl
 
@@ -12,7 +12,7 @@ RUN yarn install --frozen-lockfile --production=false
 
 FROM base AS builder
 
-COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=build-dependencies /home/node/node_modules ./node_modules
 
 COPY apps/email ./apps/email
 COPY libs ./libs
@@ -24,9 +24,10 @@ RUN npx nest build email
 
 FROM base AS development
 
-ENV NODE_ENV=development
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /home/node/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "email"]
 
@@ -36,14 +37,16 @@ RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
-ENV NODE_ENV=production
+WORKDIR /home/node
 
-WORKDIR /home/node/app
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/dist/apps/email ./apps/email
+WORKDIR /home/node
 
-COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
+COPY --from=base /home/node/package.json /home/node/yarn.lock ./
+COPY --from=production-dependencies /home/node/node_modules ./node_modules
+COPY --from=builder /home/node/dist/apps/email ./apps/email
 
 USER node
 

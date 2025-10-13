@@ -24,6 +24,36 @@ export class UserEntity {
     private region: UserRegion,
   ) {}
 
+  public static create(
+    id: string,
+    userAuthId: string,
+    handle: string,
+    email: string,
+    dob?: Date,
+    phoneNumber?: string,
+    isPhoneNumberVerified?: boolean,
+    notification?: boolean,
+    preferredTheme?: string,
+    preferredLanguage?: string,
+    isOnBoardingComplete?: boolean,
+    region?: string,
+  ): UserEntity {
+    return new UserEntity(
+      id,
+      userAuthId,
+      UserHandle.create(handle),
+      UserEmail.create(email),
+      UserDOB.create(dob),
+      UserPhoneNumber.create(phoneNumber),
+      isPhoneNumberVerified ?? false,
+      notification ?? true,
+      UserThemePreference.create(preferredTheme),
+      UserLanguagePreference.create(preferredLanguage),
+      isOnBoardingComplete ?? false,
+      UserRegion.create(region),
+    );
+  }
+
   public getId(): string {
     return this.id;
   }

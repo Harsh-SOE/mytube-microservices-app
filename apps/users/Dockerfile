@@ -1,11 +1,11 @@
 FROM node:24-alpine AS base
 
-WORKDIR /usr/src/app
+WORKDIR /home/node
 
-RUN apk add --no-cache curl && \
-    curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe && \
-    chmod +x /usr/local/bin/grpc_health_probe && \
-    apk del curl
+RUN apk add --no-cache curl
+RUN curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe
+RUN chmod +x /usr/local/bin/grpc_health_probe
+RUN apk del curl
 
 COPY package.json yarn.lock ./
 
@@ -15,7 +15,7 @@ RUN yarn install --frozen-lockfile --production=false
 
 FROM base AS builder
 
-COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=build-dependencies /home/node/node_modules ./node_modules
 
 COPY apps/users ./apps/users
 COPY libs ./libs
@@ -29,9 +29,10 @@ RUN npx nest build users
 
 FROM base AS development
 
-ENV NODE_ENV=development
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /home/node/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "users"]
 
@@ -41,22 +42,23 @@ RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
-ENV NODE_ENV=production
+WORKDIR /home/node
 
-WORKDIR /home/node/app
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/dist/apps/users ./apps/users
-
-COPY --from=builder /usr/src/app/apps/users/generated/prisma ./apps/users/generated/prisma
-COPY --from=builder /usr/src/app/apps/users/prisma/schema.prisma ./apps/users/prisma/schema.prisma
-
-COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
+COPY --from=base /home/node/package.json /home/node/yarn.lock ./
+COPY --from=production-dependencies /home/node/node_modules ./node_modules
+COPY --from=builder /home/node/apps/users/prisma/schema.prisma ./apps/users/prisma/schema.prisma
+COPY --from=builder /home/node/apps/users/generated/prisma ./apps/users/generated/prisma
+COPY --from=builder /home/node/dist/apps/users ./apps/users
 
 USER root
-RUN chown -R node:node /home/node/app/apps/users/prisma
-RUN chown -R node:node /home/node/app/apps/users/generated
-RUN chown -R node:node /home/node/app/node_modules/prisma
+
+RUN chown -R node:node /home/node/node_modules/prisma
+RUN chown -R node:node /home/node/apps/users/generated/prisma
+RUN chown -R node:node /home/node/apps/users/prisma
+
 USER node
 
-CMD ["node", "apps/users/src/main.js"]
+CMD ["node", "./apps/users/src/main.js"]

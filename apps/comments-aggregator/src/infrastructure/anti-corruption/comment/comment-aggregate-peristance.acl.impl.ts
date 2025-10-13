@@ -1,9 +1,15 @@
-import { IAggregatePersistanceACL } from '@app/infrastructure';
-import { CommentAggregate } from '../../../domain/aggregates';
-import { Comment } from 'apps/comments-aggregator/generated/prisma';
-import { CommentEntity } from '../../../domain/entities';
-import { CommentText, UserId, VideoId } from '../../../domain/value-objects';
 import { Injectable } from '@nestjs/common';
+
+import { IAggregatePersistanceACL } from '@app/infrastructure';
+import { Comment } from '@peristance/comments-aggregator';
+
+import { CommentAggregate } from '@comments-aggregator/domain/aggregates';
+import { CommentEntity } from '@comments-aggregator/domain/entities';
+import {
+  CommentText,
+  UserId,
+  VideoId,
+} from '@comments-aggregator/domain/value-objects';
 
 @Injectable()
 export class CommentAggregatePersistance
@@ -13,6 +19,16 @@ export class CommentAggregatePersistance
       Omit<Comment, 'createdAt' | 'updatedAt'>
     >
 {
+  /**
+   * Creates a CommentAggregate from a given persistence model.
+   * The persistence model should contain the following properties:
+   * - id: The id of the comment.
+   * - commentedByUserId: The user id of the user who commented.
+   * - commentedForVideoId: The video id of the video that was commented on.
+   * - commentText: The text of the comment.
+   * @param {Omit<Comment, 'createdAt' | 'updatedAt'>} persistance The persistence model.
+   * @returns {CommentAggregate} The newly created CommentAggregate.
+   */
   toAggregate(
     persistance: Omit<Comment, 'createdAt' | 'updatedAt'>,
   ): CommentAggregate {
@@ -24,6 +40,18 @@ export class CommentAggregatePersistance
     );
     return new CommentAggregate(commentEntity);
   }
+
+  /**
+   * Creates a persistence model from a given CommentAggregate.
+   * The persistence model contains the following properties:
+   * - id: The id of the comment.
+   * - commentedByUserId: The user id of the user who commented.
+   * - commentedForVideoId: The video id of the video that was commented on.
+   * - commentText: The text of the comment.
+   * @param {CommentAggregate} aggregate The CommentAggregate.
+   * @returns {Omit<Comment, 'createdAt' | 'updatedAt'>} The newly created persistence model.
+   */
+
   toPersistance(
     aggregate: CommentAggregate,
   ): Omit<Comment, 'createdAt' | 'updatedAt'> {

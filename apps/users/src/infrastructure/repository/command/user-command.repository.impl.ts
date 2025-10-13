@@ -2,22 +2,20 @@ import { Injectable } from '@nestjs/common';
 
 import { LogExecutionTime } from '@app/utils';
 import { UserNotFoundGrpcException } from '@app/errors';
-
-import { UserAggregate } from '@users/domain/aggregates';
-import { PersistanceService } from '@users/infrastructure/persistance';
-import { UserAggregatePersistanceACL } from '@users/infrastructure/anti-corruption';
-
-import { Prisma, User } from '@peristance/user';
 import {
   DatabaseFilter,
   handlePrismaPersistanceOperation,
 } from '@app/infrastructure';
-import { IUserCommandRepository } from './prisma-entity-command.repository';
+
+import { Prisma, User } from '@peristance/user';
+
+import { UserAggregate } from '@users/domain/aggregates';
+import { PersistanceService } from '@users/infrastructure/persistance';
+import { UserAggregatePersistanceACL } from '@users/infrastructure/anti-corruption';
+import { UserCommandRepositoryPort } from '@users/application/ports';
 
 @Injectable()
-export class UserCommandRepository
-  implements IUserCommandRepository<UserAggregate, User>
-{
+export class UserCommandRepository implements UserCommandRepositoryPort {
   public constructor(
     private readonly userEntityPeristanceACL: UserAggregatePersistanceACL,
     private readonly peristanceService: PersistanceService,

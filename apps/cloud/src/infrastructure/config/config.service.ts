@@ -2,17 +2,17 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GrpcOptions, Transport } from '@nestjs/microservices';
+import { ReflectionService } from '@grpc/reflection';
 import { join } from 'path';
 
 import { CLOUD_PACKAGE_NAME, CLOUD_PROVIDER } from '@app/contracts/cloud';
 import { GRPC_HEALTH_V1_PACKAGE_NAME } from '@app/contracts/health';
-import { ReflectionService } from '@grpc/reflection';
 
 @Injectable()
 export class AppConfigService {
   constructor(private configService: ConfigService) {}
 
-  get HTTP_PORT() {
+  get SERVICE_HTTP_PORT() {
     return this.configService.getOrThrow<number>('HTTP_PORT');
   }
 

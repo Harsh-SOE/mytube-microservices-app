@@ -1,13 +1,15 @@
-import { FileChunk, UploadFileDto } from '@app/contracts/cloud';
-import { UploadOptions } from '@cloud/application/options';
-import { IStorage } from '@cloud/application/ports';
-import { UploadResult } from '@cloud/application/response';
-import { AppConfigService } from '@cloud/infrastructure/config';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
+import { FileChunk, UploadFileDto } from '@app/contracts/cloud';
+
+import { UploadOptions } from '@cloud/application/options';
+import { StoragePort } from '@cloud/application/ports';
+import { UploadResult } from '@cloud/application/response';
+import { AppConfigService } from '@cloud/infrastructure/config';
+
 @Injectable()
-export class GCPStorageAdapter implements IStorage, OnModuleInit {
+export class GCPStorageAdapter implements StoragePort, OnModuleInit {
   constructor(private configService: AppConfigService) {}
 
   onModuleInit() {}

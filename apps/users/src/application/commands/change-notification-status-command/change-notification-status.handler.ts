@@ -1,13 +1,22 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ChangeNotificationCommand } from './change-notification-status.command';
+
 import { UserNotificationStatusChangedResponse } from '@app/contracts/users';
-import { UserCommandRepository } from '@users/infrastructure/repository';
+import {
+  USER_COMMAND_REROSITORY,
+  UserCommandRepositoryPort,
+} from '@users/application/ports';
+
+import { ChangeNotificationCommand } from './change-notification-status.command';
 
 @CommandHandler(ChangeNotificationCommand)
 export class ChangeNotificationCommandHandler
   implements ICommandHandler<ChangeNotificationCommand>
 {
-  constructor(private readonly userRepository: UserCommandRepository) {}
+  constructor(
+    @Inject(USER_COMMAND_REROSITORY)
+    private readonly userRepository: UserCommandRepositoryPort,
+  ) {}
 
   async execute({
     userChangeNotificationStatusDto,

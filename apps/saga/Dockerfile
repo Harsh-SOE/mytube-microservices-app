@@ -1,11 +1,11 @@
 FROM node:24-alpine AS base
 
-WORKDIR /usr/src/app
+WORKDIR /home/node
 
-RUN apk add --no-cache curl && \
-    curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe && \
-    chmod +x /usr/local/bin/grpc_health_probe && \
-    apk del curl
+RUN apk add --no-cache curl
+RUN curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe
+RUN chmod +x /usr/local/bin/grpc_health_probe
+RUN apk del curl
 
 COPY package.json yarn.lock ./
 
@@ -15,7 +15,7 @@ RUN yarn install --frozen-lockfile --production=false
 
 FROM base AS builder
 
-COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=build-dependencies /home/node/node_modules ./node_modules
 
 COPY apps/saga ./apps/saga
 COPY libs ./libs
@@ -27,9 +27,10 @@ RUN npx nest build saga
 
 FROM base AS development
 
-ENV NODE_ENV=development
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /home/node/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "saga"]
 
@@ -39,14 +40,14 @@ RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
-ENV NODE_ENV=production
+WORKDIR /home/node
 
-WORKDIR /home/node/app
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/dist/apps/saga ./apps/saga
-
-COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
+COPY --from=base /home/node/package.json /home/node/yarn.lock ./
+COPY --from=production-dependencies /home/node/node_modules ./node_modules
+COPY --from=builder /home/node/dist/apps/saga ./apps/saga
 
 USER node
 

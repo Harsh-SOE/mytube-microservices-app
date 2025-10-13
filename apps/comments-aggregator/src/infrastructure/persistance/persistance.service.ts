@@ -1,5 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from 'apps/comments-aggregator/generated/prisma';
+
+import { PrismaClient } from '@peristance/comments-aggregator';
 
 @Injectable()
 export class PersistanceService

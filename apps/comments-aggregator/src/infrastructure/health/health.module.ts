@@ -3,7 +3,6 @@ import { TerminusModule } from '@nestjs/terminus';
 
 import { AppHealthController } from './health.controller';
 import { AppHealthService } from './health.service';
-
 import { AppConfigModule } from '../config';
 
 @Module({

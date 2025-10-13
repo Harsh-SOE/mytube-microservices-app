@@ -7,16 +7,20 @@ import {
   VideoCommandRepository,
   VideoQueryRepository,
 } from '@videos/infrastructure/repository';
+import { videoEventHandler } from '@videos/domain/domain-events';
 import { VideoAggregateFactory } from '@videos/domain/factories';
 import { VideoAggregatePersistanceACL } from '@videos/infrastructure/anti-corruption';
-import { AppConfigModule, AppConfigService } from '@videos/config';
+import {
+  AppConfigModule,
+  AppConfigService,
+} from '@videos/infrastructure/config';
 import { LogsModule } from '@videos/infrastructure/logs';
 
 import { VideosService } from './videos.service';
 import { VideosController } from './videos.controller';
+
 import { videoQueryHandler, QueryModelResponseMapper } from '../queries';
 import { videoCommandHandlers } from '../commands';
-import { videoEventHandler } from '@videos/domain/domain-events';
 
 @Module({
   controllers: [VideosController],

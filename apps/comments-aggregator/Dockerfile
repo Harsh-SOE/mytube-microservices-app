@@ -1,6 +1,6 @@
 FROM node:24-alpine AS base
 
-WORKDIR /usr/src/app
+WORKDIR /home/node
 
 RUN apk add --no-cache curl
 
@@ -12,7 +12,7 @@ RUN yarn install --frozen-lockfile --production=false
 
 FROM base AS builder
 
-COPY --from=build-dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=build-dependencies /home/node/node_modules ./node_modules
 
 COPY apps/comments-aggregator ./apps/comments-aggregator
 COPY libs ./libs
@@ -26,9 +26,10 @@ RUN npx nest build comments-aggregator
 
 FROM base AS development
 
-ENV NODE_ENV=development
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /home/node/node_modules ./node_modules
 
 CMD ["yarn", "start:dev", "comments-aggregator"]
 
@@ -38,22 +39,23 @@ RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
-ENV NODE_ENV=production
+WORKDIR /home/node
 
-WORKDIR /home/node/app
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=production-dependencies /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/dist/apps/comments-aggregator ./apps/comments-aggregator
-
-COPY --from=builder /usr/src/app/apps/comments-aggregator/generated/prisma ./apps/comments-aggregator/generated/prisma
-COPY --from=builder /usr/src/app/apps/comments-aggregator/prisma/schema.prisma ./apps/comments-aggregator/prisma/schema.prisma
-
-COPY --from=base /usr/src/app/package.json /usr/src/app/yarn.lock ./
+COPY --from=base /home/node/package.json /home/node/yarn.lock ./
+COPY --from=production-dependencies /home/node/node_modules ./node_modules
+COPY --from=builder /home/node/apps/comments-aggregator/prisma/schema.prisma ./apps/comments-aggregator/prisma/schema.prisma
+COPY --from=builder /home/node/apps/comments-aggregator/generated/prisma ./apps/comments-aggregator/generated/prisma
+COPY --from=builder /home/node/dist/apps/comments-aggregator ./apps/comments-aggregator
 
 USER root
-RUN chown -R node:node /home/node/app/apps/comments-aggregator/prisma
-RUN chown -R node:node /home/node/app/apps/comments-aggregator/generated
-RUN chown -R node:node /home/node/app/node_modules/prisma
+
+RUN chown -R node:node /home/node/node_modules/prisma
+RUN chown -R node:node /home/node/apps/comments-aggregator/prisma
+RUN chown -R node:node /home/node/apps/comments-aggregator/generated/prisma
+
 USER node
 
 CMD ["node", "apps/comments-aggregator/src/main.js"]

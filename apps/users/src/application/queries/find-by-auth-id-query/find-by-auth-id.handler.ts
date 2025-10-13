@@ -1,6 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 import { UserQueryRepository } from '@users/infrastructure/repository';
+
 import { UserFoundResponse } from '@app/contracts/users';
 
 import { FindUserByAuthIdQuery } from './find-by-auth-id.query';

@@ -1,6 +1,7 @@
-import { GrpcApplicationError, ErrorPayload } from '../../common';
-import { Status } from '@grpc/grpc-js/build/src/constants';
 import { HttpStatus } from '@nestjs/common';
+import { Status } from '@grpc/grpc-js/build/src/constants';
+
+import { GrpcApplicationError, ErrorPayload } from '../../common';
 
 export class UserAlreadyExistsGrpcException extends GrpcApplicationError {
   constructor(public readonly message: string) {

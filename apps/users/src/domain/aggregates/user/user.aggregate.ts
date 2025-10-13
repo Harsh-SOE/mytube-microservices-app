@@ -5,12 +5,12 @@ import {
   ChangeLanguageEvent,
   ChangeNotificationStatusEvent,
   ChangeThemeEvent,
+  CreateProfileEvent,
   PhoneNumberVerfiedEvent,
   UpdateProfileEvent,
+  OnBoardingCompletedEvent,
 } from '@users/domain/events';
-import { OnBoardingCompletedEvent } from '@users/domain/events/onboarding-completed-event/onboarding-completed.event';
 
-// INFO: Here we just have one entity for now, but in future we can have multiple entities for user...
 export class UserAggregate extends AggregateRoot {
   public constructor(private user: UserEntity) {
     super();
@@ -22,6 +22,42 @@ export class UserAggregate extends AggregateRoot {
 
   private getUserEntity() {
     return this.user;
+  }
+
+  public static create(
+    id: string,
+    userAuthId: string,
+    handle: string,
+    email: string,
+    dob?: Date,
+    phoneNumber?: string,
+    isPhoneNumberVerified?: boolean,
+    notification?: boolean,
+    preferredTheme?: string,
+    preferredLanguage?: string,
+    isOnBoardingComplete?: boolean,
+    region?: string,
+  ): UserAggregate {
+    const userEntity = UserEntity.create(
+      id,
+      userAuthId,
+      handle,
+      email,
+      dob,
+      phoneNumber,
+      isPhoneNumberVerified,
+      notification,
+      preferredTheme,
+      preferredLanguage,
+      isOnBoardingComplete,
+      region,
+    );
+    const userAggregate = new UserAggregate(userEntity);
+
+    // add an event that user was created...
+    userAggregate.apply(new CreateProfileEvent(userAggregate));
+
+    return userAggregate;
   }
 
   public updateUserProfile(dob?: Date, phoneNumber?: string) {

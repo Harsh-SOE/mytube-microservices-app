@@ -21,7 +21,7 @@
     "docker:clean:volumes": "echo \"Cleaning docker's dangling volumes\" && (docker volume ls -qf dangling=true | xargs -r docker volume rm)",
     "docker:clean:images": "echo \"Cleaning docker's dangling images\" && (docker image ls -qf dangling=true | xargs -r docker image rm)",
     "docker:build:dev": "echo '----------------------> | Building application in development mode | <----------------------' && COMPOSE_PARALLEL_LIMIT=2 docker compose -f compose.yml -f compose.dev.yml build --parallel",
-    "docker:build:prod": "echo '----------------------> | Building application in production mode | <----------------------' && COMPOSE_PARALLEL_LIMIT=2 docker compose build --parallel",
+    "docker:build:prod": "echo '----------------------> | Building application in production mode | <----------------------' && COMPOSE_PARALLEL_LIMIT=2 docker compose build --parallel && docker builder prune --all -f",
     "app:build:prod": "yarn docker:clean:images && sleep 1 && yarn docker:clean:volumes && sleep 1 && yarn docker:build:prod",
     "app:build:dev": "yarn docker:clean:images && sleep 1 && yarn docker:clean:volumes && sleep 1 && yarn docker:build:dev",
     "docker:start:prod": "echo 'Starting apps in production mode...' && docker compose up",
@@ -163,6 +163,7 @@
       "^@app/errors(|/.*)$": "<rootDir>/libs/errors/src/$1",
       "^@app/grpc(|/.*)$": "<rootDir>/libs/grpc/src/$1",
       "^@app/persistance(|/.*)$": "<rootDir>/libs/persistance/src/$1",
+      "^@app/prisma-clients(|/.*)$": "<rootDir>/libs/prisma-clients/src/$1",
       "^@app/proto(|/.*)$": "<rootDir>/libs/proto/src/$1",
       "^@app/testing(|/.*)$": "<rootDir>/libs/testing/src/$1",
       "^@app/utils(|/.*)$": "<rootDir>/libs/utils/src/$1"

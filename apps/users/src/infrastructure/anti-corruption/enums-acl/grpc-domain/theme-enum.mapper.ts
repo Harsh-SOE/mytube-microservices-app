@@ -1,4 +1,5 @@
 import { UserTransportThemePreferences } from '@app/contracts/users';
+
 import { DomainThemePreference } from '@users/domain/enums';
 
 const GrpcToDomainThemeEnumMapper = new Map<

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/terminus';
 import { Admin, Kafka, logLevel } from 'kafkajs';
 
-import { AppConfigService } from '../config/config.service';
+import { AppConfigService } from '../config';
 
 @Injectable()
 export class AppHealthService implements OnModuleInit, OnModuleDestroy {

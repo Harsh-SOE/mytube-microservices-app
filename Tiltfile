@@ -1,37 +1,53 @@
-# Use docker-compose for databases, kafka, redis
-docker_compose('compose.yml')
+# Tiltfile (improved)
+docker_compose('compose.yml')  # infra: postgres, redis, kafka, etc.
 
-# Function to add a service
-def add_service(service_name, path):
+# List your services and the repo paths for them
+SERVICES = {
+  'users': './apps/users',
+  'videos': './apps/videos',
+  'cloud': './apps/cloud',
+  'email': './apps/email',
+  'likes': './apps/likes',
+  'video-transcoder': './apps/video-transcoder',
+  'saga': './apps/saga',
+  'likes-aggregator': './apps/likes-aggregator',
+  'views': './apps/views',
+  'views-aggregator': './apps/views-aggregator',
+  'comments-aggregator': './apps/comments-aggregator',
+  'comments': './apps/comments',
+  'hub': './apps/hub',
+  'gateway': './apps/api-gateway',
+}
+
+# Helper to create builds
+def add_service(service_name, rel_path):
+    # Use a dev-local image tag so it won't be mistaken for a real prod image.
     image_ref = "mytube/" + service_name + "/production"
+
+    # Choose a build context. If your Dockerfile needs root files (libs, package.json),
+    # use '.'; if it needs only the service folder + libs, set context to repo root still
+    # but keep dockerfile pointing to the service Dockerfile.
     docker_build(
         image_ref,
-        '.',
-        dockerfile=path + '/Dockerfile',
-        live_update=[
-            # Sync service code
-            sync(path, '/usr/src/app/apps/' + service_name),
-            # Sync shared libs
-            sync('./libs', '/usr/src/app/libs'),
-            # Install deps if package.json or yarn.lock changes
-            run('yarn install', trigger=['package.json', 'yarn.lock', './apps/*/package.json']),
-            # Build the specific service
-            run('yarn build ' + service_name, trigger=[path + '/src', './libs'])
+        '.',  # keep repo root here so Dockerfile can reference ../../libs or root package.json as needed
+        dockerfile = rel_path + '/Dockerfile',
+        live_update = [
+            # Sync service source into container
+            sync(rel_path, '/home/node/app/apps/' + service_name),
+
+            # Sync shared libs (monorepo)
+            sync('./libs', '/home/node/app/libs'),
+
+            # If your repo installs at root (yarn workspaces), trigger install when root lockfiles change
+            run('yarn install --frozen-lockfile', trigger=['./package.json', './yarn.lock',
+                                                           rel_path + '/package.json']),
+
+            # Run the same build command your Dockerfile would run.
+            # If your Dockerfile uses `npx nest build users`, mirror that here.
+            run('npx nest build ' + service_name, trigger=[rel_path + '/src', './libs'])
         ]
     )
 
-# Add all your services
-add_service('users', './apps/users')
-add_service('videos', './apps/videos')
-add_service('cloud', './apps/cloud')
-add_service('email', './apps/email')
-add_service('likes', './apps/likes')
-add_service('video-transcoder', './apps/video-transcoder')
-add_service('saga', './apps/saga')
-add_service('likes-aggregator', './apps/likes-aggregator')
-add_service('views', './apps/views')
-add_service('views-aggregator', './apps/views-aggregator')
-add_service('comments-aggregator', './apps/comments-aggregator')
-add_service('comments', './apps/comments')
-add_service('hub', './apps/hub')
-add_service('gateway', './apps/api-gateway')
+# Add each service
+for name, path in SERVICES.items():
+    add_service(name, path)

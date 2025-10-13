@@ -1,2 +1,2 @@
 export * from './grpc-domain';
-export * from './grpc-persistance';
+export * from './domain-grpc';

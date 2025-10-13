@@ -7,15 +7,16 @@ import { Prisma, User } from '@peristance/user';
 
 import { UserQueryModel } from '@users/application/queries';
 import { PersistanceService } from '@users/infrastructure/persistance';
+import { UserQueryRepositoryPort } from '@users/application/ports';
+
 import {
   DatabaseFilter,
   handlePrismaPersistanceOperation,
 } from '@app/infrastructure';
-import { IUserQueryRepository } from './prisma-entity-query.repository';
 
 @Injectable()
 export class UserQueryRepository
-  implements IUserQueryRepository<DatabaseFilter<User>, UserQueryModel>
+  implements UserQueryRepositoryPort<DatabaseFilter<User>, UserQueryModel>
 {
   constructor(private readonly persistanceService: PersistanceService) {}
   toPrismaFilter(

@@ -1,13 +1,15 @@
-import { AppConfigService } from '@likes-aggregator/config';
-import { WINSTON_LOGGER } from '@app/clients';
 import {
   Inject,
   Injectable,
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { Prisma, PrismaClient } from 'apps/likes-aggregator/generated/prisma';
 import winston from 'winston';
+
+import { Prisma, PrismaClient } from '@peristance/likes-aggregator';
+import { WINSTON_LOGGER } from '@app/clients';
+
+import { AppConfigService } from '@likes-aggregator/config';
 
 @Injectable()
 export class PersistanceService

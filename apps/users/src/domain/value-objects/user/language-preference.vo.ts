@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { UserEntityInvalidInputException } from '@app/errors';
+import { EntityInvalidInputException } from '@app/errors';
 
 export class UserLanguagePreference {
   private static UserLanguagePreferenceValidationSchema = z
@@ -22,7 +22,7 @@ export class UserLanguagePreference {
     if (!parsedDateResult.success) {
       const errorMessage = parsedDateResult.error.message;
       console.log(`Invalid DOB`);
-      throw new UserEntityInvalidInputException(
+      throw new EntityInvalidInputException(
         `Language validation failed. Reason: ${errorMessage}`,
       );
     }

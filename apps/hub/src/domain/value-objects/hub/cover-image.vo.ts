@@ -1,7 +1,7 @@
 import z from 'zod';
 import { Injectable } from '@nestjs/common';
 
-import { UserEntityInvalidInputException } from '@app/errors';
+import { EntityInvalidInputException } from '@app/errors';
 
 @Injectable()
 export class HubCoverImage {
@@ -14,7 +14,7 @@ export class HubCoverImage {
       HubCoverImage.hubCoverImageValidationSchema.safeParse(value);
     if (!parsedHubCoverImage.success) {
       const errorMessage = parsedHubCoverImage.error.message;
-      throw new UserEntityInvalidInputException(
+      throw new EntityInvalidInputException(
         `Hub's cover image validation failed. Reason: ${errorMessage}`,
       );
     }

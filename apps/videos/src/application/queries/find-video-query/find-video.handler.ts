@@ -1,7 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { FindVideoQuery } from './find-video.query';
+
 import { VideoFoundResponse } from '@app/contracts/videos';
+
 import { VideoQueryRepository } from '@videos/infrastructure/repository';
+
+import { FindVideoQuery } from './find-video.query';
 
 @QueryHandler(FindVideoQuery)
 export class FindVideoHandler implements IQueryHandler<FindVideoQuery> {
