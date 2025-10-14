@@ -8,15 +8,13 @@ import {
 } from '@app/infrastructure';
 
 import { Prisma, Hub } from '@peristance/hub';
+
 import { HubQueryModel } from '@hub/application/query';
 import { PersistanceService } from '@hub/infrastructure/persistance';
-
-import { IHubQueryRepository } from './prisma-entity-query.repository';
+import { HubQueryRepositoryPort } from '@hub/application/ports';
 
 @Injectable()
-export class HubQueryRepository
-  implements IHubQueryRepository<DatabaseFilter<Hub>, HubQueryModel>
-{
+export class HubQueryRepository implements HubQueryRepositoryPort {
   constructor(private readonly persistanceService: PersistanceService) {}
 
   toPrismaFilter(

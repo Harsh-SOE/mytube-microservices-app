@@ -1,10 +1,14 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Inject } from '@nestjs/common';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { HubCreatedResponse } from '@app/contracts/hub';
 
-import { HubCommandRepository } from '@hub/infrastructure/repository';
-import { HubAggregateFactory } from '@hub/domain/factories';
+import { HubAggregate } from '@hub/domain/aggregates';
+import {
+  HUB_COMMAND_REPOSITORY,
+  HubCommandRepositoryPort,
+} from '@hub/application/ports';
 
 import { CreateHubCommand } from './create-hub.command';
 
@@ -13,8 +17,9 @@ export class CreateHubCommandHandler
   implements ICommandHandler<CreateHubCommand>
 {
   public constructor(
-    public readonly hubCommandRepository: HubCommandRepository,
-    public readonly hubAggregateFactory: HubAggregateFactory,
+    @Inject(HUB_COMMAND_REPOSITORY)
+    private readonly hubCommandRepository: HubCommandRepositoryPort,
+    private readonly eventPublisher: EventPublisher,
   ) {}
 
   async execute({
@@ -25,16 +30,21 @@ export class CreateHubCommandHandler
 
     const id = uuidv4();
 
-    const hubAggregate = this.hubAggregateFactory.create(
-      id,
-      userId,
-      hubBio,
-      hubCoverImage,
-      isHubVerified,
-      isHubMonitized,
+    const hubAggregate = this.eventPublisher.mergeObjectContext(
+      HubAggregate.create(
+        id,
+        userId,
+        hubBio,
+        hubCoverImage,
+        isHubVerified,
+        isHubMonitized,
+      ),
     );
 
-    await this.hubCommandRepository.createOne(hubAggregate);
+    await this.hubCommandRepository.save(hubAggregate);
+
+    hubAggregate.commit();
+
     return { hubId: id, response: `Channel created successfully` };
   }
 }

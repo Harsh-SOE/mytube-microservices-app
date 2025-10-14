@@ -7,17 +7,15 @@ import {
   handlePrismaPersistanceOperation,
 } from '@app/infrastructure';
 
-import { HubAggregate } from '@hub/domain/aggregates';
 import { Hub, Prisma } from '@peristance/hub';
+
+import { HubAggregate } from '@hub/domain/aggregates';
 import { PersistanceService } from '@hub/infrastructure/persistance';
 import { HubAggregatePersistanceACL } from '@hub/infrastructure/anti-corruption';
-
-import { IHubCommandRepository } from './prisma-entity-command.repository';
+import { HubCommandRepositoryPort } from '@hub/application/ports';
 
 @Injectable()
-export class HubCommandRepository
-  implements IHubCommandRepository<HubAggregate, Hub>
-{
+export class HubCommandRepository implements HubCommandRepositoryPort {
   public constructor(
     private readonly channelEntityPeristanceACL: HubAggregatePersistanceACL,
     private readonly peristanceService: PersistanceService,
@@ -154,7 +152,7 @@ export class HubCommandRepository
   }
 
   @LogExecutionTime()
-  public async createOne(domain: HubAggregate): Promise<HubAggregate> {
+  public async save(domain: HubAggregate): Promise<HubAggregate> {
     const createdEntityOperation = async () => {
       return await this.peristanceService.hub.create({
         data: {
@@ -169,7 +167,7 @@ export class HubCommandRepository
   }
 
   @LogExecutionTime()
-  public async createMany(domains: HubAggregate[]): Promise<number> {
+  public async saveMany(domains: HubAggregate[]): Promise<number> {
     const createdEntityOperation = async () => {
       return await this.peristanceService.hub.createMany({
         data: domains.map((domain) =>

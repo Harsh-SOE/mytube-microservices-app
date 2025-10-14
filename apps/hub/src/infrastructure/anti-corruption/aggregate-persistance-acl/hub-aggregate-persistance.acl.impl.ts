@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { IAggregatePersistanceACL } from '@app/infrastructure';
 
 import { Hub } from '@peristance/hub';
+
 import { HubAggregate } from '@hub/domain/aggregates';
 import { HubEntity } from '@hub/domain/entities';
 import { HubBio, HubCoverImage, HubUserId } from '@hub/domain/value-objects';

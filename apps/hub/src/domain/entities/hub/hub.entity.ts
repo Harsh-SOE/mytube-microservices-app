@@ -48,6 +48,24 @@ export class HubEntity {
     };
   }
 
+  public static create(
+    id: string,
+    userId: string,
+    bio?: string,
+    coverImage?: string,
+    isHubVerified?: boolean,
+    isHubMonitized?: boolean,
+  ): HubEntity {
+    return new HubEntity(
+      id,
+      HubUserId.create(userId),
+      HubBio.create(bio),
+      HubCoverImage.create(coverImage),
+      isHubVerified,
+      isHubMonitized,
+    );
+  }
+
   public updateHubBio(bio?: string) {
     this.bio = HubBio.create(bio);
     return;

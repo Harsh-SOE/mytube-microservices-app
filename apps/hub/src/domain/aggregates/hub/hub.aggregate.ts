@@ -2,7 +2,11 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { Injectable } from '@nestjs/common';
 
 import { HubEntity } from '@hub/domain/entities';
-import { HubMonitizedEvent, HubUpdatedEvent } from '@hub/application/events';
+import {
+  HubCreatedEvent,
+  HubMonitizedEvent,
+  HubUpdatedEvent,
+} from '@hub/application/events';
 
 @Injectable()
 export class HubAggregate extends AggregateRoot {
@@ -16,6 +20,28 @@ export class HubAggregate extends AggregateRoot {
 
   public getHubSnapshot() {
     return this.hubEntity.getHubSnapshot();
+  }
+
+  public static create(
+    id: string,
+    userId: string,
+    bio?: string,
+    coverImage?: string,
+    isHubVerified?: boolean,
+    isHubMonitized?: boolean,
+  ): HubAggregate {
+    const hubEntity = HubEntity.create(
+      id,
+      userId,
+      bio,
+      coverImage,
+      isHubVerified,
+      isHubMonitized,
+    );
+    const hubAggregate = new HubAggregate(hubEntity);
+
+    hubAggregate.apply(new HubCreatedEvent(hubAggregate));
+    return hubAggregate;
   }
 
   public updateHubDetails(bio?: string, coverImage?: string) {

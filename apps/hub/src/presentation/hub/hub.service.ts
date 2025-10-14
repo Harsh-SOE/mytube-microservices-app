@@ -19,8 +19,8 @@ import {
   CreateHubCommand,
   UpdateHubCommand,
   VerifyHubCommand,
-} from '../commands';
-import { FindHubByIdQuery } from '../query';
+} from '@hub/application/commands';
+import { FindHubByIdQuery } from '@hub/application/query';
 
 @Injectable()
 export class HubService {
