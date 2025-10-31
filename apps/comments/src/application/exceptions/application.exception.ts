@@ -11,7 +11,7 @@ export type ApplicationExceptionOptions = {
   meta?: Record<string, any>;
 };
 
-export class InfrastructureException extends Error {
+export class ApplicationException extends Error {
   public readonly timestamp: Date;
   public readonly code: string;
   public readonly severity: ApplicationOperationFailureLevel;
