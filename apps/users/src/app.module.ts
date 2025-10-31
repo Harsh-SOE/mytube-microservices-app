@@ -5,7 +5,6 @@ import { LogsModule } from '@users/infrastructure/logs';
 import { MeasureModule } from '@users/infrastructure/measure';
 import { AppConfigModule } from '@users/infrastructure/config';
 
-import { MessageBrokerModule } from './infrastructure/message-broker';
 import { AppHealthModule } from './infrastructure/health';
 import { UserModule } from './presentation/users';
 
@@ -16,7 +15,6 @@ import { UserModule } from './presentation/users';
     MeasureModule,
     LogsModule,
     AppConfigModule,
-    MessageBrokerModule,
     AppHealthModule,
   ],
 })

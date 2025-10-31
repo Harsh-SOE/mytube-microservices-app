@@ -5,7 +5,7 @@ import { UserPhoneNumberVerifiedResponse } from '@app/contracts/users';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports';
+} from '@users/application/ports/repository';
 
 import { VerifyPhoneNumberCommand } from './verify-phone-number.command';
 

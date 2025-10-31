@@ -2,10 +2,11 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { UserNotificationStatusChangedResponse } from '@app/contracts/users';
+
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports';
+} from '@users/application/ports/repository';
 
 import { ChangeNotificationCommand } from './change-notification-status.command';
 

@@ -6,7 +6,7 @@ import { UserProfileUpdatedResponse } from '@app/contracts/users';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports';
+} from '@users/application/ports/repository';
 
 import { UpdateProfileCommand } from './update-profile.command';
 

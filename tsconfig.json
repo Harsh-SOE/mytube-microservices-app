@@ -47,7 +47,6 @@
       "@videos/*": ["apps/videos/src/*"],
       "@views-aggregator/*": ["apps/views-aggregator/src/*"],
       "@views/*": ["apps/views/src/*"],
-      "@comments-aggregator/*": ["apps/comments-aggregator/src/*"],
       "@peristance/likes-aggregator": [
         "apps/likes-aggregator/generated/prisma"
       ],
@@ -58,9 +57,7 @@
         "apps/views-aggregator/generated/prisma"
       ],
       "@peristance/hub": ["apps/hub/generated/prisma"],
-      "@peristance/comments-aggregator": [
-        "apps/comments-aggregator/generated/prisma"
-      ]
+      "@peristance/comments": ["apps/comments/generated/prisma"]
     }
   }
 }

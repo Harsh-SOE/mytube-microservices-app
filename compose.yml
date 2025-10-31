@@ -89,8 +89,6 @@ services:
   comments-database:
     image: postgres:latest
     container_name: comments-database
-    env_file:
-      - apps/comments-aggregator/.env
     environment:
       POSTGRES_USER: harsh
       POSTGRES_PASSWORD: harsh123
@@ -243,8 +241,6 @@ services:
       views-aggregator:
         condition: service_healthy
       comments:
-        condition: service_healthy
-      comments-aggregator:
         condition: service_healthy
       cloud:
         condition: service_healthy
@@ -452,8 +448,6 @@ services:
       likes-aggregator:
         condition: service_healthy
       comments:
-        condition: service_healthy
-      comments-aggregator:
         condition: service_healthy
       email:
         condition: service_healthy
@@ -819,40 +813,11 @@ services:
       redis-cache:
         condition: service_healthy
 
-  comments-aggregator:
-    image: mytube/comments-aggregator/production:latest
-    container_name: comments-aggregator
-    build:
-      context: .
-      dockerfile: apps/comments-aggregator/Dockerfile
-      target: production
-    env_file:
-      - apps/comments-aggregator/.env
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    networks:
-      - services
-      - cache
-      - message-broker
-      - observer
-      - comments-database-network
-    healthcheck: *message-broker-healthcheck
-    deploy: *service_resources
-    depends_on:
-      kafka:
-        condition: service_healthy
-      redis-cache:
-        condition: service_healthy
-      comments-database:
-        condition: service_healthy
-      comments-aggregator-migrate:
-        condition: service_completed_successfully
-
-  comments-aggregator-migrate:
-    image: mytube/comments-aggregator/production:latest
+  comments-migrate:
+    image: mytube/comments/production:latest
     container_name: comments-database-migrate
     env_file:
-      - apps/comments-aggregator/.env
+      - apps/comments/.env
     networks:
       - services
       - cache
@@ -868,7 +833,7 @@ services:
         "--name",
         "initialize",
         "--schema",
-        "apps/comments-aggregator/prisma/schema.prisma",
+        "apps/comments/prisma/schema.prisma",
       ]
     depends_on:
       comments-database:

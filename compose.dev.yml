@@ -220,24 +220,6 @@ services:
     #     - action: rebuild
     #       path: package*.json
 
-  comments-aggregator:
-    image: comments-aggregator-dev
-    build:
-      target: development
-    command: yarn start:dev comments-aggregator
-    volumes:
-      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
-      - .:/usr/src/app # Mount source code
-    # develop: &hot-reload
-    #   watch:
-    #     - path: .
-    #       action: sync
-    #       target: /usr/src/app
-    #       ignore:
-    #         - node_modules
-    #     - action: rebuild
-    #       path: package*.json
-
   views:
     image: views-dev
     build:

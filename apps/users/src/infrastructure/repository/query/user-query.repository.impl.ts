@@ -7,7 +7,7 @@ import { Prisma, User } from '@peristance/user';
 
 import { UserQueryModel } from '@users/application/queries';
 import { PersistanceService } from '@users/infrastructure/persistance';
-import { UserQueryRepositoryPort } from '@users/application/ports';
+import { UserQueryRepositoryPort } from '@users/application/ports/repository';
 
 import {
   DatabaseFilter,

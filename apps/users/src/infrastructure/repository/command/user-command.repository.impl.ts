@@ -12,7 +12,7 @@ import { Prisma, User } from '@peristance/user';
 import { UserAggregate } from '@users/domain/aggregates';
 import { PersistanceService } from '@users/infrastructure/persistance';
 import { UserAggregatePersistanceACL } from '@users/infrastructure/anti-corruption';
-import { UserCommandRepositoryPort } from '@users/application/ports';
+import { UserCommandRepositoryPort } from '@users/application/ports/repository';
 
 @Injectable()
 export class UserCommandRepository implements UserCommandRepositoryPort {

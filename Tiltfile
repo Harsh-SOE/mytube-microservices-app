@@ -13,7 +13,6 @@ SERVICES = {
   'likes-aggregator': './apps/likes-aggregator',
   'views': './apps/views',
   'views-aggregator': './apps/views-aggregator',
-  'comments-aggregator': './apps/comments-aggregator',
   'comments': './apps/comments',
   'hub': './apps/hub',
   'gateway': './apps/api-gateway',

@@ -17,12 +17,14 @@ import {
   UserQueryRepository,
   UserCommandRepository,
 } from '@users/infrastructure/repository';
+import { MESSAGE_BROKER } from '@users/application/ports/message-broker';
 import { UserAggregatePersistanceACL } from '@users/infrastructure/anti-corruption';
 import { PersistanceService } from '@users/infrastructure/persistance';
+import { MessageBrokerService } from '@users/infrastructure/message-broker';
 import {
   USER_COMMAND_REROSITORY,
   USER_QUERY_REROSITORY,
-} from '@users/application/ports';
+} from '@users/application/ports/repository';
 
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
@@ -42,12 +44,20 @@ import { UserController } from './user.controller';
         useFactory: (configService: AppConfigService) =>
           configService.EMAIL_SERVICE_OPTIONS,
       },
+      {
+        name: CLIENT_PROVIDER.WATCH,
+        imports: [AppConfigModule],
+        inject: [AppConfigService],
+        useFactory: (configService: AppConfigService) =>
+          configService.WATCH_SERVICE_OPTIONS,
+      },
     ]),
   ],
   providers: [
     UserService,
     PersistanceService,
     AppConfigService,
+    UserAggregatePersistanceACL,
     {
       provide: USER_COMMAND_REROSITORY,
       useClass: UserCommandRepository,
@@ -56,7 +66,10 @@ import { UserController } from './user.controller';
       provide: USER_QUERY_REROSITORY,
       useClass: UserQueryRepository,
     },
-    UserAggregatePersistanceACL,
+    {
+      provide: MESSAGE_BROKER,
+      useClass: MessageBrokerService,
+    },
     ...UserCommandHandlers,
     ...UserEventHandlers,
     ...UserQueryHandlers,

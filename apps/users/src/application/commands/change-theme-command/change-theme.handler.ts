@@ -7,7 +7,7 @@ import { GrpcToDomainThemeEnumMapper } from '@users/infrastructure/anti-corrupti
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports';
+} from '@users/application/ports/repository';
 
 import { ChangeThemeCommand } from './change-theme.command';
 

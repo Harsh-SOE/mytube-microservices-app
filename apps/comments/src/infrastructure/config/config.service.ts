@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GrpcOptions, KafkaOptions, Transport } from '@nestjs/microservices';
+import { GrpcOptions, Transport } from '@nestjs/microservices';
 import { ReflectionService } from '@grpc/reflection';
 import { join } from 'path';
 
@@ -49,18 +49,6 @@ export class AppConfigService {
     };
   }
 
-  get AGGREGATOR_CLIENT_ID() {
-    return this.configService.getOrThrow<string>(
-      'COMMENTS_AGGREGATOR_CLIENT_ID',
-    );
-  }
-
-  get AGGREGATOR_CONSUMER_GROUP_ID() {
-    return this.configService.getOrThrow<string>(
-      'COMMENTS_AGGREGATOR_CONSUMER_GROUP_ID',
-    );
-  }
-
   get MESSAGE_BROKER_SERVICE_HOST() {
     return this.configService.getOrThrow<string>('KAFKA_SERVICE_HOST');
   }
@@ -69,27 +57,11 @@ export class AppConfigService {
     return this.configService.getOrThrow<number>('KAFKA_SERVICE_PORT');
   }
 
-  get COMMENTS_AGGREGATOR_SERVICE_OPTIONS(): KafkaOptions {
-    return {
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          clientId: this.AGGREGATOR_CLIENT_ID,
-          brokers: [
-            `${this.MESSAGE_BROKER_SERVICE_HOST}:${this.MESSAGE_BROKER_SERVICE_PORT}`,
-          ],
-          connectionTimeout: 30000,
-          retry: {
-            initialRetryTime: 300,
-            retries: 10,
-          },
-        },
-        consumer: {
-          groupId: this.AGGREGATOR_CONSUMER_GROUP_ID,
-          sessionTimeout: 30000,
-          allowAutoTopicCreation: true,
-        },
-      },
-    };
+  get COMMENT_STREAM_KEY() {
+    return this.configService.getOrThrow<string>('COMMENT_STREAM_KEY');
+  }
+
+  get COMMENT_STREAM_GROUPNAME() {
+    return this.configService.getOrThrow<string>('COMMENT_STREAM_GROUPNAME');
   }
 }

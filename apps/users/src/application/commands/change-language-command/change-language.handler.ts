@@ -6,7 +6,7 @@ import { UserPreferredLanguageChangedResponse } from '@app/contracts/users';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports';
+} from '@users/application/ports/repository';
 
 import { ChangeLanguageCommand } from './change-language.command';
 

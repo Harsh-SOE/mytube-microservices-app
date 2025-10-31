@@ -23,6 +23,8 @@ COPY nest-cli.json ./nest-cli.json
 COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.build.json ./tsconfig.build.json
 
+RUN npx prisma generate --schema ./apps/comments/prisma/schema.prisma
+
 RUN npx nest build comments
 
 FROM base AS development
@@ -47,7 +49,15 @@ ENV NODE_ENV=${NODE_ENV}
 
 COPY --from=base /home/node/package.json /home/node/yarn.lock ./
 COPY --from=production-dependencies /home/node/node_modules ./node_modules
+COPY --from=builder /home/node/apps/comments/prisma/schema.prisma ./apps/comments/prisma/schema.prisma
+COPY --from=builder /home/node/apps/comments/generated/prisma ./apps/comments/generated/prisma
 COPY --from=builder /home/node/dist/apps/comments ./apps/comments
+
+USER root
+
+RUN chown -R node:node /home/node/node_modules/prisma
+RUN chown -R node:node /home/node/apps/comments/prisma
+RUN chown -R node:node /home/node/apps/comments/generated/prisma
 
 USER node
 

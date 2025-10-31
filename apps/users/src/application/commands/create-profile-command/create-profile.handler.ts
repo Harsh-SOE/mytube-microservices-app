@@ -5,9 +5,9 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports';
-
+} from '@users/application/ports/repository';
 import { UserAggregate } from '@users/domain/aggregates';
+
 import { UserProfileCreatedResponse } from '@app/contracts/users';
 
 import { CreateProfileCommand } from './create-profile.command';
