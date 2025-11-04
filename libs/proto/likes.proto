@@ -2,18 +2,18 @@ syntax = "proto3";
 
 package Like;
 
-enum LikeTransportStatus {
-  TRANSPORT_LIKE = 0;
-  TRANSPORT_UNLIKE = 1;
-  TRANSPORT_DISLIKE = 2;
-  TRANSPORT_UNDISLIKE = 3;
+enum ReactionType {
+  REACTION_LIKE = 0;
+  REACTION_UNLIKE = 1;
+  REACTION_DISLIKE = 2;
+  REACTION_UNDISLIKE = 3;
 }
 
 
-message ModifyLikeStatusForVideoDto {
+message VideoLikeActionDto {
   string userId = 1;
   string videoId = 2;
-  LikeTransportStatus likeStatus = 3;
+  ReactionType reaction = 3;
 }
 
 message LikesFindForUserForVideoDto {
@@ -29,7 +29,7 @@ message DislikesFindCountForAVideoDto {
   string videoId = 1;
 }
 
-message LikeModifiedStatusForVideoResponse {
+message LikeActionResponse {
   string response = 1;
 }
 
@@ -37,7 +37,7 @@ message LikeFoundForVideoResponse {
   string id = 1;
   string userId = 2;
   string videoId = 3;
-  LikeTransportStatus likeStatus = 4;
+  ReactionType reaction = 4;
 }
 
 message LikesFoundResponse {
@@ -70,7 +70,7 @@ message LikesHealthCheckResponse {
 }
 
 service LikeService {
-  rpc modifyLikeStatusForVideo(ModifyLikeStatusForVideoDto) returns (LikeModifiedStatusForVideoResponse) {}
+  rpc videoLikeAction(VideoLikeActionDto) returns (LikeActionResponse) {}
   rpc getLikesCountForVideo(LikesFindCountForAVideoDto) returns (LikesFindCountForAVideoResponse) {}
   rpc getDislikesCountForVideo(DislikesFindCountForAVideoDto) returns (DislikesFindCountForAVideoResponse) {}
   rpc findLikeOfUserForAVideo(LikesFindForUserForVideoDto) returns (LikeFoundForVideoResponse) {}

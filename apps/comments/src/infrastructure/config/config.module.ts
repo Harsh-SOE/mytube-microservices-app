@@ -20,6 +20,7 @@ import { AppConfigService } from './config.service';
         KAFKA_SERVICE_PORT: joi.number().required(),
         COMMENT_STREAM_KEY: joi.string().required(),
         COMMENT_STREAM_GROUPNAME: joi.string().required(),
+        DATABASE_URL: joi.string().required(),
       }),
     }),
   ],

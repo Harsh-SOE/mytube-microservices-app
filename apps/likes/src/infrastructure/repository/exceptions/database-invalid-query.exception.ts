@@ -1,0 +1,44 @@
+import { Components } from '@likes/infrastructure/config';
+import {
+  DATABASE_EXCEPTION,
+  InfrastructureException,
+  InfrastructureOperationFailureLevel,
+} from '@likes/infrastructure/exceptions';
+
+export type DatabaseInvalidExceptionExceptionMetaData = {
+  host?: string;
+  port?: number;
+  query?: Record<string, any> | string;
+  operationType?: string;
+  entry?: Record<string, any>;
+  filter?: Record<string, any>;
+  retryAttempt?: number;
+};
+
+export type DatabaseInvalidExceptionOptions = {
+  message?: string;
+  meta?: DatabaseInvalidExceptionExceptionMetaData;
+  contextError?: Error;
+  operation?: string;
+};
+
+export class DatabaseInvalidQueryException extends InfrastructureException {
+  constructor(options: DatabaseInvalidExceptionOptions) {
+    const {
+      message = `Invalid Query for an operation recieved`,
+      contextError,
+      meta,
+      operation,
+    } = options;
+
+    super({
+      code: DATABASE_EXCEPTION.DATABASE_INVALID_QUERY_EXCEPTION,
+      message,
+      component: Components.DATABASE,
+      operation: operation || 'unknown',
+      severity: InfrastructureOperationFailureLevel.ERROR,
+      contextError,
+      meta,
+    });
+  }
+}

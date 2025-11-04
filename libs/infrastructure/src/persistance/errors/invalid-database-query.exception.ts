@@ -1,15 +1,41 @@
-import { HttpStatus } from '@nestjs/common';
-import { Status } from '@grpc/grpc-js/build/src/constants';
-import { GrpcApplicationError, ErrorPayload } from '@app/errors';
+import { Components } from '@likes/infrastructure/config';
+import {
+  DATABASE_EXCEPTION,
+  InfrastructureException,
+  InfrastructureOperationFailureLevel,
+} from '@likes/infrastructure/exceptions';
 
-export class InvalidDatabaseQueryException extends GrpcApplicationError {
-  constructor(public readonly message: string) {
-    const payload: ErrorPayload = {
-      statusCode: 'INVALID_DATABASE_QUERY_EXCEPTION',
-      errorCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      stack: new Error().stack,
-    };
+export type DatabaseInvalidExceptionExceptionMetaData = {
+  host?: string;
+  port?: number;
+  query?: string;
+  retryAttempt?: number;
+};
 
-    super(Status.INTERNAL, message, payload);
+export type DatabaseInvalidExceptionExceptionOptions = {
+  message?: string;
+  meta?: DatabaseInvalidExceptionExceptionMetaData;
+  contextError?: Error;
+  operation?: string;
+};
+
+export class DatabaseInvalidQueryException extends InfrastructureException {
+  constructor(options: DatabaseInvalidExceptionExceptionOptions) {
+    const {
+      message = `An unknown database error has occured`,
+      contextError,
+      meta,
+      operation,
+    } = options;
+
+    super({
+      code: DATABASE_EXCEPTION.DATABASE_INVALID_QUERY_EXCEPTION,
+      message,
+      component: Components.DATABASE,
+      operation: operation || 'unknown',
+      severity: InfrastructureOperationFailureLevel.ERROR,
+      contextError,
+      meta,
+    });
   }
 }

@@ -47,9 +47,7 @@
       "@videos/*": ["apps/videos/src/*"],
       "@views-aggregator/*": ["apps/views-aggregator/src/*"],
       "@views/*": ["apps/views/src/*"],
-      "@peristance/likes-aggregator": [
-        "apps/likes-aggregator/generated/prisma"
-      ],
+      "@peristance/likes": ["apps/likes/generated/prisma"],
       "@peristance/user": ["apps/users/generated/prisma"],
       "@peristance/videos": ["apps/videos/generated/prisma"],
       "@persistance/auth": ["apps/auth/generated/prisma"],

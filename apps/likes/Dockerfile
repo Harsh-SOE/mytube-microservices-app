@@ -23,6 +23,8 @@ COPY nest-cli.json ./nest-cli.json
 COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.build.json ./tsconfig.build.json
 
+RUN npx prisma generate --schema ./apps/likes-aggregator/prisma/schema.prisma
+
 RUN npx nest build likes
 
 FROM base AS development
@@ -47,7 +49,15 @@ ENV NODE_ENV=${NODE_ENV}
 
 COPY --from=base /home/node/package.json /home/node/yarn.lock ./
 COPY --from=production-dependencies /home/node/node_modules ./node_modules
+COPY --from=builder /home/node/apps/likes/prisma/schema.prisma ./apps/likes/prisma/schema.prisma
+COPY --from=builder /home/node/apps/likes/generated/prisma ./apps/likes/generated/prisma
 COPY --from=builder /home/node/dist/apps/likes ./apps/likes
+
+USER root
+
+RUN chown -R node:node /home/node/node_modules/prisma
+RUN chown -R node:node /home/node/apps/likes/generated/prisma
+RUN chown -R node:node /home/node/apps/likes/prisma
 
 USER node
 

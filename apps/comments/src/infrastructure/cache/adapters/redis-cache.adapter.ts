@@ -72,6 +72,22 @@ export class RedisCacheAdapter implements CachePort, OnModuleInit {
     return 'OK';
   }
 
+  async saveManyInCache(
+    keyValues: Record<string, string>,
+    options: CacheSetoptions,
+  ): Promise<'OK'> {
+    const redisPipeline = this.redisClient.pipeline();
+    for (const [key, value] of Object.entries(keyValues)) {
+      if (options.setTTL) {
+        redisPipeline.set(key, value, 'PX', options.TTL);
+      } else {
+        redisPipeline.set(key, value);
+      }
+    }
+    await redisPipeline.exec();
+    return 'OK';
+  }
+
   async fetchFromCache(key: string): Promise<string | null> {
     const redisCacheGetOperation = async () => await this.redisClient.get(key);
     return await this.handler.filter(redisCacheGetOperation, {
@@ -80,6 +96,10 @@ export class RedisCacheAdapter implements CachePort, OnModuleInit {
       logErrors: true,
       suppressErrors: false,
     });
+  }
+
+  async fetchManyFromCache(keys: string[]): Promise<Array<string | null>> {
+    return await this.redisClient.mget(...keys);
   }
 
   async deleteFromCache(key: string): Promise<'DELETED'> {

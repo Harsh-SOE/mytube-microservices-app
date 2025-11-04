@@ -1,7 +1,7 @@
--- KEYS[1] = disliked by users set key (vdu:{videoId})
--- KEYS[2] = liked by users set key (vlu:{videoId})
--- KEYS[3] = video dislikes counter key (vdc:{videoId}:{shard})
--- KEYS[4] = video likes counter key (vlc:{videoId}:{shard})
+-- KEYS[1] = disliked by users set key (videoDislikedByUsers:{videoId})
+-- KEYS[2] = liked by users set key (videoLikedByUsers:{videoId})
+-- KEYS[3] = video dislikes counter key (videoDislikesCounter:{videoId}:{shard})
+-- KEYS[4] = video likes counter key (videoLikesCounter:{videoId}:{shard})
 -- ARGV[1] = userId
 local fromLike = redis.call('SREM', KEYS[2], ARGV[1])
 if fromLike == 1 then

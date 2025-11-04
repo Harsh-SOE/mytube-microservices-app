@@ -234,8 +234,6 @@ services:
         condition: service_healthy
       likes:
         condition: service_healthy
-      likes-aggregator:
-        condition: service_healthy
       views:
         condition: service_healthy
       views-aggregator:
@@ -444,8 +442,6 @@ services:
       views-aggregator:
         condition: service_healthy
       likes:
-        condition: service_healthy
-      likes-aggregator:
         condition: service_healthy
       comments:
         condition: service_healthy
@@ -758,30 +754,6 @@ services:
       - observer
       - message-broker
     healthcheck: *grpc-healthcheck
-    deploy: *service_resources
-    depends_on:
-      kafka:
-        condition: service_healthy
-      redis-cache:
-        condition: service_healthy
-
-  likes-aggregator:
-    image: mytube/likes-aggregator/production:latest
-    container_name: likes-aggregator
-    build:
-      context: .
-      dockerfile: apps/likes-aggregator/Dockerfile
-      target: production
-    env_file:
-      - apps/likes-aggregator/.env
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    networks:
-      - services
-      - cache
-      - observer
-      - message-broker
-    healthcheck: *message-broker-healthcheck
     deploy: *service_resources
     depends_on:
       kafka:

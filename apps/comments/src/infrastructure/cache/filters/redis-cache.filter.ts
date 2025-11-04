@@ -20,11 +20,8 @@ import {
   CacheWriteException,
   CacheTimeoutException,
 } from '@comments/infrastructure/cache/exceptions';
-import { AppConfigService } from '@comments/infrastructure/config';
-import {
-  WinstonLoggerAdapter,
-  Components,
-} from '@comments/infrastructure/logger';
+import { AppConfigService, Components } from '@comments/infrastructure/config';
+import { WinstonLoggerAdapter } from '@comments/infrastructure/logger';
 
 import { RedisOptions } from '../types';
 

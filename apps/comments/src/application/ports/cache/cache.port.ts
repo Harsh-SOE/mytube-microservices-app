@@ -7,7 +7,14 @@ export interface CachePort {
     options: CacheSetoptions,
   ): Promise<'OK'>;
 
+  saveManyInCache(
+    keyValues: Record<string, string>,
+    options: CacheSetoptions,
+  ): Promise<'OK'>;
+
   fetchFromCache(key: string): Promise<string | null>;
+
+  fetchManyFromCache(keys: string[]): Promise<Array<string | null>>;
 
   deleteFromCache(key: string): Promise<'DELETED'>;
 

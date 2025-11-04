@@ -1,7 +1,7 @@
 export interface LoggerPort {
   info(message: string, meta?: Record<string, any>): void;
 
-  error(message: string, meta?: Record<string, string>): void;
+  error(message: string, meta?: Record<string, any>): void;
 
   alert(message: string, meta?: Record<string, any>): void;
 

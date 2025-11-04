@@ -10,7 +10,6 @@ SERVICES = {
   'likes': './apps/likes',
   'video-transcoder': './apps/video-transcoder',
   'saga': './apps/saga',
-  'likes-aggregator': './apps/likes-aggregator',
   'views': './apps/views',
   'views-aggregator': './apps/views-aggregator',
   'comments': './apps/comments',

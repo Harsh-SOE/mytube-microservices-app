@@ -32,6 +32,10 @@ export class AppConfigService {
     return this.configService.getOrThrow<number>('CACHE_PORT');
   }
 
+  public get DATABASE_URL() {
+    return this.configService.getOrThrow<string>('DATABASE_URL');
+  }
+
   public get SERVICE_OPTION(): GrpcOptions {
     return {
       transport: Transport.GRPC,
