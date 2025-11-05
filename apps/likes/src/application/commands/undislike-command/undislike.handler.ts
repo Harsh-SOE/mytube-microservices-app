@@ -28,7 +28,7 @@ export class UnDislikeCommandHandler
     @Inject(BUFFER_PORT) private readonly bufferAdapter: BufferPort,
   ) {}
 
-  async execute({
+  public async execute({
     videoLikeDto,
   }: UnDislikeCommand): Promise<LikeActionResponse> {
     const { userId, videoId, reaction } = videoLikeDto;

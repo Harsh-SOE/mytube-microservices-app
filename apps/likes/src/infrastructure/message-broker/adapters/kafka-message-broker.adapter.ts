@@ -1,4 +1,9 @@
-import { Inject, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
@@ -8,24 +13,25 @@ import { MessageBrokerPort } from '@likes/application/ports';
 
 import { KafkaMessageHandler } from '../filter';
 
+@Injectable()
 export class KafkaMessageBrokerAdapter
   implements MessageBrokerPort, OnModuleInit, OnModuleDestroy
 {
-  constructor(
+  public constructor(
     @Inject(CLIENT_PROVIDER.COMMENTS_AGGREGATOR)
     private kafkaClient: ClientKafka,
     private kafkaFilter: KafkaMessageHandler,
   ) {}
 
-  async onModuleInit() {
+  public async onModuleInit() {
     await this.kafkaClient.connect();
   }
 
-  async onModuleDestroy() {
+  public async onModuleDestroy() {
     await this.kafkaClient.close();
   }
 
-  async publishMessage<TPayload>(
+  public async publishMessage<TPayload>(
     topic: string,
     payload: TPayload,
   ): Promise<void> {
@@ -41,7 +47,7 @@ export class KafkaMessageBrokerAdapter
     });
   }
 
-  async send<TPayload, TResponse>(
+  public async send<TPayload, TResponse>(
     topic: string,
     payload: TPayload,
   ): Promise<TResponse> {
@@ -59,7 +65,7 @@ export class KafkaMessageBrokerAdapter
     return await firstValueFrom(response$);
   }
 
-  async subscribeTo(topic: string): Promise<void> {
+  public async subscribeTo(topic: string): Promise<void> {
     const kafkaSubscribeOperation = () =>
       this.kafkaClient.subscribeToResponseOf(topic);
     await this.kafkaFilter.filter(kafkaSubscribeOperation, {

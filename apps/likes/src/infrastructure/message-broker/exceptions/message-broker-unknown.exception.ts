@@ -5,11 +5,11 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type MessageBrokerUnknownExceptionMetadata = {
-  topic?: string;
-  message?: string;
   host?: string;
   port?: number;
   retryAttempt?: number;
+  topic?: string;
+  message?: string;
 };
 
 export type MessageBrokerUnknownExceptionOptions = {

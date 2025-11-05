@@ -6,10 +6,10 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type BufferUnknownExceptionMetadata = {
-  valueToBuffer?: string;
-  errorType?: string;
   host?: string;
   port?: number;
+  valueToBuffer?: string;
+  errorType?: string;
 };
 
 export type BufferUnknownExceptionOptions = {

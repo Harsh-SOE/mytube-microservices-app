@@ -5,11 +5,11 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type CacheTimeOutExceptionMetadata = {
-  key?: string;
-  value?: string;
   host?: string;
   port?: number;
   retryAttempt?: number;
+  key?: string;
+  value?: string;
 };
 
 export type CacheTimeOutExceptionOptions = {

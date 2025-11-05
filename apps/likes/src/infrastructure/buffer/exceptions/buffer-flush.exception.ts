@@ -6,10 +6,10 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type BufferFlushOperationMetadata = {
-  errorType?: string;
   host?: string;
   port?: number;
   retryAttempt?: number;
+  errorType?: string;
 };
 
 export type BufferFlushExceptionOptions = {

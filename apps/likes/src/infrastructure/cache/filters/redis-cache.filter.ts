@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ReplyError } from 'ioredis';
 import {
   retry,
@@ -13,6 +13,7 @@ import {
   CircuitState,
 } from 'cockatiel';
 
+import { LOGGER_PORT, LoggerPort } from '@likes/application/ports';
 import {
   CacheConnectionException,
   CacheReadException,
@@ -21,7 +22,6 @@ import {
   CacheTimeoutException,
 } from '@likes/infrastructure/cache/exceptions';
 import { AppConfigService, Components } from '@likes/infrastructure/config';
-import { WinstonLoggerAdapter } from '@likes/infrastructure/logger';
 
 import { RedisOptions } from '../types';
 
@@ -31,9 +31,9 @@ export class RedisFilter implements OnModuleInit {
   private circuitBreakerPolicy: CircuitBreakerPolicy;
   private operationPolicy: IPolicy;
 
-  constructor(
+  public constructor(
     private configService: AppConfigService,
-    private readonly logger: WinstonLoggerAdapter,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {}
 
   public retryPolicyConfig(maxRetryAttempts: number) {
@@ -87,13 +87,13 @@ export class RedisFilter implements OnModuleInit {
     );
   }
 
-  onModuleInit() {
+  public onModuleInit() {
     this.retryPolicyConfig(3);
     this.circuitBreakerConfig(10, 15);
     this.operationPolicy = wrap(this.retryPolicy, this.circuitBreakerPolicy);
   }
 
-  async filter<TResult, TFallback = never>(
+  public async filter<TResult, TFallback = never>(
     cacheOperation: () => Promise<TResult>,
     options: RedisOptions<TFallback>,
   ): Promise<TResult | NonNullable<TFallback>> {

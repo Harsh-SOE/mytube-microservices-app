@@ -2,15 +2,15 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { DatabaseFilter } from '@app/infrastructure';
 
-import { LikeAggregate } from '@likes/domain/aggregates';
-import { LikeDomainStatus } from '@likes/domain/enums';
-import { PersistanceService } from '@likes/infrastructure/persistance/adapter';
-import { LikePersistanceACL } from '@likes/infrastructure/anti-corruption';
 import {
   LikeRepositoryPort,
   LOGGER_PORT,
   LoggerPort,
 } from '@likes/application/ports';
+import { LikeAggregate } from '@likes/domain/aggregates';
+import { LikeDomainStatus } from '@likes/domain/enums';
+import { PersistanceService } from '@likes/infrastructure/persistance/adapter';
+import { LikePersistanceACL } from '@likes/infrastructure/anti-corruption';
 import { Components } from '@likes/infrastructure/config';
 
 import { Prisma, VideoLikes } from '@peristance/likes';
@@ -18,14 +18,14 @@ import { LikeRepoFilter } from '../filters';
 
 @Injectable()
 export class LikeRepositoryAdapter implements LikeRepositoryPort {
-  constructor(
+  public constructor(
     private likePersistanceACL: LikePersistanceACL,
     private readonly likeRepoFilter: LikeRepoFilter,
     private persistanceService: PersistanceService,
     @Inject(LOGGER_PORT) private logger: LoggerPort,
   ) {}
 
-  toPrismaFilter(
+  public toPrismaFilter(
     filter: DatabaseFilter<VideoLikes>,
     mode: 'many' | 'unique',
   ): Prisma.VideoLikesWhereInput | Prisma.VideoLikesWhereUniqueInput {
@@ -69,14 +69,14 @@ export class LikeRepositoryAdapter implements LikeRepositoryPort {
     return prismaFilter;
   }
 
-  async save(model: LikeAggregate): Promise<LikeAggregate> {
+  public async save(model: LikeAggregate): Promise<LikeAggregate> {
     const createdEntity = await this.persistanceService.videoLikes.create({
       data: this.likePersistanceACL.toPersistance(model),
     });
     return this.likePersistanceACL.toAggregate(createdEntity);
   }
 
-  async saveMany(models: LikeAggregate[]): Promise<number> {
+  public async saveMany(models: LikeAggregate[]): Promise<number> {
     if (!models || models.length === 0) {
       return 0;
     }
@@ -105,7 +105,7 @@ export class LikeRepositoryAdapter implements LikeRepositoryPort {
     return createdEntities.count;
   }
 
-  async update(
+  public async update(
     filter: DatabaseFilter<VideoLikes>,
     newLikeStatus: LikeDomainStatus,
   ): Promise<LikeAggregate> {
@@ -127,7 +127,7 @@ export class LikeRepositoryAdapter implements LikeRepositoryPort {
     return this.likePersistanceACL.toAggregate(updatedLike);
   }
 
-  async updateMany(
+  public async updateMany(
     filter: DatabaseFilter<VideoLikes>,
     newLikeStatus: LikeDomainStatus,
   ): Promise<number> {

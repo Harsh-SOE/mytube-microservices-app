@@ -1,4 +1,9 @@
-import { Inject, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Consumer, EachBatchPayload, Kafka, Producer } from 'kafkajs';
 
 import {
@@ -14,30 +19,33 @@ import { GrpcDomainLikeStatusEnumMapper } from '@likes/infrastructure/anti-corru
 
 import { LikeMessage } from '../types';
 
+export const LIKE_BUFFER_TOPIC = 'likes';
+
+@Injectable()
 export class KafkaBufferAdapter
   implements OnModuleInit, OnModuleDestroy, BufferPort
 {
-  private kafkaClient: Kafka;
-  private producer: Producer;
-  private consumer: Consumer;
+  private readonly kafkaClient: Kafka;
+  private readonly producer: Producer;
+  private readonly consumer: Consumer;
 
-  constructor(
+  public constructor(
     private readonly configService: AppConfigService,
     @Inject(DATABASE_PORT) private readonly likesRepo: LikeRepositoryPort,
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {
     this.kafkaClient = new Kafka({
       brokers: [
-        `${configService.MESSAGE_BROKER_SERVICE_HOST}:${configService.MESSAGE_BROKER_SERVICE_PORT}`,
+        `${configService.MESSAGE_BROKER_HOST}:${configService.MESSAGE_BROKER_PORT}`,
       ],
-      clientId: 'like-service',
+      clientId: this.configService.BUFFER_CLIENT_ID,
     });
 
     this.producer = this.kafkaClient.producer();
 
     this.consumer = this.kafkaClient.consumer({
-      groupId: `like-batcher`,
-      maxWaitTimeInMs: 1_500,
+      groupId: this.configService.BUFFER_KAFKA_CONSUMER_ID,
+      maxWaitTimeInMs: this.configService.BUFFER_FLUSH_MAX_WAIT_TIME_MS,
       maxBytesPerPartition: 512_000,
       sessionTimeout: 30_000,
       heartbeatInterval: 3_000,
@@ -48,26 +56,29 @@ export class KafkaBufferAdapter
     });
   }
 
-  async onModuleInit() {
+  public async onModuleInit() {
     await this.producer.connect();
     await this.consumer.connect();
 
-    await this.consumer.subscribe({ topic: 'likes', fromBeginning: false });
+    await this.consumer.subscribe({
+      topic: LIKE_BUFFER_TOPIC,
+      fromBeginning: false,
+    });
   }
 
-  async onModuleDestroy() {
+  public async onModuleDestroy() {
     await this.producer.disconnect();
     await this.consumer.disconnect();
   }
 
-  async bufferLike(like: LikeAggregate): Promise<void> {
+  public async bufferLike(like: LikeAggregate): Promise<void> {
     await this.producer.send({
-      topic: 'likes',
+      topic: LIKE_BUFFER_TOPIC,
       messages: [{ value: JSON.stringify(like.getSnapshot()) }],
     });
   }
 
-  async processLikesBatch(): Promise<number | void> {
+  public async processLikesBatch(): Promise<number | void> {
     await this.consumer.run({
       eachBatch: async (payload: EachBatchPayload) => {
         const { batch } = payload;

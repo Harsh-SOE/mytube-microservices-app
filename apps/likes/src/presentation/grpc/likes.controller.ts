@@ -17,7 +17,7 @@ import {
 } from '@app/contracts/likes';
 
 import { LikeService } from './likes.service';
-import { GrpcFilter } from '../filters/grpc.filter';
+import { GrpcFilter } from '../filters';
 
 @UseFilters(GrpcFilter)
 @LikeServiceControllerMethods()

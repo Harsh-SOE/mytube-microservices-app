@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { KafkaJSConnectionError, KafkaJSRequestTimeoutError } from 'kafkajs';
 import {
   circuitBreaker,
@@ -13,8 +13,8 @@ import {
   wrap,
 } from 'cockatiel';
 
-import { AppConfigService, Components } from '@likes/infrastructure/config';
 import { LOGGER_PORT, LoggerPort } from '@likes/application/ports';
+import { AppConfigService, Components } from '@likes/infrastructure/config';
 
 import {
   MessageBrokerConnectionException,
@@ -24,15 +24,21 @@ import {
 import { MessageBrokerFilterOptions } from '../types';
 
 @Injectable()
-export class KafkaMessageHandler {
+export class KafkaMessageHandler implements OnModuleInit {
   private retryPolicy: RetryPolicy;
   private circuitBreakerPolicy: CircuitBreakerPolicy;
   private operationPolicy: IPolicy;
 
-  constructor(
+  public constructor(
     private readonly configService: AppConfigService,
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {}
+
+  public onModuleInit() {
+    this.retryPolicyConfig(3);
+    this.circuitBreakerConfig(10, 15);
+    this.operationPolicy = wrap(this.retryPolicy, this.circuitBreakerPolicy);
+  }
 
   public retryPolicyConfig(maxRetryAttempts: number) {
     this.retryPolicy = retry(handleAll, {
@@ -88,12 +94,6 @@ export class KafkaMessageHandler {
     );
   }
 
-  onModuleInit() {
-    this.retryPolicyConfig(3);
-    this.circuitBreakerConfig(10, 15);
-    this.operationPolicy = wrap(this.retryPolicy, this.circuitBreakerPolicy);
-  }
-
   public async filter<TKafkaResult, TFallback = never>(
     kafkaOperation: () => TKafkaResult | Promise<TKafkaResult>,
     options: MessageBrokerFilterOptions<TFallback>,
@@ -118,8 +118,8 @@ export class KafkaMessageHandler {
             message: `Unable to connect to kafka broker: ${error.broker}`,
             contextError: error,
             meta: {
-              host: this.configService.MESSAGE_BROKER_SERVICE_HOST,
-              port: this.configService.MESSAGE_BROKER_SERVICE_PORT,
+              host: this.configService.MESSAGE_BROKER_HOST,
+              port: this.configService.MESSAGE_BROKER_PORT,
             },
           });
         }
@@ -132,8 +132,8 @@ export class KafkaMessageHandler {
             message: `Request timed out for kafka broker: ${error.broker}`,
             contextError: error,
             meta: {
-              host: this.configService.MESSAGE_BROKER_SERVICE_HOST,
-              port: this.configService.MESSAGE_BROKER_SERVICE_PORT,
+              host: this.configService.MESSAGE_BROKER_HOST,
+              port: this.configService.MESSAGE_BROKER_PORT,
               topic,
               message,
             },
@@ -150,8 +150,8 @@ export class KafkaMessageHandler {
             message: `An Unknown error occured while executing kafka operation`,
             contextError: error as Error,
             meta: {
-              host: this.configService.MESSAGE_BROKER_SERVICE_HOST,
-              port: this.configService.MESSAGE_BROKER_SERVICE_PORT,
+              host: this.configService.MESSAGE_BROKER_HOST,
+              port: this.configService.MESSAGE_BROKER_PORT,
               topic,
               message,
             },

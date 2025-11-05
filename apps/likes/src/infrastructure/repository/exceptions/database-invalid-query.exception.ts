@@ -8,11 +8,11 @@ import {
 export type DatabaseInvalidExceptionExceptionMetaData = {
   host?: string;
   port?: number;
+  retryAttempt?: number;
   query?: Record<string, any> | string;
   operationType?: string;
   entry?: Record<string, any>;
   filter?: Record<string, any>;
-  retryAttempt?: number;
 };
 
 export type DatabaseInvalidExceptionOptions = {

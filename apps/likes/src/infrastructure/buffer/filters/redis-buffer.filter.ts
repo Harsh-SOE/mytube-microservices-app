@@ -27,8 +27,8 @@ import {
   BufferUnknownException,
   BufferSaveException,
 } from '../exceptions';
-import { BufferFilterOptions } from '../types/buffer-filter.options';
-import { BufferFlushException } from '../exceptions/buffer-flush.exception';
+import { BufferFilterOptions } from '../types';
+import { BufferFlushException } from '../exceptions';
 
 @Injectable()
 export class RedisBufferFilter implements OnModuleInit, OnModuleDestroy {
@@ -37,8 +37,8 @@ export class RedisBufferFilter implements OnModuleInit, OnModuleDestroy {
   private operationPolicy: IPolicy;
 
   public constructor(
-    @Inject(LOGGER_PORT) private logger: LoggerPort,
     private readonly configService: AppConfigService,
+    @Inject(LOGGER_PORT) private logger: LoggerPort,
   ) {}
 
   public onModuleInit() {
@@ -62,8 +62,8 @@ export class RedisBufferFilter implements OnModuleInit, OnModuleDestroy {
     });
 
     this.retryPolicy.onSuccess(() =>
-      this.logger.info('Buffer operation completed successfully...', {
-        component: Components.CACHE,
+      this.logger.info('Buffer operation completed successfully', {
+        component: Components.BUFFER,
       }),
     );
   }
@@ -87,7 +87,7 @@ export class RedisBufferFilter implements OnModuleInit, OnModuleDestroy {
       this.logger.alert(
         'Allowing only half of the requests to be executed now!',
         {
-          component: Components.CACHE,
+          component: Components.BUFFER,
           circuitState: CircuitState.HalfOpen,
         },
       ),
@@ -95,7 +95,7 @@ export class RedisBufferFilter implements OnModuleInit, OnModuleDestroy {
 
     this.circuitBreakerPolicy.onReset(() =>
       this.logger.info('Circuit breaker is now reset!', {
-        component: Components.CACHE,
+        component: Components.BUFFER,
       }),
     );
   }

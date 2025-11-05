@@ -5,11 +5,11 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type MessageBrokerTimeoutExceptionMetadata = {
-  topic?: string;
-  message?: string;
   host?: string;
   port?: number;
   retryAttempt?: number;
+  topic?: string;
+  message?: string;
 };
 
 export type MessageBrokerTimeoutExceptionOptions = {

@@ -8,8 +8,8 @@ import {
 export type DatabaseEntryAlreadyExistsExceptionMetaData = {
   host?: string;
   port?: number;
-  entityToCreate?: any;
   retryAttempt?: number;
+  entityToCreate?: any;
 };
 
 export type DatabaseEntryAlreadyExistsExceptionOptions = {

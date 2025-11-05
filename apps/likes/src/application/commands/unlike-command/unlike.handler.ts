@@ -28,7 +28,9 @@ export class UnlikeCommandHandler
     @Inject(BUFFER_PORT) private readonly bufferAdapter: BufferPort,
   ) {}
 
-  async execute({ videoLikeDto }: UnlikeCommand): Promise<LikeActionResponse> {
+  public async execute({
+    videoLikeDto,
+  }: UnlikeCommand): Promise<LikeActionResponse> {
     const { userId, videoId, reaction } = videoLikeDto;
 
     const likeDomainStatus = GrpcDomainLikeStatusEnumMapper.get(reaction);

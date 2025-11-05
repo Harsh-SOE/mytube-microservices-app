@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
 
 import {
+  BUFFER_PORT,
+  CACHE_PORT,
+  DATABASE_PORT,
+} from '@likes/application/ports';
+import {
   AppConfigService,
   AppConfigModule,
 } from '@likes/infrastructure/config';
@@ -9,11 +14,6 @@ import { LikeRepositoryAdapter } from '@likes/infrastructure/repository/adapters
 import { RedisStreamBufferAdapter } from '@likes/infrastructure/buffer/adapters';
 import { LikeActionCommandHandler } from '@likes/application/commands';
 import { LikeQueriesHandler } from '@likes/application/queries';
-import {
-  BUFFER_PORT,
-  CACHE_PORT,
-  DATABASE_PORT,
-} from '@likes/application/ports';
 
 import { LikesController } from './likes.controller';
 import { LikeService } from './likes.service';

@@ -5,11 +5,11 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type CacheUnknownExceptionMetadata = {
+  host?: string;
+  port?: number;
   key?: string;
   value?: string;
   errorType?: string;
-  host?: string;
-  port?: number;
 };
 
 export type CacheUnknownExceptionOptions = {

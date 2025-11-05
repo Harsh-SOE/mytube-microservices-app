@@ -12,7 +12,7 @@ interface BufferNoErrorOptions extends BasicBufferOptions {
   fallbackValue?: never;
 }
 
-export type BufferBasicFilterOptions<TFallback = never> =
+type BufferBasicFilterOptions<TFallback = never> =
   | BufferSupressedErrorOptions<TFallback>
   | BufferNoErrorOptions;
 

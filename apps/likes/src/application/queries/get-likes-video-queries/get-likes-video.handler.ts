@@ -14,9 +14,11 @@ export class GetLikesVideoQueryHandler
 {
   private readonly SHARDS = 64;
 
-  constructor(@Inject(CACHE_PORT) private readonly cacheAdapter: CachePort) {}
+  public constructor(
+    @Inject(CACHE_PORT) private readonly cacheAdapter: CachePort,
+  ) {}
 
-  async execute({
+  public async execute({
     likesFindCountForAVideoDto,
   }: GetLikesVideoQuery): Promise<LikesFindCountForAVideoResponse> {
     const { videoId } = likesFindCountForAVideoDto;

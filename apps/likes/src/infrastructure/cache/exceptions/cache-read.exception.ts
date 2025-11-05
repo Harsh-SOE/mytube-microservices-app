@@ -5,11 +5,11 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type CacheReadOperationMetadata = {
-  key?: string | string[];
-  errorType?: string;
   host?: string;
   port?: number;
   retryAttempt?: number;
+  key?: string | string[];
+  errorType?: string;
 };
 
 export type CachReadExceptionOptions = {

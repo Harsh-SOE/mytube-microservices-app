@@ -6,10 +6,10 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type BufferTimeOutExceptionMetadata = {
-  valueToBuffer?: string;
   host?: string;
   port?: number;
   retryAttempt?: number;
+  valueToBuffer?: string;
 };
 
 export type BufferTimeOutExceptionOptions = {

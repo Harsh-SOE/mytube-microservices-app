@@ -5,11 +5,11 @@ import {
 } from '@likes/infrastructure/exceptions';
 
 export type CacheWriteExceptionMetadata = {
+  host?: string;
+  port?: number;
   key?: string | string[];
   value?: string | string[];
   errorType?: string;
-  host?: string;
-  port?: number;
 };
 
 export type CacheWriteExceptionOptions = {

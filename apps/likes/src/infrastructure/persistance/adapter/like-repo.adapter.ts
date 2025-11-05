@@ -5,8 +5,8 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 
-import { AppConfigService, Components } from '@likes/infrastructure/config';
 import { LOGGER_PORT, LoggerPort } from '@likes/application/ports';
+import { AppConfigService, Components } from '@likes/infrastructure/config';
 
 import { Prisma, PrismaClient } from '@peristance/likes';
 
@@ -45,7 +45,9 @@ export class PersistanceService
   }
 
   async onModuleInit() {
-    console.log(`Prisma connecting to URL: ${this.configService.DATABASE_URL}`);
+    this.logger.info(
+      `Prisma connecting to URL: ${this.configService.DATABASE_URL}`,
+    );
 
     this.$on('query', (e) => {
       this.logger.info('--- MongoDB Query Info Begins ---', {
@@ -66,11 +68,11 @@ export class PersistanceService
     });
 
     await this.$connect();
-    console.log(`Database connected successfully`);
+    this.logger.info(`Database connected successfully`);
   }
 
   async onModuleDestroy() {
     await this.$disconnect();
-    console.log(`Database disconnected successfully`);
+    this.logger.info(`Database disconnected successfully`);
   }
 }

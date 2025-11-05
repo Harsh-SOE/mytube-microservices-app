@@ -38,7 +38,7 @@ export interface MyConsoleLogCompleteInfo extends Logform.TransformableInfo {
 }
 
 @Injectable()
-export class WinstonLoggerAdapter implements LoggerPort, OnModuleInit {
+export class WinstonLoggerAdapter implements OnModuleInit, LoggerPort {
   private logger: Logger;
 
   public constructor(private readonly configService: AppConfigService) {

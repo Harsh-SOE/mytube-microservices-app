@@ -11,14 +11,17 @@ GrpcPersistanceLikeStatusEnumMapper.set(
   ReactionType.REACTION_LIKE,
   LikePersistanceStatus.LIKED,
 );
+
 GrpcPersistanceLikeStatusEnumMapper.set(
   ReactionType.REACTION_UNLIKE,
   LikePersistanceStatus.UNLIKED,
 );
+
 GrpcPersistanceLikeStatusEnumMapper.set(
   ReactionType.REACTION_DISLIKE,
   LikePersistanceStatus.DISLIKED,
 );
+
 GrpcPersistanceLikeStatusEnumMapper.set(
   ReactionType.REACTION_UNDISLIKE,
   LikePersistanceStatus.UNDISLIKED,

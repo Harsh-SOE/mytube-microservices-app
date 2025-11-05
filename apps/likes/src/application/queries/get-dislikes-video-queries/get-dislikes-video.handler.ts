@@ -15,9 +15,11 @@ export class GetDislikesVideoQueryHandler
 {
   private readonly SHARDS = 64;
 
-  constructor(@Inject(CACHE_PORT) private readonly cacheAdapter: CachePort) {}
+  public constructor(
+    @Inject(CACHE_PORT) private readonly cacheAdapter: CachePort,
+  ) {}
 
-  async execute({
+  public async execute({
     dislikesFindCountForAVideoDto,
   }: GetDislikesVideoQuery): Promise<DislikesFindCountForAVideoResponse> {
     const { videoId } = dislikesFindCountForAVideoDto;

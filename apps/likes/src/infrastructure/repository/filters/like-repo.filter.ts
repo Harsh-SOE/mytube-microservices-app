@@ -20,6 +20,7 @@ import {
 
 import { DatabaseConnectionException } from '@app/infrastructure';
 
+import { LoggerPort, LOGGER_PORT } from '@likes/application/ports';
 import { AppConfigService, Components } from '@likes/infrastructure/config';
 
 import {
@@ -28,8 +29,6 @@ import {
   DatabaseUnknownException,
 } from '../exceptions';
 import { DatabaseFilterOptions } from '../types';
-import { LoggerPort } from '@likes/application/ports';
-import { LOGGER_PORT } from '@comments/application/ports';
 
 @Injectable()
 export class LikeRepoFilter {

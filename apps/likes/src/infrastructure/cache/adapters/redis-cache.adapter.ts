@@ -8,13 +8,13 @@ import Redis from 'ioredis';
 import * as fs from 'fs';
 import { join } from 'path';
 
-import { AppConfigService } from '@likes/infrastructure/config';
 import {
   CachePort,
   CacheSetoptions,
   LOGGER_PORT,
   LoggerPort,
 } from '@likes/application/ports';
+import { AppConfigService } from '@likes/infrastructure/config';
 
 import { RedisFilter } from '../filters';
 import { RedisWithCommands } from '../types';
@@ -25,7 +25,7 @@ export class RedisCacheAdapter
 {
   private redisClient: RedisWithCommands;
 
-  constructor(
+  public constructor(
     private readonly configService: AppConfigService,
     private readonly redisfilter: RedisFilter,
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
@@ -36,19 +36,34 @@ export class RedisCacheAdapter
     }) as RedisWithCommands;
 
     this.redisClient.on('connecting', () => {
-      this.logger.info('Redis connecting...');
+      this.logger.info('⏳ Redis connecting...');
     });
     this.redisClient.on('connect', () => {
       this.logger.info('✅ Redis connected');
     });
     this.redisClient.on('error', (error) => {
-      this.logger.error('❌ An Error occured in redis...', error);
+      this.logger.error('❌ An Error occured in redis cache', error);
     });
   }
 
-  onModuleInit() {
+  public onModuleInit() {
     const likeScript = fs.readFileSync(
       join(__dirname, './scripts/like.lua'),
+      'utf8',
+    );
+
+    const unlikeScript = fs.readFileSync(
+      join(__dirname, './scripts/unlike.lua'),
+      'utf8',
+    );
+
+    const dislikeScript = fs.readFileSync(
+      join(__dirname, './scripts/dislike.lua'),
+      'utf8',
+    );
+
+    const undislikeScript = fs.readFileSync(
+      join(__dirname, './scripts/undislike.lua'),
       'utf8',
     );
 
@@ -57,44 +72,29 @@ export class RedisCacheAdapter
       lua: likeScript,
     });
 
-    const unlikeScript = fs.readFileSync(
-      join(__dirname, './scripts/unlike.lua'),
-      'utf8',
-    );
-
     this.redisClient.defineCommand('videoLikesCountDecr', {
       numberOfKeys: 2,
       lua: unlikeScript,
     });
-
-    const dislikeScript = fs.readFileSync(
-      join(__dirname, './scripts/dislike.lua'),
-      'utf8',
-    );
 
     this.redisClient.defineCommand('videoDislikesCountIncr', {
       numberOfKeys: 4,
       lua: dislikeScript,
     });
 
-    const undislikeScript = fs.readFileSync(
-      join(__dirname, './scripts/undislike.lua'),
-      'utf8',
-    );
-
     this.redisClient.defineCommand('videoDislikesCountDecr', {
       numberOfKeys: 2,
       lua: undislikeScript,
     });
 
-    console.log('✅ Scripts intialized');
+    this.logger.info('✅ Scripts intialized');
   }
 
-  onModuleDestroy() {
+  public onModuleDestroy() {
     this.redisClient.disconnect();
   }
 
-  async saveInCache(
+  public async saveInCache(
     key: string,
     value: string,
     options: CacheSetoptions,
@@ -117,7 +117,7 @@ export class RedisCacheAdapter
     return 'OK';
   }
 
-  async saveManyInCache(
+  public async saveManyInCache(
     keyValues: Record<string, string>,
     options: CacheSetoptions,
   ): Promise<'OK'> {
@@ -139,7 +139,7 @@ export class RedisCacheAdapter
     return 'OK';
   }
 
-  async fetchFromCache(key: string): Promise<string | null> {
+  public async fetchFromCache(key: string): Promise<string | null> {
     const redisCacheGetOperation = async () => await this.redisClient.get(key);
     return await this.redisfilter.filter(redisCacheGetOperation, {
       key,
@@ -149,7 +149,9 @@ export class RedisCacheAdapter
     });
   }
 
-  async fetchManyFromCache(keys: string[]): Promise<Array<string | null>> {
+  public async fetchManyFromCache(
+    keys: string[],
+  ): Promise<Array<string | null>> {
     return await this.redisfilter.filter(
       async () => await this.redisClient.mget(...keys),
       {
@@ -161,7 +163,7 @@ export class RedisCacheAdapter
     );
   }
 
-  async deleteFromCache(key: string): Promise<'DELETED'> {
+  public async deleteFromCache(key: string): Promise<'DELETED'> {
     const redisCacheDeleteOperation = async () =>
       await this.redisClient.del(key);
     await this.redisfilter.filter(redisCacheDeleteOperation, {
@@ -173,7 +175,7 @@ export class RedisCacheAdapter
     return 'DELETED';
   }
 
-  async videoLikesCountIncr(
+  public async videoLikesCountIncr(
     usersLikedSetKey: string,
     usersDislikedSetKey: string,
     videoLikeCounterKey: string,
@@ -189,7 +191,7 @@ export class RedisCacheAdapter
     );
   }
 
-  async videoLikesCountDecr(
+  public async videoLikesCountDecr(
     usersLikedSetKey: string,
     videoLikeCounterKey: string,
     userId: string,
@@ -201,7 +203,7 @@ export class RedisCacheAdapter
     );
   }
 
-  async videoDislikesCountIncr(
+  public async videoDislikesCountIncr(
     usersDislikedSetKey: string,
     usersLikedSetKey: string,
     videoDislikeCounterKey: string,
@@ -217,7 +219,7 @@ export class RedisCacheAdapter
     );
   }
 
-  async videoDislikesCountDecr(
+  public async videoDislikesCountDecr(
     usersDislikedSetKey: string,
     videoDislikeCounterKey: string,
     userId: string,

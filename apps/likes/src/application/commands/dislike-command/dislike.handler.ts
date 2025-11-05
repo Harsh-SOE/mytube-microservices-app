@@ -30,7 +30,9 @@ export class DislikeCommandHandler
     @Inject(BUFFER_PORT) private readonly bufferAdapter: BufferPort,
   ) {}
 
-  async execute({ videoLikeDto }: DislikeCommand): Promise<LikeActionResponse> {
+  public async execute({
+    videoLikeDto,
+  }: DislikeCommand): Promise<LikeActionResponse> {
     const { userId, videoId, reaction } = videoLikeDto;
 
     const likeDomainStatus = GrpcDomainLikeStatusEnumMapper.get(reaction);
