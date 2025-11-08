@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 import { IAggregatePersistanceACL } from '@app/infrastructure';
 
-import { Video } from '@peristance/videos';
 import { VideoAggregate } from '@videos/domain/aggregates';
 import { VideoEntity } from '@videos/domain/entities';
 import {
@@ -14,6 +13,8 @@ import {
   VideoVisibilty,
 } from '@videos/domain/value-objects';
 
+import { Video } from '@peristance/videos';
+
 @Injectable()
 export class VideoAggregatePersistanceACL
   implements
@@ -22,7 +23,7 @@ export class VideoAggregatePersistanceACL
       Omit<Video, 'publishedAt' | 'updatedAt'>
     >
 {
-  toAggregate(
+  public toAggregate(
     persistance: Omit<Video, 'publishedAt' | 'updatedAt'>,
   ): VideoAggregate {
     const videoEntity = new VideoEntity(
@@ -37,7 +38,7 @@ export class VideoAggregatePersistanceACL
 
     return new VideoAggregate(videoEntity);
   }
-  toPersistance(
+  public toPersistance(
     aggregate: VideoAggregate,
   ): Omit<Video, 'publishedAt' | 'updatedAt'> {
     return {

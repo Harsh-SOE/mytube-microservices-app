@@ -1,11 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { DatabaseFilter } from '@app/infrastructure';
-
 import {
   LikeRepositoryPort,
   LOGGER_PORT,
   LoggerPort,
+  DatabaseFilter,
 } from '@likes/application/ports';
 import { LikeAggregate } from '@likes/domain/aggregates';
 import { LikeDomainStatus } from '@likes/domain/enums';

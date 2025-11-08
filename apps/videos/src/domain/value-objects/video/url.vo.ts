@@ -1,5 +1,6 @@
-import { InvalidDomainInputException } from '@app/errors';
 import z from 'zod';
+
+import { InvalidVideoUrlException } from '@videos/domain/exceptions';
 
 export class VideoUrl {
   private static VideoUrlValidationSchema = z.string();
@@ -10,9 +11,9 @@ export class VideoUrl {
     const parsedVideoUrl = this.VideoUrlValidationSchema.safeParse(value);
     if (!parsedVideoUrl.success) {
       const errorMessage = parsedVideoUrl.error.message;
-      throw new InvalidDomainInputException(
-        `VideoUrl validation has failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidVideoUrlException({
+        message: `VideoUrl validation has failed. Reason: ${errorMessage}`,
+      });
     }
     return new VideoUrl(parsedVideoUrl.data);
   }

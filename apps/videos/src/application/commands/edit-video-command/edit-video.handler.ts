@@ -1,20 +1,31 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { VideoUpdatedResponse } from '@app/contracts/videos';
 
-import { VideoCommandRepository } from '@videos/infrastructure/repository';
-
-import { EditVideoCommand } from './edit-video.command';
+import {
+  DATABASE_COMMAND_PORT,
+  DATABASE_QUERY_PORT,
+  VideoCommandRepositoryPort,
+  VideoQueryRepositoryPort,
+} from '@videos/application/ports';
 import {
   GrpcToDomainPublishEnumMapper,
   GrpcToDomainVisibilityEnumMapper,
 } from '@videos/infrastructure/anti-corruption';
 
+import { EditVideoCommand } from './edit-video.command';
+
 @CommandHandler(EditVideoCommand)
 export class EditVideoHandler implements ICommandHandler<EditVideoCommand> {
-  constructor(private readonly video: VideoCommandRepository) {}
+  public constructor(
+    @Inject(DATABASE_COMMAND_PORT)
+    private readonly videoCommandAdapter: VideoCommandRepositoryPort,
+    @Inject(DATABASE_QUERY_PORT)
+    private readonly videoQueryAdapter: VideoQueryRepositoryPort,
+  ) {}
 
-  async execute({
+  public async execute({
     updateVideoDto,
   }: EditVideoCommand): Promise<VideoUpdatedResponse> {
     const {
@@ -24,21 +35,25 @@ export class EditVideoHandler implements ICommandHandler<EditVideoCommand> {
       videoPublishStatus,
       videoVisibilityStatus,
     } = updateVideoDto;
+
     const domainPublishStatus = videoPublishStatus
       ? GrpcToDomainPublishEnumMapper.get(videoPublishStatus)
       : undefined;
     const domainVisibiltyStatus = videoVisibilityStatus
       ? GrpcToDomainVisibilityEnumMapper.get(videoVisibilityStatus)
       : undefined;
-    const videoAggregate = await this.video.findOneById(id);
+
+    const videoAggregate = await this.videoCommandAdapter.findOneById(id);
+
     videoAggregate.updateVideo({
       newTitle: title,
       newDescription: description,
       newPublishStatus: domainPublishStatus,
       newVisibilityStatus: domainVisibiltyStatus,
     });
-    console.log(videoAggregate);
-    await this.video.updateOneById(id, videoAggregate);
+
+    await this.videoCommandAdapter.updateOneById(id, videoAggregate);
+
     return { response: 'updated', videoId: id };
   }
 }

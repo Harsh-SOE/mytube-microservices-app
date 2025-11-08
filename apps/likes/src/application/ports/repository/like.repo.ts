@@ -1,9 +1,8 @@
-import { DatabaseFilter } from '@app/infrastructure';
-
 import { VideoLikes } from '@peristance/likes';
 
 import { LikeAggregate } from '@likes/domain/aggregates';
 import { LikeDomainStatus } from '@likes/domain/enums';
+import { DatabaseFilter } from './types';
 
 export interface LikeRepositoryPort {
   save(model: LikeAggregate): Promise<LikeAggregate>;

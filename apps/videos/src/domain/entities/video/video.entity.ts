@@ -2,13 +2,14 @@ import {
   VideoDomainPublishStatus,
   VideoDomainVisibiltyStatus,
 } from '@videos/domain/enums';
+
 import {
   VideoDescription,
   VideoOwner,
-  VideoPublish,
   VideoTitle,
   VideoUrl,
   VideoVisibilty,
+  VideoPublish,
 } from '../../value-objects';
 
 export class VideoEntity {
@@ -22,7 +23,6 @@ export class VideoEntity {
     private description?: VideoDescription,
   ) {}
 
-  // getters
   public getId(): string {
     return this.id;
   }
@@ -63,7 +63,6 @@ export class VideoEntity {
     };
   }
 
-  // updates
   public updateTitle(newTitle: string): void {
     this.title = VideoTitle.create(newTitle);
   }

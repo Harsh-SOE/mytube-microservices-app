@@ -93,13 +93,13 @@ export class ViewCacheAdapter
       suppressErrors: false,
     });
 
-    const totalLikes = values.reduce(
+    const totalViews = values.reduce(
       (sum, currentValue) =>
         sum + (currentValue ? parseInt(currentValue, 10) : 0),
       0,
     );
 
-    return totalLikes;
+    return totalViews;
   }
 
   public async recordView(videoId: string, userId: string): Promise<number> {

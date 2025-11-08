@@ -18,12 +18,11 @@ import {
   PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
 
-import { DatabaseConnectionException } from '@app/infrastructure';
-
 import { LoggerPort, LOGGER_PORT } from '@views/application/ports';
 import { AppConfigService, Components } from '@views/infrastructure/config';
 
 import {
+  DatabaseConnectionException,
   DatabaseEntryAlreadyExistsException,
   DatabaseInvalidQueryException,
   DatabaseUnknownException,
@@ -126,7 +125,7 @@ export class ViewRepoFilter {
             if (logErrors) {
               this.logger.error(`Entry already exist`, {
                 component: Components.DATABASE,
-                service: 'LIKES',
+                service: 'VIEWS',
                 error,
               });
             }
@@ -147,7 +146,7 @@ export class ViewRepoFilter {
             if (logErrors) {
               this.logger.error(`Invalid query was recieved`, {
                 component: Components.DATABASE,
-                service: 'LIKES',
+                service: 'VIEWS',
                 error,
               });
             }
@@ -169,7 +168,7 @@ export class ViewRepoFilter {
             if (logErrors) {
               this.logger.error(`An Unknown error has occured`, {
                 component: Components.DATABASE,
-                service: 'LIKES',
+                service: 'VIEWS',
                 error,
               });
             }
@@ -185,7 +184,7 @@ export class ViewRepoFilter {
         if (logErrors) {
           this.logger.error(`An Unknown error has occured`, {
             component: Components.DATABASE,
-            service: 'LIKES',
+            service: 'VIEWS',
             error,
           });
         }
@@ -201,7 +200,7 @@ export class ViewRepoFilter {
             `Unable to connect to database: ${this.configService.DATABASE_URL}`,
             {
               component: Components.DATABASE,
-              service: 'LIKES',
+              service: 'VIEWS',
               error,
             },
           );
@@ -216,7 +215,7 @@ export class ViewRepoFilter {
         if (logErrors) {
           this.logger.error(`Invalid query was recieved`, {
             component: Components.DATABASE,
-            service: 'LIKES',
+            service: 'VIEWS',
             error,
           });
         }
@@ -232,7 +231,7 @@ export class ViewRepoFilter {
       if (logErrors) {
         this.logger.error(`An Unknown error has occured`, {
           component: Components.DATABASE,
-          service: 'LIKES',
+          service: 'VIEWS',
           error: error as Error,
         });
       }

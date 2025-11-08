@@ -1,5 +1,6 @@
-import { InvalidDomainInputException } from '@app/errors';
 import z from 'zod';
+
+import { InvalidDescriptionException } from '@videos/domain/exceptions';
 
 export class VideoDescription {
   private static VideoDescriptionValidationSchema = z.string().optional();
@@ -11,9 +12,9 @@ export class VideoDescription {
       this.VideoDescriptionValidationSchema.safeParse(value);
     if (!parsedVideoDescription.success) {
       const errorMessage = parsedVideoDescription.error.message;
-      throw new InvalidDomainInputException(
-        `VideoDescription validation has failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidDescriptionException({
+        message: `VideoDescription validation has failed. Reason: ${errorMessage}`,
+      });
     }
     return new VideoDescription(parsedVideoDescription.data);
   }

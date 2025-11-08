@@ -18,7 +18,7 @@ import { AppConfigService } from '@views/infrastructure/config';
 
 import { ViewMessage } from '../types';
 
-export const LIKE_BUFFER_TOPIC = 'likes';
+export const VIEW_BUFFER_TOPIC = 'views';
 
 @Injectable()
 export class KafkaBufferAdapter
@@ -60,7 +60,7 @@ export class KafkaBufferAdapter
     await this.consumer.connect();
 
     await this.consumer.subscribe({
-      topic: LIKE_BUFFER_TOPIC,
+      topic: VIEW_BUFFER_TOPIC,
       fromBeginning: false,
     });
   }
@@ -72,7 +72,7 @@ export class KafkaBufferAdapter
 
   public async bufferView(like: ViewAggregate): Promise<void> {
     await this.producer.send({
-      topic: LIKE_BUFFER_TOPIC,
+      topic: VIEW_BUFFER_TOPIC,
       messages: [{ value: JSON.stringify(like.getSnapshot()) }],
     });
   }
@@ -91,11 +91,11 @@ export class KafkaBufferAdapter
           return ViewAggregate.create(message.userId, message.videoId);
         });
 
-        this.logger.info(`Saving ${models.length} likes in database`);
+        this.logger.info(`Saving ${models.length} view in database`);
 
         await this.viewsRepo.saveMany(models);
 
-        this.logger.info(`${models.length} likes saved in database`);
+        this.logger.info(`${models.length} view saved in database`);
       },
     });
   }

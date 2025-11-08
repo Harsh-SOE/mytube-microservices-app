@@ -1,7 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { DatabaseFilter } from '@app/infrastructure';
-
 import {
   ViewRepositoryPort,
   LOGGER_PORT,
@@ -15,6 +13,7 @@ import { Components } from '@views/infrastructure/config';
 import { Prisma, View } from '@persistance/views';
 
 import { ViewRepoFilter } from '../filters';
+import { DatabaseFilter } from '../types';
 
 @Injectable()
 export class ViewRepositoryAdapter implements ViewRepositoryPort {

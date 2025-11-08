@@ -1,5 +1,6 @@
-import { InvalidDomainInputException } from '@app/errors';
 import z from 'zod';
+
+import { InvalidOwnerIdException } from '@videos/domain/exceptions';
 
 export class VideoOwner {
   private static VideoOwnerIdValidationSchema = z.uuid();
@@ -11,9 +12,9 @@ export class VideoOwner {
       this.VideoOwnerIdValidationSchema.safeParse(value);
     if (!parsedVideoOwnerId.success) {
       const errorMessage = parsedVideoOwnerId.error.message;
-      throw new InvalidDomainInputException(
-        `VideoOwnerId validation has failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidOwnerIdException({
+        message: `VideoOwnerId validation has failed. Reason: ${errorMessage}`,
+      });
     }
     return new VideoOwner(parsedVideoOwnerId.data);
   }

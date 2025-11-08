@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+
 import { Video } from '@peristance/videos';
-import { VideoQueryModel } from '../dto/video-query.model';
+
 import {
   PublishPersistanceToGrpcEnumMapper,
   VisibilityPersistanceToGrpcEnumMapper,
 } from './enums-mappers';
+import { VideoQueryModel } from '../dto/video-query.model';
 
 @Injectable()
 export class QueryModelResponseMapper {

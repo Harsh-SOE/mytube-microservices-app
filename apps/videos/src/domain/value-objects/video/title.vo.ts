@@ -1,5 +1,6 @@
-import { InvalidDomainInputException } from '@app/errors';
 import { z } from 'zod';
+
+import { InvalidTitleException } from '@videos/domain/exceptions';
 
 export class VideoTitle {
   private static VideoTitleValidationSchema = z
@@ -16,9 +17,9 @@ export class VideoTitle {
       VideoTitle.VideoTitleValidationSchema.safeParse(value);
     if (!parsedVideoTitle.success) {
       const errorMessages = parsedVideoTitle.error.message;
-      throw new InvalidDomainInputException(
-        `Invalid value for VideoTitle. Reason: ${errorMessages}`,
-      );
+      throw new InvalidTitleException({
+        message: `Invalid value for VideoTitle. Reason: ${errorMessages}`,
+      });
     }
     return new VideoTitle(parsedVideoTitle.data);
   }

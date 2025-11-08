@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { GRPC_HEALTH_V1_PACKAGE_NAME } from '@app/contracts/health';
-import { VIDEO_PACKAGE_NAME } from '@app/contracts/videos';
-import { ReflectionService } from '@grpc/reflection';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GrpcOptions, KafkaOptions, Transport } from '@nestjs/microservices';
+import { ReflectionService } from '@grpc/reflection';
 import { join } from 'path';
+
+import { GRPC_HEALTH_V1_PACKAGE_NAME } from '@app/contracts/health';
+import { VIDEO_PACKAGE_NAME } from '@app/contracts/videos';
 
 @Injectable()
 export class AppConfigService {
@@ -15,8 +16,20 @@ export class AppConfigService {
     return this.configService.getOrThrow<number>('HTTP_PORT');
   }
 
-  get SERVICE_PORT() {
-    return this.configService.getOrThrow<number>('SERVICE_PORT');
+  get GRPC_PORT() {
+    return this.configService.getOrThrow<number>('GRPC_PORT');
+  }
+
+  get CACHE_HOST() {
+    return this.configService.getOrThrow<string>('CACHE_HOST');
+  }
+
+  get CACHE_PORT() {
+    return this.configService.getOrThrow<number>('CACHE_PORT');
+  }
+
+  get DATABASE_URL() {
+    return this.configService.getOrThrow<string>('DATABASE_URL');
   }
 
   get VIDEO_TRANSCODER_CLIENT_ID() {
@@ -29,16 +42,42 @@ export class AppConfigService {
     );
   }
 
-  get VIDEO_TRANSCODER_SERVICE_PORT() {
+  get MESSAGE_BROKER_HOST() {
+    return this.configService.getOrThrow<string>('MESSAGE_BROKER_HOST');
+  }
+
+  get MESSAGE_BROKER_PORT() {
+    return this.configService.getOrThrow<number>('MESSAGE_BROKER_PORT');
+  }
+
+  get BUFFER_CLIENT_ID() {
+    return this.configService.getOrThrow<string>('BUFFER_CLIENT_ID');
+  }
+
+  get BUFFER_KAFKA_CONSUMER_ID() {
+    return this.configService.getOrThrow<string>('BUFFER_KAFKA_CONSUMER_ID');
+  }
+
+  get BUFFER_FLUSH_MAX_WAIT_TIME_MS() {
     return this.configService.getOrThrow<number>(
-      'VIDEO_TRANSCODER_SERVICE_PORT',
+      'BUFFER_FLUSH_MAX_WAIT_TIME_MS',
     );
   }
 
-  get VIDEO_TRANSCODER_SERVICE_HOST() {
-    return this.configService.getOrThrow<string>(
-      'VIDEO_TRANSCODER_SERVICE_HOST',
-    );
+  get BUFFER_KEY() {
+    return this.configService.getOrThrow<string>('BUFFER_KEY');
+  }
+
+  get BUFFER_GROUPNAME() {
+    return this.configService.getOrThrow<string>('BUFFER_GROUPNAME');
+  }
+
+  get BUFFER_REDIS_CONSUMER_ID() {
+    return this.configService.getOrThrow<string>('BUFFER_REDIS_CONSUMER_ID');
+  }
+
+  get GRAFANA_LOKI_URL() {
+    return this.configService.getOrThrow<string>('GRAFANA_LOKI_URL');
   }
 
   get VIDEO_TRANSCODER_SERVICE_OPTIONS() {
@@ -47,9 +86,7 @@ export class AppConfigService {
       options: {
         client: {
           clientId: this.VIDEO_TRANSCODER_CLIENT_ID,
-          brokers: [
-            `${this.VIDEO_TRANSCODER_SERVICE_HOST}:${this.VIDEO_TRANSCODER_SERVICE_PORT}`,
-          ],
+          brokers: [`${this.MESSAGE_BROKER_HOST}:${this.MESSAGE_BROKER_PORT}`],
         },
         consumer: {
           groupId: this.VIDEO_TRANSCODER_CONSUMER_GROUP_ID,
@@ -57,30 +94,6 @@ export class AppConfigService {
       },
     };
     return options;
-  }
-
-  get GRAFANA_LOKI_URL() {
-    return this.configService.getOrThrow<string>('GRAFANA_LOKI_URL');
-  }
-
-  get DB_NAME() {
-    return this.configService.getOrThrow<string>('DB_NAME');
-  }
-
-  get DB_USER() {
-    return this.configService.getOrThrow<string>('DB_USER');
-  }
-
-  get DB_PASSWORD() {
-    return this.configService.getOrThrow<string>('DB_PASSWORD');
-  }
-
-  get DB_HOST() {
-    return this.configService.getOrThrow<string>('DB_HOST');
-  }
-
-  get DB_PORT() {
-    return this.configService.getOrThrow<number>('DB_PORT');
   }
 
   get GRPC_OPTIONS(): GrpcOptions {
@@ -92,7 +105,7 @@ export class AppConfigService {
           join(__dirname, '../proto/health.proto'),
         ],
         package: [VIDEO_PACKAGE_NAME, GRPC_HEALTH_V1_PACKAGE_NAME],
-        url: `0.0.0.0:${this.SERVICE_PORT}`,
+        url: `0.0.0.0:${this.GRPC_PORT}`,
         onLoadPackageDefinition(pkg, server) {
           new ReflectionService(pkg).addToServer(server);
         },

@@ -18,12 +18,11 @@ import {
   PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
 
-import { DatabaseConnectionException } from '@app/infrastructure';
-
 import { LoggerPort, LOGGER_PORT } from '@likes/application/ports';
 import { AppConfigService, Components } from '@likes/infrastructure/config';
 
 import {
+  DatabaseConnectionException,
   DatabaseEntryAlreadyExistsException,
   DatabaseInvalidQueryException,
   DatabaseUnknownException,

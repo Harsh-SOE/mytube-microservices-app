@@ -1,4 +1,5 @@
 export * from './repository/like.repo';
+export * from './repository/types';
 
 export * from './buffer/buffer.port';
 
