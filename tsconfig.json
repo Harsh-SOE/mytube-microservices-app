@@ -45,15 +45,12 @@
       "@transcoder/*": ["apps/video-transcoder/src/*"],
       "@users/*": ["apps/users/src/*"],
       "@videos/*": ["apps/videos/src/*"],
-      "@views-aggregator/*": ["apps/views-aggregator/src/*"],
       "@views/*": ["apps/views/src/*"],
       "@peristance/likes": ["apps/likes/generated/prisma"],
       "@peristance/user": ["apps/users/generated/prisma"],
       "@peristance/videos": ["apps/videos/generated/prisma"],
       "@persistance/auth": ["apps/auth/generated/prisma"],
-      "@persistance/views-aggregator": [
-        "apps/views-aggregator/generated/prisma"
-      ],
+      "@persistance/views": ["apps/views/generated/prisma"],
       "@peristance/hub": ["apps/hub/generated/prisma"],
       "@peristance/comments": ["apps/comments/generated/prisma"]
     }

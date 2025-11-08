@@ -11,7 +11,6 @@ SERVICES = {
   'video-transcoder': './apps/video-transcoder',
   'saga': './apps/saga',
   'views': './apps/views',
-  'views-aggregator': './apps/views-aggregator',
   'comments': './apps/comments',
   'hub': './apps/hub',
   'gateway': './apps/api-gateway',

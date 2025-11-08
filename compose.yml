@@ -65,8 +65,6 @@ services:
   views-database:
     image: postgres:latest
     container_name: views-database
-    env_file:
-      - apps/views-aggregator/.env
     environment:
       POSTGRES_USER: harsh
       POSTGRES_PASSWORD: harsh123
@@ -235,8 +233,6 @@ services:
       likes:
         condition: service_healthy
       views:
-        condition: service_healthy
-      views-aggregator:
         condition: service_healthy
       comments:
         condition: service_healthy
@@ -438,8 +434,6 @@ services:
       video-transcoder:
         condition: service_healthy
       views:
-        condition: service_healthy
-      views-aggregator:
         condition: service_healthy
       likes:
         condition: service_healthy
@@ -682,40 +676,11 @@ services:
       redis-cache:
         condition: service_healthy
 
-  views-aggregator:
-    image: mytube/views-aggregator/production:latest
-    container_name: views-aggregator
-    build:
-      context: .
-      dockerfile: apps/views-aggregator/Dockerfile
-      target: production
+  views-migrate:
+    image: mytube/views/production:latest
+    container_name: views-migrate
     env_file:
-      - apps/views-aggregator/.env
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    networks:
-      - services
-      - cache
-      - message-broker
-      - observer
-      - views-database-network
-    healthcheck: *message-broker-healthcheck
-    deploy: *service_resources
-    depends_on:
-      kafka:
-        condition: service_healthy
-      redis-cache:
-        condition: service_healthy
-      views-database:
-        condition: service_healthy
-      views-aggregator-migrate:
-        condition: service_completed_successfully
-
-  views-aggregator-migrate:
-    image: mytube/views-aggregator/production:latest
-    container_name: views-aggregator-migrate
-    env_file:
-      - apps/views-aggregator/.env
+      - apps/views/.env
     networks:
       - services
       - cache
@@ -731,7 +696,7 @@ services:
         "--name",
         "initialize",
         "--schema",
-        "apps/views-aggregator/prisma/schema.prisma",
+        "apps/views/prisma/schema.prisma",
       ]
     depends_on:
       views-database:

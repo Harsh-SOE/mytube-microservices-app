@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GrpcOptions, KafkaOptions, Transport } from '@nestjs/microservices';
+import { GrpcOptions, Transport } from '@nestjs/microservices';
 import { ReflectionService } from '@grpc/reflection';
 import * as protoLoader from '@grpc/proto-loader';
 import * as grpc from '@grpc/grpc-js';
@@ -17,7 +17,7 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('SERVICE_HOST');
   }
 
-  public get SERVICE_PORT() {
+  public get GRPC_PORT() {
     return this.configService.getOrThrow<number>('SERVICE_PORT');
   }
 
@@ -25,32 +25,8 @@ export class AppConfigService {
     return this.configService.getOrThrow<number>('HTTP_PORT');
   }
 
-  public get SERVICE_OPTIONS(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        package: [VIEWS_PACKAGE_NAME, GRPC_HEALTH_V1_PACKAGE_NAME],
-        protoPath: [
-          join(__dirname, '../proto/views.proto'),
-          join(__dirname, '../proto/health.proto'),
-        ],
-        url: `0.0.0.0:${this.SERVICE_PORT}`,
-        onLoadPackageDefinition(
-          pkg: protoLoader.PackageDefinition,
-          server: Pick<grpc.Server, 'addService'>,
-        ) {
-          new ReflectionService(pkg).addToServer(server);
-        },
-      },
-    };
-  }
-
-  public get KAFKA_SERVICE_HOST() {
-    return this.configService.getOrThrow<string>('KAFKA_SERVICE_HOST');
-  }
-
-  public get KAFKA_SERVICE_PORT() {
-    return this.configService.getOrThrow<number>('KAFKA_SERVICE_PORT');
+  public get DATABASE_URL() {
+    return this.configService.getOrThrow<string>('DATABASE_URL');
   }
 
   public get CACHE_HOST() {
@@ -61,26 +37,59 @@ export class AppConfigService {
     return this.configService.getOrThrow<number>('CACHE_PORT');
   }
 
-  public get VIEWS_AGGREGATOR_CLIENT_ID() {
-    return this.configService.getOrThrow<string>('VIEWS_AGGREGATOR_CLIENT_ID');
+  public get MESSAGE_BROKER_HOST() {
+    return this.configService.getOrThrow<string>('MESSAGE_BROKER_HOST');
   }
 
-  public get VIEWS_AGGREGATOR_CONSUMER_ID() {
-    return this.configService.getOrThrow<string>(
-      'VIEWS_AGGREGATOR_CONSUMER_ID',
+  public get MESSAGE_BROKER_PORT() {
+    return this.configService.getOrThrow<number>('MESSAGE_BROKER_PORT');
+  }
+
+  public get BUFFER_CLIENT_ID() {
+    return this.configService.getOrThrow<string>('BUFFER_CLIENT_ID');
+  }
+
+  public get BUFFER_KAFKA_CONSUMER_ID() {
+    return this.configService.getOrThrow<string>('BUFFER_KAFKA_CONSUMER_ID');
+  }
+
+  get BUFFER_FLUSH_MAX_WAIT_TIME_MS() {
+    return this.configService.getOrThrow<number>(
+      'BUFFER_FLUSH_MAX_WAIT_TIME_MS',
     );
   }
 
-  public get VIEW_AGGREGATOR_SERVICE_OPTIONS(): KafkaOptions {
+  get BUFFER_KEY() {
+    return this.configService.getOrThrow<string>('BUFFER_KEY');
+  }
+
+  get BUFFER_GROUPNAME() {
+    return this.configService.getOrThrow<string>('BUFFER_GROUPNAME');
+  }
+
+  get BUFFER_REDIS_CONSUMER_ID() {
+    return this.configService.getOrThrow<string>('BUFFER_REDIS_CONSUMER_ID');
+  }
+
+  get GRAFANA_LOKI_URL() {
+    return this.configService.getOrThrow<string>('GRAFANA_LOKI_URL');
+  }
+
+  public get GRPC_OPTIONS(): GrpcOptions {
     return {
-      transport: Transport.KAFKA,
+      transport: Transport.GRPC,
       options: {
-        client: {
-          clientId: this.VIEWS_AGGREGATOR_CLIENT_ID,
-          brokers: [`${this.KAFKA_SERVICE_HOST}:${this.KAFKA_SERVICE_PORT}`],
-        },
-        consumer: {
-          groupId: this.VIEWS_AGGREGATOR_CONSUMER_ID,
+        package: [VIEWS_PACKAGE_NAME, GRPC_HEALTH_V1_PACKAGE_NAME],
+        protoPath: [
+          join(__dirname, '../proto/views.proto'),
+          join(__dirname, '../proto/health.proto'),
+        ],
+        url: `0.0.0.0:${this.GRPC_PORT}`,
+        onLoadPackageDefinition(
+          pkg: protoLoader.PackageDefinition,
+          server: Pick<grpc.Server, 'addService'>,
+        ) {
+          new ReflectionService(pkg).addToServer(server);
         },
       },
     };

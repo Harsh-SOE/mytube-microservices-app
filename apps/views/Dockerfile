@@ -23,6 +23,8 @@ COPY nest-cli.json ./nest-cli.json
 COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.build.json ./tsconfig.build.json
 
+RUN npx prisma generate --schema ./apps/views/prisma/schema.prisma
+
 RUN npx nest build views
 
 FROM base AS development
@@ -49,7 +51,15 @@ WORKDIR /home/node
 
 COPY --from=base /home/node/package.json /home/node/yarn.lock ./
 COPY --from=production-dependencies /home/node/node_modules ./node_modules
+COPY --from=builder /home/node/apps/views/prisma/schema.prisma ./apps/views/prisma/schema.prisma
+COPY --from=builder /home/node/apps/views/generated/prisma ./apps/views/generated/prisma
 COPY --from=builder /home/node/dist/apps/views ./apps/views
+
+USER root
+
+RUN chown -R node:node /home/node/node_modules/prisma
+RUN chown -R node:node /home/node/apps/views/prisma
+RUN chown -R node:node /home/node/apps/views/generated/prisma
 
 USER node
 
