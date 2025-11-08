@@ -1,50 +1,15 @@
-import { CacheSetoptions } from './types/options';
+export interface LikeCachePort {
+  getTotalLikes(videoId: string): Promise<number>;
 
-export interface CachePort {
-  saveInCache(
-    key: string,
-    value: string,
-    options: CacheSetoptions,
-  ): Promise<'OK'>;
+  getTotalDislikes(videoId: string): Promise<number>;
 
-  saveManyInCache(
-    keyValues: Record<string, string>,
-    options: CacheSetoptions,
-  ): Promise<'OK'>;
+  recordLike(videoId: string, userId: string): Promise<number>;
 
-  fetchFromCache(key: string): Promise<string | null>;
+  removeLike(videoId: string, userId: string): Promise<number>;
 
-  fetchManyFromCache(keys: string[]): Promise<Array<string | null>>;
+  recordDislike(videoId: string, userId: string): Promise<number>;
 
-  deleteFromCache(key: string): Promise<'DELETED'>;
-
-  videoLikesCountIncr(
-    usersLikedSetKey: string,
-    usersDislikedSetKey: string,
-    videoLikeCounterKey: string,
-    videoDislikeCounterKey: string,
-    userId: string,
-  ): Promise<number>;
-
-  videoLikesCountDecr(
-    usersLikedSetKey: string,
-    videoLikeCounterKey: string,
-    userId: string,
-  ): Promise<number>;
-
-  videoDislikesCountIncr(
-    usersDislikedSetKey: string,
-    usersLikedSetKey: string,
-    videoDislikeCounterKey: string,
-    videoLikeCounterKey: string,
-    userId: string,
-  ): Promise<number>;
-
-  videoDislikesCountDecr(
-    usersDislikedSetKey: string,
-    videoDislikeCounterKey: string,
-    userId: string,
-  ): Promise<number>;
+  removeDislike(videoId: string, userId: string): Promise<number>;
 }
 
 export const CACHE_PORT = Symbol('CACHE_PORT');

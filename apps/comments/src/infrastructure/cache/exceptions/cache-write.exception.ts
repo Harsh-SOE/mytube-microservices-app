@@ -5,8 +5,8 @@ import {
 } from '@comments/infrastructure/exceptions';
 
 export type CacheWriteExceptionMetadata = {
-  key?: string;
-  value?: string;
+  key?: string | string[];
+  value?: string | string[];
   errorType?: string;
   host?: string;
   port?: number;

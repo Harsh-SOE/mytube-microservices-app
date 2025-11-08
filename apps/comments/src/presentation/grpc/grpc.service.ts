@@ -6,7 +6,7 @@ import { CommentVideoDto, CommentVideoResponse } from '@app/contracts/comments';
 import { CreateCommentCommand } from '@comments/application/commands';
 
 @Injectable()
-export class CommentsService {
+export class GrpcService {
   public constructor(private readonly commandBus: ICommandBus) {}
 
   public async commentOnVideo(

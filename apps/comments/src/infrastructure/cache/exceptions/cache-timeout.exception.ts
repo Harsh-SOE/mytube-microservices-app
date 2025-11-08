@@ -5,8 +5,8 @@ import {
 } from '@comments/infrastructure/exceptions';
 
 export type CacheTimeOutExceptionMetadata = {
-  key?: string;
-  value?: string;
+  key?: string | string[];
+  value?: string | string[];
   host?: string;
   port?: number;
   retryAttempt?: number;

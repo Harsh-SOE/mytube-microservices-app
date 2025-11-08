@@ -1,21 +1,29 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
+import { getShardFor } from '@app/counters';
+
+import {
+  CommentCachePort,
+  LOGGER_PORT,
+  LoggerPort,
+} from '@comments/application/ports';
 import { AppConfigService } from '@comments/infrastructure/config';
-import { CachePort, CacheSetoptions } from '@comments/application/ports';
 
 import { RedisWithCommands } from '../types';
-import { RedisFilter } from '../filters';
+import { RedisCacheFilter } from '../filters';
 
 @Injectable()
-export class RedisCacheAdapter implements CachePort, OnModuleInit {
+export class RedisCacheAdapter implements CommentCachePort, OnModuleInit {
+  private readonly SHARDS = 64;
   private redisClient: RedisWithCommands;
 
   public constructor(
-    configService: AppConfigService,
-    private readonly handler: RedisFilter,
+    private readonly configService: AppConfigService,
+    private readonly redisHandler: RedisCacheFilter,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {
     this.redisClient = new Redis({
       host: configService.CACHE_HOST,
@@ -23,19 +31,19 @@ export class RedisCacheAdapter implements CachePort, OnModuleInit {
     }) as RedisWithCommands;
 
     this.redisClient.on('connecting', () => {
-      console.log(`Redis connecting`);
+      this.logger.info(`⏳ Redis connecting...`);
     });
 
     this.redisClient.on('connect', () => {
-      console.log('✅ Redis connected');
+      this.logger.info('✅ Redis connected');
     });
 
     this.redisClient.on('error', (error) => {
-      console.log('❌ Redis error:', error);
+      this.logger.error('❌ An Error occured in redis cache', error);
     });
   }
 
-  onModuleInit() {
+  public onModuleInit() {
     const commentVideoScript = readFileSync(
       join(__dirname, './scripts/comments.lua'),
       'utf-8',
@@ -46,79 +54,29 @@ export class RedisCacheAdapter implements CachePort, OnModuleInit {
       lua: commentVideoScript,
     });
 
-    console.log('✅ Scripts intialized');
+    this.logger.info('✅ Scripts intialized');
   }
 
-  async saveInCache(
-    key: string,
-    value: string,
-    options: CacheSetoptions,
-  ): Promise<'OK'> {
-    const { setTTL, TTL } = options;
-
-    const redisCacheSetOperation = async () => {
-      return setTTL
-        ? this.redisClient.set(key, value, 'PX', TTL)
-        : this.redisClient.set(key, value);
-    };
-
-    await this.handler.filter(redisCacheSetOperation, {
-      key,
-      value,
-      operationType: 'WRITE',
-      logErrors: true,
-      suppressErrors: false,
-    });
-    return 'OK';
+  public getShard(userId: string, videoId: string, shardNum = 64) {
+    return getShardFor(userId + videoId, shardNum);
   }
 
-  async saveManyInCache(
-    keyValues: Record<string, string>,
-    options: CacheSetoptions,
-  ): Promise<'OK'> {
-    const redisPipeline = this.redisClient.pipeline();
-    for (const [key, value] of Object.entries(keyValues)) {
-      if (options.setTTL) {
-        redisPipeline.set(key, value, 'PX', options.TTL);
-      } else {
-        redisPipeline.set(key, value);
-      }
-    }
-    await redisPipeline.exec();
-    return 'OK';
+  public getUserCommentedVideoSetKey(videoId: string) {
+    return `video_comments_users_set:${videoId}`;
   }
 
-  async fetchFromCache(key: string): Promise<string | null> {
-    const redisCacheGetOperation = async () => await this.redisClient.get(key);
-    return await this.handler.filter(redisCacheGetOperation, {
-      key,
-      operationType: 'READ',
-      logErrors: true,
-      suppressErrors: false,
-    });
+  public getCommentsCountKey(videoId: string, shardNum: number) {
+    return `video_comments_counter:${videoId}:${shardNum}`;
   }
 
-  async fetchManyFromCache(keys: string[]): Promise<Array<string | null>> {
-    return await this.redisClient.mget(...keys);
-  }
-
-  async deleteFromCache(key: string): Promise<'DELETED'> {
-    const redisCacheDeleteOperation = async () =>
-      await this.redisClient.del(key);
-    await this.handler.filter(redisCacheDeleteOperation, {
-      key,
-      operationType: 'DELETE',
-      logErrors: true,
-      suppressErrors: false,
-    });
-    return 'DELETED';
-  }
-
-  async incrementCommentCounter(
-    userCommentSetKey: string,
-    userCommentCounterKey: string,
+  public async incrementCommentsCounter(
     userId: string,
+    videoId: string,
   ): Promise<number | null> {
+    const shardNum = this.getShard(userId, videoId);
+    const userCommentCounterKey = this.getCommentsCountKey(videoId, shardNum);
+    const userCommentSetKey = this.getUserCommentedVideoSetKey(videoId);
+
     const operation = async () =>
       await this.redisClient.commentVideo(
         userCommentSetKey,
@@ -126,12 +84,36 @@ export class RedisCacheAdapter implements CachePort, OnModuleInit {
         userId,
       );
 
-    return await this.handler.filter(operation, {
+    return await this.redisHandler.filter(operation, {
       key: userCommentCounterKey,
       value: '+1',
       operationType: 'WRITE',
       logErrors: true,
       suppressErrors: false,
     });
+  }
+
+  public async getTotalCommentsCounter(videoId: string): Promise<number> {
+    const allShardedKeys = Array.from({ length: this.SHARDS }, (_, i) =>
+      this.getCommentsCountKey(videoId, i),
+    );
+
+    const getValuesOperations = async () =>
+      await this.redisClient.mget(...allShardedKeys);
+
+    const values = await this.redisHandler.filter(getValuesOperations, {
+      operationType: 'READ_MANY',
+      keys: allShardedKeys,
+      logErrors: true,
+      suppressErrors: false,
+    });
+
+    const totalComments = values.reduce(
+      (sum, currentValue) =>
+        sum + (currentValue ? parseInt(currentValue, 10) : 0),
+      0,
+    );
+
+    return totalComments;
   }
 }

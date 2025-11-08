@@ -3,8 +3,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 import { DislikesFindCountForAVideoResponse } from '@app/contracts/likes';
 
-import { CACHE_PORT, CachePort } from '@likes/application/ports';
-import { getVideoDislikeCounterKey } from '@likes/application/utils';
+import { CACHE_PORT, LikeCachePort } from '@likes/application/ports';
 
 import { GetDislikesVideoQuery } from './get-dislikes-video.queries';
 
@@ -16,7 +15,7 @@ export class GetDislikesVideoQueryHandler
   private readonly SHARDS = 64;
 
   public constructor(
-    @Inject(CACHE_PORT) private readonly cacheAdapter: CachePort,
+    @Inject(CACHE_PORT) private readonly cacheAdapter: LikeCachePort,
   ) {}
 
   public async execute({
@@ -24,17 +23,8 @@ export class GetDislikesVideoQueryHandler
   }: GetDislikesVideoQuery): Promise<DislikesFindCountForAVideoResponse> {
     const { videoId } = dislikesFindCountForAVideoDto;
 
-    const allShardedKeys = Array.from({ length: this.SHARDS }, (_, i) =>
-      getVideoDislikeCounterKey(videoId, i),
-    );
+    const totalDislikes = await this.cacheAdapter.getTotalDislikes(videoId);
 
-    const values = await this.cacheAdapter.fetchManyFromCache(allShardedKeys);
-
-    const totalDislikes = values.reduce(
-      (sum, currentValue) =>
-        sum + (currentValue ? parseInt(currentValue, 10) : 0),
-      0,
-    );
     return { dislikes: totalDislikes };
   }
 }

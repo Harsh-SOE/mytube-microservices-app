@@ -13,14 +13,6 @@ import {
 @Controller()
 @HealthControllerMethods()
 export class AppHealthController implements HealthController {
-  /**
-   * Health check for the authentication service.
-   *
-   * Returns a response with a `status` field that is either 1 (SERVING) or 2 (NOT_SERVING).
-   *
-   * @param {HealthCheckRequest} authHealthCheckRequest - The health check request.
-   * @returns {Promise<HealthCheckResponse>|Observable<HealthCheckResponse>|HealthCheckResponse} - The health check response.
-   */
   check(
     authHealthCheckRequest: HealthCheckRequest,
   ):

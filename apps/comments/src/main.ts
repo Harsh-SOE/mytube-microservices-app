@@ -10,7 +10,7 @@ async function bootstrap() {
   const configService = app.get(AppConfigService);
   app.connectMicroservice<GrpcOptions>(configService.SERVICE_OPTION);
   await app.startAllMicroservices();
-  await app.listen(configService.HTTP_SERVICE_PORT, '0.0.0.0');
+  await app.listen(configService.HTTP_PORT, '0.0.0.0');
 }
 bootstrap()
   .then(() => console.log(`Comments service started successfully`))

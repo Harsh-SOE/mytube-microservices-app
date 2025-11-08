@@ -5,17 +5,10 @@ import { LikeActionResponse } from '@app/contracts/likes';
 
 import {
   CACHE_PORT,
-  CachePort,
+  LikeCachePort,
   BUFFER_PORT,
   BufferPort,
 } from '@likes/application/ports';
-import {
-  getShardKey,
-  getUserDislikesSetKey,
-  getUserLikesSetKey,
-  getVideoDislikeCounterKey,
-  getVideoLikesCounterKey,
-} from '@likes/application/utils';
 import { LikeAggregate } from '@likes/domain/aggregates';
 import { GrpcDomainLikeStatusEnumMapper } from '@likes/infrastructure/anti-corruption';
 
@@ -26,7 +19,7 @@ export class LikeCommandHandler
   implements ICommandHandler<LikeCommand, LikeActionResponse>
 {
   public constructor(
-    @Inject(CACHE_PORT) private readonly cacheAdapter: CachePort,
+    @Inject(CACHE_PORT) private readonly cacheAdapter: LikeCachePort,
     @Inject(BUFFER_PORT) private readonly bufferAdapter: BufferPort,
   ) {}
 
@@ -48,19 +41,7 @@ export class LikeCommandHandler
       likeDomainStatus,
     );
 
-    const shardNum = getShardKey(videoId, userId);
-    const videoLikesSetKey = getUserLikesSetKey(videoId);
-    const videoDislikesSetKey = getUserDislikesSetKey(videoId);
-    const videoLikesCounterKey = getVideoLikesCounterKey(videoId, shardNum);
-    const videoDislikeCounterKey = getVideoDislikeCounterKey(videoId, shardNum);
-
-    const res = await this.cacheAdapter.videoLikesCountIncr(
-      videoLikesSetKey,
-      videoDislikesSetKey,
-      videoLikesCounterKey,
-      videoDislikeCounterKey,
-      userId,
-    );
+    const res = await this.cacheAdapter.recordLike(videoId, userId);
 
     if (res !== 1) {
       return { response: `video was already liked by the current user` };

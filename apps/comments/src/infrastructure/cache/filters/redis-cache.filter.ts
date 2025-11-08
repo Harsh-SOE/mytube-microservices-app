@@ -26,7 +26,7 @@ import { WinstonLoggerAdapter } from '@comments/infrastructure/logger';
 import { RedisOptions } from '../types';
 
 @Injectable()
-export class RedisFilter implements OnModuleInit {
+export class RedisCacheFilter implements OnModuleInit {
   private retryPolicy: RetryPolicy;
   private circuitBreakerPolicy: CircuitBreakerPolicy;
   private operationPolicy: IPolicy;
@@ -101,7 +101,9 @@ export class RedisFilter implements OnModuleInit {
       logErrors = true,
       operationType,
       key,
+      keys,
       value,
+      values,
       suppressErrors = false,
       fallbackValue,
     } = options || {};
@@ -137,6 +139,23 @@ export class RedisFilter implements OnModuleInit {
               });
             }
 
+            case 'READ_MANY': {
+              if (logErrors)
+                this.logger.error(
+                  `An Error while reading key:${keys.join(', ')} from cahe`,
+                  { component: Components.CACHE, meta: error },
+                );
+              throw new CacheWriteException({
+                contextError: error,
+                meta: {
+                  key: keys,
+                  host: this.configService.CACHE_HOST,
+                  port: this.configService.CACHE_PORT,
+                  errorType: error.name,
+                },
+              });
+            }
+
             case 'WRITE': {
               if (logErrors)
                 this.logger.error(
@@ -150,6 +169,25 @@ export class RedisFilter implements OnModuleInit {
                   value,
                   host: this.configService.CACHE_HOST,
                   port: this.configService.CACHE_PORT,
+                  errorType: error.name,
+                },
+              });
+            }
+
+            case 'WRITE_MANY': {
+              if (logErrors)
+                this.logger.error(
+                  `Unable to write keys:${keys.join(', ')} with value:${Array.isArray(values) ? values.join(', ') : values} into cache`,
+                  { component: Components.CACHE, meta: error },
+                );
+              throw new CacheWriteException({
+                contextError: error,
+                meta: {
+                  key: keys,
+                  value: values,
+                  host: this.configService.CACHE_HOST,
+                  port: this.configService.CACHE_PORT,
+                  errorType: error.name,
                 },
               });
             }

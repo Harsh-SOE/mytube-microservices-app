@@ -5,15 +5,10 @@ import { LikeActionResponse } from '@app/contracts/likes';
 
 import {
   CACHE_PORT,
-  CachePort,
+  LikeCachePort,
   BUFFER_PORT,
   BufferPort,
 } from '@likes/application/ports';
-import {
-  getShardKey,
-  getUserDislikesSetKey,
-  getVideoDislikeCounterKey,
-} from '@likes/application/utils';
 import { LikeAggregate } from '@likes/domain/aggregates';
 import { GrpcDomainLikeStatusEnumMapper } from '@likes/infrastructure/anti-corruption';
 
@@ -24,7 +19,7 @@ export class UnDislikeCommandHandler
   implements ICommandHandler<UnDislikeCommand, LikeActionResponse>
 {
   public constructor(
-    @Inject(CACHE_PORT) private readonly cacheAdapter: CachePort,
+    @Inject(CACHE_PORT) private readonly cacheAdapter: LikeCachePort,
     @Inject(BUFFER_PORT) private readonly bufferAdapter: BufferPort,
   ) {}
 
@@ -45,15 +40,7 @@ export class UnDislikeCommandHandler
       likeDomainStatus,
     );
 
-    const shardNum = getShardKey(videoId, userId);
-    const videoDislikesSetKey = getUserDislikesSetKey(videoId);
-    const videoDislikeCounterKey = getVideoDislikeCounterKey(videoId, shardNum);
-
-    const res = await this.cacheAdapter.videoDislikesCountDecr(
-      videoDislikesSetKey,
-      videoDislikeCounterKey,
-      userId,
-    );
+    const res = await this.cacheAdapter.removeDislike(videoId, userId);
 
     if (res !== 1) {
       return { response: `video was already liked by the current user` };

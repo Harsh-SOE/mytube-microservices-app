@@ -3,15 +3,43 @@ interface BaseRedisOptions {
 }
 
 interface RedisReadOperationOptions extends BaseRedisOptions {
-  operationType: 'READ' | 'DELETE';
+  operationType: 'READ';
+  keys?: never;
   key: string;
+  values?: never;
   value?: never;
+}
+
+interface RedisReadManyOperationOptions extends BaseRedisOptions {
+  operationType: 'READ_MANY';
+  keys: string[];
+  key?: never;
+  value?: never;
+  values?: never;
+}
+
+interface RedisDeleteOperationOptions extends BaseRedisOptions {
+  operationType: 'DELETE';
+  key: string;
+  keys?: never;
+  value?: never;
+  values?: never;
 }
 
 interface RedisWriteOperationOptions extends BaseRedisOptions {
   operationType: 'WRITE';
+  keys?: never;
   key: string;
+  values?: never;
   value: string;
+}
+
+interface RedisWriteManyOperationOptions extends BaseRedisOptions {
+  operationType: 'WRITE_MANY';
+  keys: string[];
+  key?: never;
+  values: string[] | string;
+  value?: never;
 }
 
 interface SuppressErrorsOptions<TFallbackResult> {
@@ -30,6 +58,9 @@ type ErrorHandlingOptions<TFallbackResult> =
 
 export type RedisOptions<TFallbackResult = never> = (
   | RedisReadOperationOptions
+  | RedisReadManyOperationOptions
   | RedisWriteOperationOptions
+  | RedisWriteManyOperationOptions
+  | RedisDeleteOperationOptions
 ) &
   ErrorHandlingOptions<TFallbackResult>;

@@ -13,8 +13,7 @@ import {
   VideoLikeActionDto,
 } from '@app/contracts/likes';
 
-import { LOGGER_PORT } from '@likes/application/ports';
-import { LoggerPort } from '@likes/application/ports';
+import { LOGGER_PORT, LoggerPort } from '@likes/application/ports';
 import {
   DislikeCommand,
   LikeCommand,

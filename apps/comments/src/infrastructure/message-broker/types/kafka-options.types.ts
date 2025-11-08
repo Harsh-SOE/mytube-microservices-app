@@ -1,14 +1,16 @@
-interface BaseKafkaOptions {
+interface BaseMessageBrokerOptions {
   logErrors?: boolean;
 }
 
-interface KafkaPublishOrSendOperationOptions extends BaseKafkaOptions {
-  operationType: 'PUBLISH_SEND';
+interface MessageBrokerPublishOrSendOperationOptions
+  extends BaseMessageBrokerOptions {
+  operationType: 'PUBLISH_OR_SEND';
   topic: string;
   message?: string;
 }
 
-interface KafkaSubscribeOperationOptions extends BaseKafkaOptions {
+interface MessageBrokerSubscribeOperationOptions
+  extends BaseMessageBrokerOptions {
   operationType: 'SUBSCRIBE';
   topic: string;
   message?: never;
@@ -28,8 +30,8 @@ type ErrorHandlingOptions<TFallbackResult> =
   | SuppressErrorsOptions<TFallbackResult>
   | ThrowErrorsOptions;
 
-export type KafkaOptions<TFallbackResult = never> = (
-  | KafkaPublishOrSendOperationOptions
-  | KafkaSubscribeOperationOptions
+export type MessageBrokerFilterOptions<TFallbackResult = never> = (
+  | MessageBrokerPublishOrSendOperationOptions
+  | MessageBrokerSubscribeOperationOptions
 ) &
   ErrorHandlingOptions<TFallbackResult>;

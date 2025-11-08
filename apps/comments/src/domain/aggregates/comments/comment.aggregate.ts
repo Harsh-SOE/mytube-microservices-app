@@ -7,13 +7,6 @@ export class CommentAggregate extends AggregateRoot {
     super();
   }
 
-  /**
-   * Creates a new CommentAggregate.
-   * @param {string} userId The user that commented.
-   * @param {string} videoId The video that was commented on.
-   * @param {string} commentText The text of the comment.
-   * @returns {CommentAggregate} The newly created CommentAggregate.
-   */
   public static create(
     userId: string,
     videoId: string,
@@ -23,19 +16,10 @@ export class CommentAggregate extends AggregateRoot {
     return new CommentAggregate(commentEntity);
   }
 
-  /**
-   * Retrieves the comment entity.
-   * @returns {CommentEntity} The comment entity.
-   */
   public getComment() {
     return this.comment;
   }
 
-  /**
-   * Retrieves a snapshot of the comment entity.
-   * The snapshot contains the user id, video id and comment text.
-   * @returns {Object} A snapshot of the comment entity.
-   */
   public getSnapshot() {
     return this.comment.getSnapshot();
   }

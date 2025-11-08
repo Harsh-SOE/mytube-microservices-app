@@ -1,1 +1,1 @@
-export * from './kafka-message-broker.handler';
+export * from './kafka-message-broker.filter';

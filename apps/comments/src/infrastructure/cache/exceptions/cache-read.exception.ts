@@ -5,7 +5,7 @@ import {
 } from '@comments/infrastructure/exceptions';
 
 export type CacheReadOperationMetadata = {
-  key?: string;
+  key?: string | string[];
   errorType?: string;
   host?: string;
   port?: number;

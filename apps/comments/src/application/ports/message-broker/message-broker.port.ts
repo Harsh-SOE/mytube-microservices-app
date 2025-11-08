@@ -1,4 +1,4 @@
-export interface MessageBrokerPort {
+export interface CommentMessageBrokerPort {
   publishMessage<TPayload>(
     topic: string,
     payload: TPayload,

@@ -5,7 +5,7 @@ import { CommentCreatedEvent } from './comment-created.event';
 export class CommentCreatedEventHandler
   implements IEventHandler<CommentCreatedEvent>
 {
-  handle(event: CommentCreatedEvent) {
+  public handle(event: CommentCreatedEvent) {
     throw new Error('Method not implemented.');
   }
 }

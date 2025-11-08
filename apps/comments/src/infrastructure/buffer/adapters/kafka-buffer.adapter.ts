@@ -1,35 +1,51 @@
-import { OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Consumer, EachBatchPayload, Kafka, Producer } from 'kafkajs';
 
-import { BufferPort, CommentRepositoryPort } from '@comments/application/ports';
+import {
+  CommentBufferPort,
+  DATABASE_PORT,
+  CommentRepositoryPort,
+  LOGGER_PORT,
+  LoggerPort,
+} from '@comments/application/ports';
 import { CommentAggregate } from '@comments/domain/aggregates';
 import { AppConfigService } from '@comments/infrastructure/config';
 
 import { CommentMessage } from '../types';
 
+export const COMMENT_BUFFER_TOPIC = 'comment';
+
+@Injectable()
 export class KafkaBufferAdapter
-  implements OnModuleInit, OnModuleDestroy, BufferPort
+  implements OnModuleInit, OnModuleDestroy, CommentBufferPort
 {
   private kafkaClient: Kafka;
   private producer: Producer;
   private consumer: Consumer;
 
-  constructor(
+  public constructor(
     private readonly configService: AppConfigService,
+    @Inject(DATABASE_PORT)
     private readonly commentsRepo: CommentRepositoryPort,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {
     this.kafkaClient = new Kafka({
       brokers: [
-        `${configService.MESSAGE_BROKER_SERVICE_HOST}:${configService.MESSAGE_BROKER_SERVICE_PORT}`,
+        `${configService.MESSAGE_BROKER_HOST}:${configService.MESSAGE_BROKER_PORT}`,
       ],
-      clientId: 'comment-service',
+      clientId: this.configService.BUFFER_CLIENT_ID,
     });
 
     this.producer = this.kafkaClient.producer();
 
     this.consumer = this.kafkaClient.consumer({
-      groupId: `comment-batcher`,
-      maxWaitTimeInMs: 1_500,
+      groupId: this.configService.BUFFER_KAFKA_CONSUMER_ID,
+      maxWaitTimeInMs: this.configService.BUFFER_FLUSH_MAX_WAIT_TIME_MS,
       maxBytesPerPartition: 512_000,
       sessionTimeout: 30_000,
       heartbeatInterval: 3_000,
@@ -40,26 +56,29 @@ export class KafkaBufferAdapter
     });
   }
 
-  async onModuleInit() {
+  public async onModuleInit() {
     await this.producer.connect();
     await this.consumer.connect();
 
-    await this.consumer.subscribe({ topic: 'comments', fromBeginning: false });
+    await this.consumer.subscribe({
+      topic: COMMENT_BUFFER_TOPIC,
+      fromBeginning: false,
+    });
   }
 
-  async onModuleDestroy() {
+  public async onModuleDestroy() {
     await this.producer.disconnect();
     await this.consumer.disconnect();
   }
 
-  async bufferComment(comment: CommentAggregate): Promise<void> {
+  public async bufferComment(comment: CommentAggregate): Promise<void> {
     await this.producer.send({
-      topic: 'comments',
+      topic: COMMENT_BUFFER_TOPIC,
       messages: [{ value: JSON.stringify(comment.getSnapshot()) }],
     });
   }
 
-  async processCommentsBatch(): Promise<number | void> {
+  public async processCommentsBatch(): Promise<number | void> {
     await this.consumer.run({
       eachBatch: async (payload: EachBatchPayload) => {
         const { batch } = payload;
@@ -78,11 +97,11 @@ export class KafkaBufferAdapter
           ),
         );
 
-        console.log(`Saving ${models.length} comments in database`);
+        this.logger.info(`Saving ${models.length} comments in database`);
 
-        await this.commentsRepo.saveManyComments(models);
+        await this.commentsRepo.saveMany(models);
 
-        console.log(`${models.length} comments saved in database`);
+        this.logger.info(`${models.length} comments saved in database`);
       },
     });
   }

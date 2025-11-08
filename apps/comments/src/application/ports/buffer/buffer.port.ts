@@ -1,6 +1,6 @@
 import { CommentAggregate } from '@comments/domain/aggregates';
 
-export interface BufferPort {
+export interface CommentBufferPort {
   bufferComment(comment: CommentAggregate): Promise<void>;
 
   processCommentsBatch(): Promise<number | void>;

@@ -5,7 +5,7 @@ export interface LoggerPort {
 
   alert(message: string, meta?: Record<string, any>): void;
 
-  fatal(message: string, meta?: Record<string, string>): void;
+  fatal(message: string, meta?: Record<string, any>): void;
 }
 
 export const LOGGER_PORT = Symbol('LOGGER_PORT');

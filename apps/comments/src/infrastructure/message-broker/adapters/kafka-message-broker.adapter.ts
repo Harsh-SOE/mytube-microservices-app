@@ -1,50 +1,78 @@
-import { Inject, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 import { CLIENT_PROVIDER } from '@app/clients';
 
-import { MessageBrokerPort } from '@comments/application/ports';
-import { kafkaMessageHandler } from '../filter';
+import { CommentMessageBrokerPort } from '@comments/application/ports';
 
+import { KafkaMessageBrokerFilter } from '../filter';
+
+@Injectable()
 export class KafkaMessageBrokerAdapter
-  implements MessageBrokerPort, OnModuleInit, OnModuleDestroy
+  implements OnModuleInit, OnModuleDestroy, CommentMessageBrokerPort
 {
-  constructor(
+  public constructor(
     @Inject(CLIENT_PROVIDER.COMMENTS_AGGREGATOR)
     private kafkaClient: ClientKafka,
+    private kafkaFilter: KafkaMessageBrokerFilter,
   ) {}
 
-  async onModuleInit() {
+  public async onModuleInit() {
     await this.kafkaClient.connect();
   }
 
-  async onModuleDestroy() {
+  public async onModuleDestroy() {
     await this.kafkaClient.close();
   }
 
-  publishMessage<TPayload>(topic: string, payload: TPayload): void {
+  public async publishMessage<TPayload>(
+    topic: string,
+    payload: TPayload,
+  ): Promise<void> {
     const kafkaPublishMessageOperation = () =>
       this.kafkaClient.emit(topic, payload);
 
-    kafkaMessageHandler(kafkaPublishMessageOperation);
+    await this.kafkaFilter.filter(kafkaPublishMessageOperation, {
+      operationType: 'PUBLISH_OR_SEND',
+      topic,
+      message: String(payload),
+      logErrors: true,
+      suppressErrors: false,
+    });
   }
 
-  async send<TPayload, TResponse>(
+  public async send<TPayload, TResponse>(
     topic: string,
     payload: TPayload,
   ): Promise<TResponse> {
     const kafkaSendMessageOperation = () =>
       this.kafkaClient.send<TResponse, TPayload>(topic, payload);
 
-    const response$ = await kafkaMessageHandler(kafkaSendMessageOperation);
+    const response$ = await this.kafkaFilter.filter(kafkaSendMessageOperation, {
+      operationType: 'PUBLISH_OR_SEND',
+      topic,
+      message: String(payload),
+      logErrors: true,
+      suppressErrors: false,
+    });
 
     return await firstValueFrom(response$);
   }
 
-  subscribeTo(topic: string): void {
+  public async subscribeTo(topic: string): Promise<void> {
     const kafkaSubscribeOperation = () =>
       this.kafkaClient.subscribeToResponseOf(topic);
-    kafkaMessageHandler(kafkaSubscribeOperation);
+    await this.kafkaFilter.filter(kafkaSubscribeOperation, {
+      operationType: 'SUBSCRIBE',
+      topic,
+      logErrors: true,
+      suppressErrors: false,
+    });
   }
 }

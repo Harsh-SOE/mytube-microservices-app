@@ -5,8 +5,8 @@ import {
 } from '@comments/infrastructure/exceptions';
 
 export type CacheUnknownExceptionMetadata = {
-  key?: string;
-  value?: string;
+  key?: string | string[];
+  value?: string | string[];
   errorType?: string;
   host?: string;
   port?: number;

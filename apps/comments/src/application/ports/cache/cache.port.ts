@@ -1,28 +1,10 @@
-import { CacheSetoptions } from './types/options';
-
-export interface CachePort {
-  saveInCache(
-    key: string,
-    value: string,
-    options: CacheSetoptions,
-  ): Promise<'OK'>;
-
-  saveManyInCache(
-    keyValues: Record<string, string>,
-    options: CacheSetoptions,
-  ): Promise<'OK'>;
-
-  fetchFromCache(key: string): Promise<string | null>;
-
-  fetchManyFromCache(keys: string[]): Promise<Array<string | null>>;
-
-  deleteFromCache(key: string): Promise<'DELETED'>;
-
-  incrementCommentCounter(
-    userCommentSetKey: string,
-    userCommentCounterKey: string,
+export interface CommentCachePort {
+  incrementCommentsCounter(
     userId: string,
+    videoId: string,
   ): Promise<number | null>;
+
+  getTotalCommentsCounter(videoId: string): Promise<number>;
 }
 
 export const CACHE_PORT = 'CACHE_PORT';

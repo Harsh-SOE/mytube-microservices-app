@@ -2,13 +2,14 @@ import {
   InfrastructureOperationFailureLevel,
   MESSAGE_BROKER_EXCEPTION,
 } from '@comments/infrastructure/exceptions';
+
 import { InfrastructureException } from '../../exceptions/infrastructure.exception';
 
 export type MessageBrokerUnknownExceptionMetadata = {
   topic?: string;
   message?: string;
   host?: string;
-  port?: string;
+  port?: number;
   retryAttempt?: number;
 };
 

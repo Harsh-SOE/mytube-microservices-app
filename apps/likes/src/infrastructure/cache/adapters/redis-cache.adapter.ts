@@ -8,9 +8,10 @@ import Redis from 'ioredis';
 import * as fs from 'fs';
 import { join } from 'path';
 
+import { getShardFor } from '@app/counters';
+
 import {
-  CachePort,
-  CacheSetoptions,
+  LikeCachePort,
   LOGGER_PORT,
   LoggerPort,
 } from '@likes/application/ports';
@@ -21,8 +22,9 @@ import { RedisWithCommands } from '../types';
 
 @Injectable()
 export class RedisCacheAdapter
-  implements OnModuleInit, OnModuleDestroy, CachePort
+  implements OnModuleInit, OnModuleDestroy, LikeCachePort
 {
+  private readonly SHARDS: number = 64;
   private redisClient: RedisWithCommands;
 
   public constructor(
@@ -94,94 +96,84 @@ export class RedisCacheAdapter
     this.redisClient.disconnect();
   }
 
-  public async saveInCache(
-    key: string,
-    value: string,
-    options: CacheSetoptions,
-  ): Promise<'OK'> {
-    const { setTTL, TTL } = options;
-
-    const redisCacheSetOperation = async () => {
-      return setTTL
-        ? this.redisClient.set(key, value, 'PX', TTL)
-        : this.redisClient.set(key, value);
-    };
-
-    await this.redisfilter.filter(redisCacheSetOperation, {
-      operationType: 'WRITE',
-      key,
-      value,
-      logErrors: true,
-      suppressErrors: false,
-    });
-    return 'OK';
+  getShardKey(videoId: string, userId: string, shard: number = 64) {
+    return getShardFor(videoId + userId, shard);
   }
 
-  public async saveManyInCache(
-    keyValues: Record<string, string>,
-    options: CacheSetoptions,
-  ): Promise<'OK'> {
-    const redisPipeline = this.redisClient.pipeline();
-    for (const [key, value] of Object.entries(keyValues)) {
-      if (options.setTTL) {
-        redisPipeline.set(key, value, 'PX', options.TTL);
-      } else {
-        redisPipeline.set(key, value);
-      }
-    }
-    await this.redisfilter.filter(async () => await redisPipeline.exec(), {
-      operationType: 'WRITE_MANY',
-      keys: Object.keys(keyValues),
-      values: Object.values(keyValues),
-      logErrors: true,
-      suppressErrors: false,
-    });
-    return 'OK';
+  getVideoLikesCounterKey(videoId: string, shardNum: number) {
+    return `videoLikesCounter:${videoId}:${shardNum}`;
   }
 
-  public async fetchFromCache(key: string): Promise<string | null> {
-    const redisCacheGetOperation = async () => await this.redisClient.get(key);
-    return await this.redisfilter.filter(redisCacheGetOperation, {
-      key,
-      operationType: 'READ',
-      logErrors: true,
-      suppressErrors: false,
-    });
+  getVideoDislikeCounterKey(videoId: string, shardNum: number) {
+    return `videoDislikesCounter:${videoId}:${shardNum}`;
   }
 
-  public async fetchManyFromCache(
-    keys: string[],
-  ): Promise<Array<string | null>> {
-    return await this.redisfilter.filter(
-      async () => await this.redisClient.mget(...keys),
-      {
-        operationType: 'READ_MANY',
-        keys,
-        logErrors: true,
-        suppressErrors: false,
-      },
+  getUserLikesSetKey(videoId: string) {
+    return `videoLikedByUsers:${videoId}`;
+  }
+
+  getUserDislikesSetKey(videoId: string) {
+    return `videoDislikedByUsers:${videoId}`;
+  }
+
+  public async getTotalLikes(videoId: string): Promise<number> {
+    const allShardedKeys = Array.from({ length: this.SHARDS }, (_, i) =>
+      this.getVideoLikesCounterKey(videoId, i),
     );
-  }
 
-  public async deleteFromCache(key: string): Promise<'DELETED'> {
-    const redisCacheDeleteOperation = async () =>
-      await this.redisClient.del(key);
-    await this.redisfilter.filter(redisCacheDeleteOperation, {
-      key,
-      operationType: 'DELETE',
+    const getValuesOperations = async () =>
+      await this.redisClient.mget(...allShardedKeys);
+
+    const values = await this.redisfilter.filter(getValuesOperations, {
+      operationType: 'READ_MANY',
+      keys: allShardedKeys,
       logErrors: true,
       suppressErrors: false,
     });
-    return 'DELETED';
+
+    const totalLikes = values.reduce(
+      (sum, currentValue) =>
+        sum + (currentValue ? parseInt(currentValue, 10) : 0),
+      0,
+    );
+
+    return totalLikes;
   }
 
-  public async videoLikesCountIncr(
-    usersLikedSetKey: string,
-    usersDislikedSetKey: string,
-    videoLikeCounterKey: string,
-    videoDislikeCounterKey: string,
-    userId: string,
-  ): Promise<number> {
+  public async getTotalDislikes(videoId: string): Promise<number> {
+    const allShardedKeys = Array.from({ length: this.SHARDS }, (_, i) =>
+      this.getVideoDislikeCounterKey(videoId, i),
+    );
+
+    const getValuesOperations = async () =>
+      await this.redisClient.mget(...allShardedKeys);
+
+    const values = await this.redisfilter.filter(getValuesOperations, {
+      operationType: 'READ_MANY',
+      keys: allShardedKeys,
+      logErrors: true,
+      suppressErrors: false,
+    });
+
+    const totalLikes = values.reduce(
+      (sum, currentValue) =>
+        sum + (currentValue ? parseInt(currentValue, 10) : 0),
+      0,
+    );
+
+    return totalLikes;
+  }
+
+  public async recordLike(videoId: string, userId: string): Promise<number> {
+    const shardNum = this.getShardKey(videoId, userId);
+    const usersDislikedSetKey = this.getUserDislikesSetKey(videoId);
+    const usersLikedSetKey = this.getUserLikesSetKey(videoId);
+    const videoDislikeCounterKey = this.getVideoDislikeCounterKey(
+      videoId,
+      shardNum,
+    );
+    const videoLikeCounterKey = this.getVideoLikesCounterKey(videoId, shardNum);
+
     return await this.redisClient.videoLikesCountIncrScriptFunction(
       usersLikedSetKey,
       usersDislikedSetKey,
@@ -191,11 +183,11 @@ export class RedisCacheAdapter
     );
   }
 
-  public async videoLikesCountDecr(
-    usersLikedSetKey: string,
-    videoLikeCounterKey: string,
-    userId: string,
-  ): Promise<number> {
+  public async removeLike(videoId: string, userId: string): Promise<number> {
+    const shardNum = this.getShardKey(videoId, userId);
+    const usersLikedSetKey = this.getUserLikesSetKey(videoId);
+    const videoLikeCounterKey = this.getVideoLikesCounterKey(videoId, shardNum);
+
     return await this.redisClient.videoLikesCountDecrScriptFunction(
       usersLikedSetKey,
       videoLikeCounterKey,
@@ -203,13 +195,16 @@ export class RedisCacheAdapter
     );
   }
 
-  public async videoDislikesCountIncr(
-    usersDislikedSetKey: string,
-    usersLikedSetKey: string,
-    videoDislikeCounterKey: string,
-    videoLikeCounterKey: string,
-    userId: string,
-  ): Promise<number> {
+  public async recordDislike(videoId: string, userId: string): Promise<number> {
+    const shardNum = this.getShardKey(videoId, userId);
+    const usersDislikedSetKey = this.getUserDislikesSetKey(videoId);
+    const usersLikedSetKey = this.getUserLikesSetKey(videoId);
+    const videoDislikeCounterKey = this.getVideoDislikeCounterKey(
+      videoId,
+      shardNum,
+    );
+    const videoLikeCounterKey = this.getVideoLikesCounterKey(videoId, shardNum);
+
     return await this.redisClient.videoDislikesCountIncrScriptFunction(
       usersDislikedSetKey,
       usersLikedSetKey,
@@ -219,11 +214,14 @@ export class RedisCacheAdapter
     );
   }
 
-  public async videoDislikesCountDecr(
-    usersDislikedSetKey: string,
-    videoDislikeCounterKey: string,
-    userId: string,
-  ): Promise<number> {
+  public async removeDislike(videoId: string, userId: string): Promise<number> {
+    const shardNum = this.getShardKey(videoId, userId);
+    const usersDislikedSetKey = this.getUserDislikesSetKey(videoId);
+    const videoDislikeCounterKey = this.getVideoDislikeCounterKey(
+      videoId,
+      shardNum,
+    );
+
     return await this.redisClient.videoDislikesCountDecrScriptFunction(
       usersDislikedSetKey,
       videoDislikeCounterKey,

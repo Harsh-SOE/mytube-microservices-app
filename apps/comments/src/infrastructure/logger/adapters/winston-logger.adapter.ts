@@ -41,11 +41,11 @@ export interface MyConsoleLogCompleteInfo extends Logform.TransformableInfo {
 export class WinstonLoggerAdapter implements LoggerPort, OnModuleInit {
   private logger: Logger;
 
-  constructor(private readonly configService: AppConfigService) {
+  public constructor(private readonly configService: AppConfigService) {
     winston.addColors(colors);
   }
 
-  consoleTransport() {
+  private consoleTransport() {
     const consoleFormatPipeline = format.combine(
       format.timestamp(),
       format.errors({ stack: true }),
@@ -61,7 +61,7 @@ export class WinstonLoggerAdapter implements LoggerPort, OnModuleInit {
     });
   }
 
-  lokiTransport() {
+  private lokiTransport() {
     const lokiFormatPipeline = format.combine(
       format.timestamp(),
       format.errors({ stack: true }),
@@ -74,7 +74,7 @@ export class WinstonLoggerAdapter implements LoggerPort, OnModuleInit {
     });
   }
 
-  onModuleInit() {
+  public onModuleInit() {
     const loggerTransports: transport[] = [
       this.consoleTransport(),
       this.lokiTransport(),
@@ -92,19 +92,19 @@ export class WinstonLoggerAdapter implements LoggerPort, OnModuleInit {
     });
   }
 
-  info(message: string, ...meta: Record<string, any>[]): void {
+  public info(message: string, ...meta: Record<string, any>[]): void {
     this.logger.log('info', message, ...meta);
   }
 
-  error(message: string, ...meta: Record<string, any>[]): void {
+  public error(message: string, ...meta: Record<string, any>[]): void {
     this.logger.log('error', message, meta);
   }
 
-  alert(message: string, ...meta: Record<string, any>[]): void {
+  public alert(message: string, ...meta: Record<string, any>[]): void {
     this.logger.log('alert', message, meta);
   }
 
-  fatal(message: string, ...meta: Record<string, any>[]): void {
+  public fatal(message: string, ...meta: Record<string, any>[]): void {
     this.logger.log('fatal', message, meta);
   }
 }

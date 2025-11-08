@@ -5,7 +5,7 @@ import { DomainException } from '@likes/domain/exceptions';
 import { InfrastructureException } from '@likes/infrastructure/exceptions';
 
 import { ErrorPayload } from '../types';
-import { GrpcApplicationError } from '../exceptions';
+import { GrpcApplicationException } from '../exceptions';
 
 @Catch()
 export class GrpcFilter implements ExceptionFilter {
@@ -34,6 +34,6 @@ export class GrpcFilter implements ExceptionFilter {
         timestamp: exception.timestamp.toISOString(),
       };
     }
-    throw new GrpcApplicationError(code, message, payload);
+    throw new GrpcApplicationException(code, message, payload);
   }
 }

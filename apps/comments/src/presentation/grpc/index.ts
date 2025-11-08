@@ -1,3 +1,3 @@
-export * from './comments.controller';
-export * from './comments.module';
-export * from './comments.service';
+export * from './grpc.controller';
+export * from './grpc.module';
+export * from './grpc.service';
