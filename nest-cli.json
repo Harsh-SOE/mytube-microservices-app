@@ -18,7 +18,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
-        "assets": ["libs/proto/*.proto"],
+        "assets": [
+          "libs/proto/*.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -53,7 +55,10 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/cloud/tsconfig.app.json",
-        "assets": ["libs/proto/cloud.proto", "libs/proto/health.proto"],
+        "assets": [
+          "libs/proto/cloud.proto",
+          "libs/proto/health.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -100,7 +105,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/email/tsconfig.app.json",
-        "assets": ["libs/proto/email.proto"],
+        "assets": [
+          "libs/proto/email.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -120,7 +127,10 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/hub/tsconfig.app.json",
-        "assets": ["libs/proto/hub.proto", "libs/proto/health.proto"],
+        "assets": [
+          "libs/proto/hub.proto",
+          "libs/proto/health.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -158,6 +168,15 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/likes-aggregator/tsconfig.app.json"
+      }
+    },
+    "observable-stream": {
+      "type": "library",
+      "root": "libs/observable-stream",
+      "entryFile": "index",
+      "sourceRoot": "libs/observable-stream/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/observable-stream/tsconfig.lib.json"
       }
     },
     "prisma-clients": {
@@ -210,7 +229,10 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/users/tsconfig.app.json",
-        "assets": ["libs/proto/users.proto", "libs/proto/health.proto"],
+        "assets": [
+          "libs/proto/users.proto",
+          "libs/proto/health.proto"
+        ],
         "webpack": true,
         "watchAssets": true
       }
@@ -231,7 +253,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/video-transcoder/tsconfig.app.json",
-        "assets": ["libs/proto/cloud.proto"],
+        "assets": [
+          "libs/proto/cloud.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -242,7 +266,10 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/videos/tsconfig.app.json",
-        "assets": ["libs/proto/videos.proto", "libs/proto/health.proto"],
+        "assets": [
+          "libs/proto/videos.proto",
+          "libs/proto/health.proto"
+        ],
         "watchAssets": true
       }
     },

@@ -54,12 +54,12 @@ export class VideoEntity {
   public getSnapShot() {
     return {
       id: this.id,
-      title: this.title,
+      title: this.title.getValue(),
       description: this.description?.getValue(),
-      videoUrl: this.videoUrl,
+      videoUrl: this.videoUrl.getValue(),
       publishStatus: this.publishStatus.getValue(),
       visibilityStatus: this.visibilityStatus.getValue(),
-      ownerId: this.ownerId,
+      ownerId: this.ownerId.getValue(),
     };
   }
 

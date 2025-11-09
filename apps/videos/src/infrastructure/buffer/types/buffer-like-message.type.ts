@@ -1,7 +1,7 @@
 import {
-  GrpcTransportPublishStatus,
-  GrpcTransportVisibilityStatus,
-} from '@app/contracts/videos';
+  VideoDomainPublishStatus,
+  VideoDomainVisibiltyStatus,
+} from '@videos/domain/enums';
 
 export type VideoMessage = {
   id: string;
@@ -10,6 +10,6 @@ export type VideoMessage = {
   title: string;
   description: string;
   videoUrl: string;
-  publishStatus: GrpcTransportPublishStatus;
-  visibilityStatus: GrpcTransportVisibilityStatus;
+  publishStatus: VideoDomainPublishStatus;
+  visibilityStatus: VideoDomainVisibiltyStatus;
 };

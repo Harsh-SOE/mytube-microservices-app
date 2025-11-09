@@ -11,10 +11,6 @@ import {
 } from '@videos/application/ports';
 import { VideoAggregate } from '@videos/domain/aggregates';
 import { AppConfigService } from '@videos/infrastructure/config';
-import {
-  GrpcToDomainPublishEnumMapper,
-  GrpcToDomainVisibilityEnumMapper,
-} from '@videos/infrastructure/anti-corruption';
 
 import { VideoMessage, StreamData } from '../types';
 
@@ -117,20 +113,13 @@ export class RedisStreamBufferAdapter implements OnModuleInit, BufferPort {
 
   public async processMessages(ids: string[], messages: VideoMessage[]) {
     const models = messages.map((message) => {
-      const publishStatus = GrpcToDomainPublishEnumMapper.get(
-        message.publishStatus,
-      );
-      const visibilityStatus = GrpcToDomainVisibilityEnumMapper.get(
-        message.visibilityStatus,
-      );
-      if (!publishStatus || !visibilityStatus) throw new Error();
       return VideoAggregate.create(
         message.id,
         message.title,
         message.ownerId,
         message.videoUrl,
-        publishStatus,
-        visibilityStatus,
+        message.publishStatus,
+        message.visibilityStatus,
         message.description,
       );
     });

@@ -64,7 +64,7 @@ export class PublishVideoHandler
 
     await this.video.save(videoAggregate);
 
-    videoAggregate.commit();
+    videoAggregate.commit(); // publishes message to transcoder service...
 
     return { response: 'created', videoId: id };
   }

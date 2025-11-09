@@ -1,18 +1,14 @@
 import { Module } from '@nestjs/common';
 
 import { AppConfigModule } from './infrastructure/config';
-import { MeasureModule } from './infrastructure/measure';
-import { LogsModule } from './infrastructure/logs';
+import { ObserverModule } from './infrastructure/observer';
 import { AppHealthModule } from './infrastructure/health';
-import { StorageModule } from './presentation/storage';
+import { GrpcModule } from './presentation/grpc';
+import { LOGGER_PORT } from './application';
+import { WinstonLoggerAdapter } from './infrastructure/logger';
 
 @Module({
-  imports: [
-    StorageModule,
-    AppConfigModule,
-    MeasureModule,
-    LogsModule,
-    AppHealthModule,
-  ],
+  imports: [GrpcModule, AppConfigModule, ObserverModule, AppHealthModule],
+  providers: [{ provide: LOGGER_PORT, useClass: WinstonLoggerAdapter }],
 })
 export class AppModule {}

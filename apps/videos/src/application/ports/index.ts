@@ -10,3 +10,6 @@ export * from './cache/types/options';
 export * from './logger/logger.port';
 
 export * from './message-broker/message-broker.port';
+
+export * from './storage/storage.port';
+export * from './storage/types';

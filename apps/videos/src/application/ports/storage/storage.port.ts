@@ -1,7 +1,4 @@
-import { Observable } from 'rxjs';
-
-import { FileChunk, UploadFileDto } from '@app/contracts/cloud';
-
+import Stream, { Readable } from 'stream';
 import { UploadResult } from './types';
 import { UploadOptions } from './types';
 
@@ -9,11 +6,10 @@ export interface StoragePort {
   getPresignedUrl(filePathKey: string, expiresIn?: number): Promise<string>;
 
   uploadFileAsStream(
-    uploadFileToCloud: Observable<UploadFileDto>,
+    fileStream: Readable,
+    key: string,
     options?: UploadOptions,
   ): Promise<UploadResult>;
 
-  downloadFileAsStream(filePathKey: string): Observable<FileChunk>;
+  downloadFileAsStream(filePathKey: string): Stream | Promise<Readable>;
 }
-
-export const STORAGE_PORT = Symbol('STORAGE_PORT');
