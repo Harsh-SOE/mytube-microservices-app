@@ -1,0 +1,7 @@
+export enum Components {
+  DATABASE = 'DATABASE',
+  CACHE = 'CACHE',
+  MESSAGE_BROKER = 'MESSAGE BROKER',
+  CLOUD = 'CLOUD',
+  BUFFER = 'BUFFER',
+}

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { EntityInvalidInputException } from '@app/errors';
+import { InvalidRegionException } from '@users/domain/exceptions';
 
 export class UserRegion {
   private static UserRegionValidationSchema = z
@@ -16,9 +16,9 @@ export class UserRegion {
     if (!parsedDateResult.success) {
       const errorMessage = parsedDateResult.error.message;
       console.log(`Invalid DOB`);
-      throw new EntityInvalidInputException(
-        `Region failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidRegionException({
+        message: `Region failed. Reason: ${errorMessage}`,
+      });
     }
     return new UserRegion(parsedDateResult.data);
   }

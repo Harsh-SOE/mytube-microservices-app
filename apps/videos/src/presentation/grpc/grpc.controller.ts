@@ -1,7 +1,11 @@
 import { Controller, UseFilters } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
+import { GrpcAppExceptionFilter } from '@app/utils';
+
 import {
+  GetPresignedUrlDto,
+  GetPreSignedUrlResponse,
   VideoCreateDto,
   VideoFindDto,
   VideoFoundResponse,
@@ -14,7 +18,6 @@ import {
   VideoUpdatedResponse,
   VideoUpdateDto,
 } from '@app/contracts/videos';
-import { GrpcAppExceptionFilter } from '@app/utils';
 
 import { GrpcService } from './grpc.service';
 
@@ -34,10 +37,22 @@ export class GrpcController implements VideoServiceController {
     return { status: 1 }; // 1 = SERVING
   }
 
-  create(
-    clientCreateBooksDto: VideoCreateDto,
-  ): Promise<VideoPublishedResponse> {
-    return this.videoService.create(clientCreateBooksDto);
+  getPresignedUrlForFileUpload(
+    getPresignedUrlDto: GetPresignedUrlDto,
+  ):
+    | Promise<GetPreSignedUrlResponse>
+    | Observable<GetPreSignedUrlResponse>
+    | GetPreSignedUrlResponse {
+    return this.videoService.generatePreSignedUrl(getPresignedUrlDto);
+  }
+
+  save(
+    videoCreateDto: VideoCreateDto,
+  ):
+    | Promise<VideoPublishedResponse>
+    | Observable<VideoPublishedResponse>
+    | VideoPublishedResponse {
+    return this.videoService.create(videoCreateDto);
   }
 
   findAll(): Promise<VideosFoundResponse> {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { PersistanceModule } from './infrastructure/persistance';
-import { LogsModule } from '@users/infrastructure/logs';
+import { LogsModule } from '@users/infrastructure/logger';
 import { MeasureModule } from '@users/infrastructure/measure';
 import { AppConfigModule } from '@users/infrastructure/config';
 

@@ -11,8 +11,8 @@ import {
 import { UserCommandHandlers } from '@users/application/commands';
 import { MeasureModule } from '@users/infrastructure/measure';
 import { UserQueryHandlers } from '@users/application/queries';
-import { UserEventHandlers } from '@users/domain/events';
-import { LogsModule } from '@users/infrastructure/logs';
+import { UserEventHandlers } from '@users/application/events';
+import { LogsModule } from '@users/infrastructure/logger';
 import {
   UserQueryRepository,
   UserCommandRepository,

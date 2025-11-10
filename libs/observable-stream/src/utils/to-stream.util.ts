@@ -5,8 +5,8 @@ import Stream, { PassThrough } from 'stream';
 import { FileChunk } from '../types';
 
 @Injectable()
-export class ObservableToStream {
-  public ConvertObservableToReadableStream(
+export class ObservableToReadable {
+  public observableToReadable(
     fileStreamObservable: Observable<FileChunk>,
     fileKey: string,
   ): Promise<{ stream: Stream; filePathKey: string }> {

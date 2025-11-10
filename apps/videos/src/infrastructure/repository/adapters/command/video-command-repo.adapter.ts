@@ -170,7 +170,7 @@ export class VideoCommandRepositoryAdapter
         data: {
           id: newVideoModel.getVideo().getId(),
           ownerId: newVideoModel.getVideo().getOwnerId(),
-          videoFileUrl: newVideoModel.getVideo().getVideoUrl(),
+          videoFileUrl: newVideoModel.getVideo().getVideoFileIdentifier(),
           description: newVideoModel.getVideo().getDescription(),
           videoPublishStatus: newVideoModel.getVideo().getPublishStatus(),
           videoVisibiltyStatus: newVideoModel.getVideo().getVisibiltyStatus(),
@@ -224,7 +224,7 @@ export class VideoCommandRepositoryAdapter
         data: {
           id: newVideoModel.getVideo().getId(),
           ownerId: newVideoModel.getVideo().getOwnerId(),
-          videoFileUrl: newVideoModel.getVideo().getVideoUrl(),
+          videoFileUrl: newVideoModel.getVideo().getVideoFileIdentifier(),
           description: newVideoModel.getVideo().getDescription(),
           videoPublishStatus: newVideoModel.getVideo().getPublishStatus(),
           videoVisibiltyStatus: newVideoModel.getVideo().getVisibiltyStatus(),
@@ -257,7 +257,7 @@ export class VideoCommandRepositoryAdapter
         data: {
           id: newVideoModel.getVideo().getId(),
           ownerId: newVideoModel.getVideo().getOwnerId(),
-          videoFileUrl: newVideoModel.getVideo().getVideoUrl(),
+          videoFileUrl: newVideoModel.getVideo().getVideoFileIdentifier(),
           description: newVideoModel.getVideo().getDescription(),
           videoPublishStatus: newVideoModel.getVideo().getPublishStatus(),
           videoVisibiltyStatus: newVideoModel.getVideo().getVisibiltyStatus(),

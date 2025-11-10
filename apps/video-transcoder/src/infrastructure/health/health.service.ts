@@ -12,13 +12,13 @@ export class AppHealthService implements OnModuleInit, OnModuleDestroy {
   private kafka: Kafka;
   private admin: Admin;
 
-  constructor(
+  public constructor(
     private readonly healthIndicator: HealthIndicatorService,
     private readonly configService: AppConfigService,
   ) {
     this.kafka = new Kafka({
       brokers: [
-        `${configService.KAFKA_SERVICE_HOST}:${configService.KAFKA_SERVICE_PORT}`,
+        `${configService.MESSAGE_BROKER_HOST}:${configService.MESSAGE_BROKER_PORT}`,
       ],
       clientId: this.configService.VIDEO_TRANSCODER_CLIENT_ID,
       logLevel: logLevel.WARN,
@@ -26,15 +26,15 @@ export class AppHealthService implements OnModuleInit, OnModuleDestroy {
     this.admin = this.kafka.admin();
   }
 
-  async onModuleInit() {
+  public async onModuleInit() {
     await this.admin.connect();
   }
 
-  async onModuleDestroy() {
+  public async onModuleDestroy() {
     await this.admin.disconnect();
   }
 
-  async isHealthy(key: string): Promise<HealthIndicatorResult> {
+  public async isHealthy(key: string): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicator.check(key);
     try {
       const topics = await this.admin.listTopics();

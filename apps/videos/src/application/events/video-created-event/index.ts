@@ -1,2 +1,2 @@
-export * from './video-created.domain-event';
-export * from './video-created.domain-handler';
+export * from './video-created.event';
+export * from './video-created.handler';

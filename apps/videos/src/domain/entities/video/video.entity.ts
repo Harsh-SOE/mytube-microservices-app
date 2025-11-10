@@ -7,7 +7,7 @@ import {
   VideoDescription,
   VideoOwner,
   VideoTitle,
-  VideoUrl,
+  VideoFileIdentifier,
   VideoVisibilty,
   VideoPublish,
 } from '../../value-objects';
@@ -16,7 +16,7 @@ export class VideoEntity {
   public constructor(
     private readonly id: string,
     private title: VideoTitle,
-    private readonly videoUrl: VideoUrl,
+    private videoFileIdentifier: VideoFileIdentifier,
     private publishStatus: VideoPublish,
     private visibilityStatus: VideoVisibilty,
     private readonly ownerId: VideoOwner,
@@ -31,8 +31,8 @@ export class VideoEntity {
     return this.title.getValue();
   }
 
-  public getVideoUrl(): string {
-    return this.videoUrl.getValue();
+  public getVideoFileIdentifier(): string {
+    return this.videoFileIdentifier.getValue();
   }
 
   public getDescription(): string | undefined {
@@ -56,7 +56,7 @@ export class VideoEntity {
       id: this.id,
       title: this.title.getValue(),
       description: this.description?.getValue(),
-      videoUrl: this.videoUrl.getValue(),
+      videoUrl: this.videoFileIdentifier.getValue(),
       publishStatus: this.publishStatus.getValue(),
       visibilityStatus: this.visibilityStatus.getValue(),
       ownerId: this.ownerId.getValue(),
@@ -77,5 +77,9 @@ export class VideoEntity {
 
   public updateVisibiltyStatus(newVisibiltyStatus: string): void {
     this.visibilityStatus = VideoVisibilty.create(newVisibiltyStatus);
+  }
+
+  public updateVideoFileIdentifier(newFileIdentifier: string): void {
+    this.videoFileIdentifier = VideoFileIdentifier.create(newFileIdentifier);
   }
 }

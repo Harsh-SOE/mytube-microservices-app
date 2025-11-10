@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
-import { EntityInvalidInputException } from '@app/errors';
+import { InvalidPhoneNumberException } from '@users/domain/exceptions';
 
 export class UserPhoneNumber {
   private static UserPhoneNumberValidationSchema = z
@@ -23,9 +23,9 @@ export class UserPhoneNumber {
     if (!parsedDateResult.success) {
       const errorMessage = parsedDateResult.error.message;
       console.log(`Invalid DOB`);
-      throw new EntityInvalidInputException(
-        `Phone Number validation failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidPhoneNumberException({
+        message: `Phone Number validation failed. Reason: ${errorMessage}`,
+      });
     }
     return new UserPhoneNumber(parsedDateResult.data);
   }

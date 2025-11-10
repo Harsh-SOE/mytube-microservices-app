@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package Video;
 
-enum GrpcTransportPublishStatus {
+enum VideoGrpcPublishStatus {
   GRPC_PENDING = 0;
   GRPC_PROCESSING = 1;
   GRPC_PROCESSED = 2;
@@ -10,20 +10,24 @@ enum GrpcTransportPublishStatus {
   GRPC_FAILED = 4;
 }
 
-enum GrpcTransportVisibilityStatus {
+enum VideoGrpcVisibilityStatus {
   GRPC_PRIVATE = 0;
   GRPC_PUBLIC = 1;
   GRPC_UNLISTED = 2;
 }
 
+message GetPresignedUrlDto {
+  optional string fileName = 1;
+  string userId = 2;
+}
 
 message VideoCreateDto {
   string ownerId = 2;
   string title = 3;
-  string videoFileUrl = 4;
+  string videoFileKey = 4;
   optional string description = 5;
-  GrpcTransportPublishStatus videoPublishStatus = 6;
-  GrpcTransportVisibilityStatus videoVisibilityStatus = 7;
+  VideoGrpcPublishStatus videoPublishStatus = 6;
+  VideoGrpcVisibilityStatus videoVisibilityStatus = 7;
 }
 
 message VideoFindDto {
@@ -35,8 +39,13 @@ message VideoUpdateDto {
   optional string title = 3;
   optional string videoFileUrl = 4;
   optional string description = 5;
-  optional GrpcTransportPublishStatus videoPublishStatus = 6;
-  optional GrpcTransportVisibilityStatus videoVisibilityStatus = 7;
+  optional VideoGrpcPublishStatus videoPublishStatus = 6;
+  optional VideoGrpcVisibilityStatus videoVisibilityStatus = 7;
+}
+
+message GetPreSignedUrlResponse {
+  string response = 1;
+  string url = 2;
 }
 
 message VideoPublishedResponse {
@@ -49,8 +58,8 @@ message VideoFoundResponse {
   string title = 2;
   string videoFileUrl = 3;
   optional string description = 4;
-  GrpcTransportPublishStatus videoPublishStatus = 5;
-  GrpcTransportVisibilityStatus videoVisibilityStatus = 6;
+  VideoGrpcPublishStatus videoPublishStatus = 5;
+  VideoGrpcVisibilityStatus videoVisibilityStatus = 6;
 }
 
 message VideosFoundResponse {
@@ -79,7 +88,8 @@ message VideosHealthCheckResponse {
 }
 
 service VideoService {
-  rpc create(VideoCreateDto) returns (VideoPublishedResponse) {}
+  rpc getPresignedUrlForFileUpload(GetPresignedUrlDto) returns (GetPreSignedUrlResponse) {}
+  rpc save(VideoCreateDto) returns (VideoPublishedResponse) {}
   rpc findOne(VideoFindDto) returns (VideoFoundResponse) {}
   rpc findAll(Empty) returns (VideosFoundResponse) {}
   rpc update(VideoUpdateDto) returns (VideoUpdatedResponse) {}

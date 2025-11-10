@@ -9,7 +9,6 @@ import {
   videoQueryHandler,
 } from '@videos/application/queries';
 import { videoCommandHandlers } from '@videos/application/commands';
-import { videoEventHandler } from '@videos/application/events';
 import { VideoAggregatePersistanceACL } from '@videos/infrastructure/anti-corruption';
 import {
   AppConfigModule,
@@ -21,6 +20,7 @@ import {
   DATABASE_COMMAND_PORT,
   DATABASE_QUERY_PORT,
   MESSAGE_BROKER,
+  STORAGE_PORT,
 } from '@videos/application/ports';
 import {
   VideoCommandRepositoryAdapter,
@@ -29,6 +29,7 @@ import {
 import { RedisStreamBufferAdapter } from '@videos/infrastructure/buffer/adapters';
 import { KafkaMessageBrokerAdapter } from '@videos/infrastructure/message-broker/adapters';
 import { RedisCacheAdapter } from '@videos/infrastructure/cache/adapters';
+import { AwsS3StorageAdapter } from '@videos/infrastructure/storage/adapters';
 
 import { GrpcService } from './grpc.service';
 import { GrpcController } from './grpc.controller';
@@ -45,9 +46,9 @@ import { GrpcController } from './grpc.controller';
     { provide: BUFFER_PORT, useClass: RedisStreamBufferAdapter },
     { provide: MESSAGE_BROKER, useClass: KafkaMessageBrokerAdapter },
     { provide: CACHE_PORT, useClass: RedisCacheAdapter },
+    { provide: STORAGE_PORT, useClass: AwsS3StorageAdapter },
     ...videoCommandHandlers,
     ...videoQueryHandler,
-    ...videoEventHandler,
   ],
   imports: [
     CqrsModule,

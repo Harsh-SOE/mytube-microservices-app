@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "Video";
 
-export enum GrpcTransportPublishStatus {
+export enum VideoGrpcPublishStatus {
   GRPC_PENDING = 0,
   GRPC_PROCESSING = 1,
   GRPC_PROCESSED = 2,
@@ -19,20 +19,25 @@ export enum GrpcTransportPublishStatus {
   UNRECOGNIZED = -1,
 }
 
-export enum GrpcTransportVisibilityStatus {
+export enum VideoGrpcVisibilityStatus {
   GRPC_PRIVATE = 0,
   GRPC_PUBLIC = 1,
   GRPC_UNLISTED = 2,
   UNRECOGNIZED = -1,
 }
 
+export interface GetPresignedUrlDto {
+  fileName?: string | undefined;
+  userId: string;
+}
+
 export interface VideoCreateDto {
   ownerId: string;
   title: string;
-  videoFileUrl: string;
+  videoFileKey: string;
   description?: string | undefined;
-  videoPublishStatus: GrpcTransportPublishStatus;
-  videoVisibilityStatus: GrpcTransportVisibilityStatus;
+  videoPublishStatus: VideoGrpcPublishStatus;
+  videoVisibilityStatus: VideoGrpcVisibilityStatus;
 }
 
 export interface VideoFindDto {
@@ -44,8 +49,13 @@ export interface VideoUpdateDto {
   title?: string | undefined;
   videoFileUrl?: string | undefined;
   description?: string | undefined;
-  videoPublishStatus?: GrpcTransportPublishStatus | undefined;
-  videoVisibilityStatus?: GrpcTransportVisibilityStatus | undefined;
+  videoPublishStatus?: VideoGrpcPublishStatus | undefined;
+  videoVisibilityStatus?: VideoGrpcVisibilityStatus | undefined;
+}
+
+export interface GetPreSignedUrlResponse {
+  response: string;
+  url: string;
 }
 
 export interface VideoPublishedResponse {
@@ -58,8 +68,8 @@ export interface VideoFoundResponse {
   title: string;
   videoFileUrl: string;
   description?: string | undefined;
-  videoPublishStatus: GrpcTransportPublishStatus;
-  videoVisibilityStatus: GrpcTransportVisibilityStatus;
+  videoPublishStatus: VideoGrpcPublishStatus;
+  videoVisibilityStatus: VideoGrpcVisibilityStatus;
 }
 
 export interface VideosFoundResponse {
@@ -93,7 +103,9 @@ export enum VideosHealthCheckResponse_ServingStatus {
 export const VIDEO_PACKAGE_NAME = "Video";
 
 export interface VideoServiceClient {
-  create(request: VideoCreateDto): Observable<VideoPublishedResponse>;
+  getPresignedUrlForFileUpload(request: GetPresignedUrlDto): Observable<GetPreSignedUrlResponse>;
+
+  save(request: VideoCreateDto): Observable<VideoPublishedResponse>;
 
   findOne(request: VideoFindDto): Observable<VideoFoundResponse>;
 
@@ -105,7 +117,11 @@ export interface VideoServiceClient {
 }
 
 export interface VideoServiceController {
-  create(
+  getPresignedUrlForFileUpload(
+    request: GetPresignedUrlDto,
+  ): Promise<GetPreSignedUrlResponse> | Observable<GetPreSignedUrlResponse> | GetPreSignedUrlResponse;
+
+  save(
     request: VideoCreateDto,
   ): Promise<VideoPublishedResponse> | Observable<VideoPublishedResponse> | VideoPublishedResponse;
 
@@ -124,7 +140,7 @@ export interface VideoServiceController {
 
 export function VideoServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["create", "findOne", "findAll", "update", "check"];
+    const grpcMethods: string[] = ["getPresignedUrlForFileUpload", "save", "findOne", "findAll", "update", "check"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("VideoService", method)(constructor.prototype[method], method, descriptor);

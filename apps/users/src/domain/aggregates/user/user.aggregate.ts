@@ -9,7 +9,7 @@ import {
   PhoneNumberVerfiedEvent,
   UpdateProfileEvent,
   OnBoardingCompletedEvent,
-} from '@users/domain/events';
+} from '@users/application/events';
 
 export class UserAggregate extends AggregateRoot {
   public constructor(private user: UserEntity) {

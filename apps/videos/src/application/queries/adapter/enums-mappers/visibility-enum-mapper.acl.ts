@@ -1,23 +1,23 @@
-import { GrpcTransportVisibilityStatus } from '@app/contracts/videos';
+import { VideoGrpcVisibilityStatus } from '@app/contracts/videos';
 
 import { VideoPersistanceVisibilityStatus } from '@peristance/videos';
 
 const VisibilityPersistanceToGrpcEnumMapper = new Map<
   VideoPersistanceVisibilityStatus,
-  GrpcTransportVisibilityStatus
+  VideoGrpcVisibilityStatus
 >();
 
 VisibilityPersistanceToGrpcEnumMapper.set(
   VideoPersistanceVisibilityStatus.PRIVATE,
-  GrpcTransportVisibilityStatus.GRPC_PRIVATE,
+  VideoGrpcVisibilityStatus.GRPC_PRIVATE,
 );
 VisibilityPersistanceToGrpcEnumMapper.set(
   VideoPersistanceVisibilityStatus.PUBLIC,
-  GrpcTransportVisibilityStatus.GRPC_PUBLIC,
+  VideoGrpcVisibilityStatus.GRPC_PUBLIC,
 );
 VisibilityPersistanceToGrpcEnumMapper.set(
   VideoPersistanceVisibilityStatus.UNLISTED,
-  GrpcTransportVisibilityStatus.GRPC_UNLISTED,
+  VideoGrpcVisibilityStatus.GRPC_UNLISTED,
 );
 
 export { VisibilityPersistanceToGrpcEnumMapper };

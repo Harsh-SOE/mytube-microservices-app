@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { EntityInvalidInputException } from '@app/errors';
 import { DomainThemePreference } from '@users/domain/enums';
+import { InvalidThemePreferenceException } from '@users/domain/exceptions';
 
 export class UserThemePreference {
   private static UserThemePreferenceValidationSchema = z
@@ -17,9 +17,9 @@ export class UserThemePreference {
     if (!parsedDateResult.success) {
       const errorMessage = parsedDateResult.error.message;
       console.log(`Invalid Theme`);
-      throw new EntityInvalidInputException(
-        `Theme validation failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidThemePreferenceException({
+        message: `Theme validation failed. Reason: ${errorMessage}`,
+      });
     }
     return new UserThemePreference(parsedDateResult.data);
   }

@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { EntityInvalidInputException } from '@app/errors';
+
+import { InvalidHandleException } from '@users/domain/exceptions';
 
 export class UserHandle {
   private static UserHandleValidationSchema = z
@@ -19,9 +20,9 @@ export class UserHandle {
       UserHandle.UserHandleValidationSchema.safeParse(value);
     if (!parsedUrlResult.success) {
       const errorMessage = parsedUrlResult.error.message;
-      throw new EntityInvalidInputException(
-        `Handle validation failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidHandleException({
+        message: `Handle validation failed. Reason: ${errorMessage}`,
+      });
     }
     return new UserHandle(parsedUrlResult.data);
   }

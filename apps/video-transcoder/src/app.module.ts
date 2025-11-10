@@ -1,17 +1,20 @@
 import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 
-import { VideoTranscoderModule } from '@transcoder/application';
+import { VideoTranscoderModule } from '@transcoder/presentation';
 import { AppConfigModule } from '@transcoder/infrastructure/config';
 
-import { LogsModule } from './infrastructure/logs';
+import { LOGGER_PORT } from './application/ports';
 import { AppHealthModule } from './infrastructure/health';
+import { WinstonLoggerAdapter } from './infrastructure/logger';
 
 @Module({
   imports: [
     AppConfigModule,
     VideoTranscoderModule,
-    LogsModule,
     AppHealthModule,
+    CqrsModule,
   ],
+  providers: [{ provide: LOGGER_PORT, useClass: WinstonLoggerAdapter }],
 })
 export class AppModule {}

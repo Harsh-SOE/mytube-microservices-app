@@ -1,30 +1,30 @@
-import { GrpcTransportPublishStatus } from '@app/contracts/videos';
+import { VideoGrpcPublishStatus } from '@app/contracts/videos';
 
 import { VideoPersistancePublishStatus } from '@peristance/videos';
 
 const GrpcToPersistancePublishEnumMapper = new Map<
-  GrpcTransportPublishStatus,
+  VideoGrpcPublishStatus,
   VideoPersistancePublishStatus
 >();
 
 GrpcToPersistancePublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_PENDING,
+  VideoGrpcPublishStatus.GRPC_PENDING,
   VideoPersistancePublishStatus.PENDING,
 );
 GrpcToPersistancePublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_PROCESSING,
+  VideoGrpcPublishStatus.GRPC_PROCESSING,
   VideoPersistancePublishStatus.PROCESSING,
 );
 GrpcToPersistancePublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_PROCESSED,
+  VideoGrpcPublishStatus.GRPC_PROCESSED,
   VideoPersistancePublishStatus.PROCESSED,
 );
 GrpcToPersistancePublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_PUBLISHED,
+  VideoGrpcPublishStatus.GRPC_PUBLISHED,
   VideoPersistancePublishStatus.PUBLISHED,
 );
 GrpcToPersistancePublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_FAILED,
+  VideoGrpcPublishStatus.GRPC_FAILED,
   VideoPersistancePublishStatus.FAILED,
 );
 

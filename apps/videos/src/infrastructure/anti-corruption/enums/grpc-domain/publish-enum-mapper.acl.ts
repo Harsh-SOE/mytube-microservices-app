@@ -1,30 +1,30 @@
-import { GrpcTransportPublishStatus } from '@app/contracts/videos';
+import { VideoGrpcPublishStatus } from '@app/contracts/videos';
 
 import { VideoDomainPublishStatus } from '@videos/domain/enums';
 
 const GrpcToDomainPublishEnumMapper = new Map<
-  GrpcTransportPublishStatus,
+  VideoGrpcPublishStatus,
   VideoDomainPublishStatus
 >();
 
 GrpcToDomainPublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_PENDING,
+  VideoGrpcPublishStatus.GRPC_PENDING,
   VideoDomainPublishStatus.PENDING,
 );
 GrpcToDomainPublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_PROCESSING,
+  VideoGrpcPublishStatus.GRPC_PROCESSING,
   VideoDomainPublishStatus.PROCESSING,
 );
 GrpcToDomainPublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_PROCESSED,
+  VideoGrpcPublishStatus.GRPC_PROCESSED,
   VideoDomainPublishStatus.PROCESSED,
 );
 GrpcToDomainPublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_PUBLISHED,
+  VideoGrpcPublishStatus.GRPC_PUBLISHED,
   VideoDomainPublishStatus.PUBLISHED,
 );
 GrpcToDomainPublishEnumMapper.set(
-  GrpcTransportPublishStatus.GRPC_FAILED,
+  VideoGrpcPublishStatus.GRPC_FAILED,
   VideoDomainPublishStatus.FAILED,
 );
 

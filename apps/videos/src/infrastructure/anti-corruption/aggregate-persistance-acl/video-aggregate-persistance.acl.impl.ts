@@ -9,7 +9,7 @@ import {
   VideoOwner,
   VideoPublish,
   VideoTitle,
-  VideoUrl,
+  VideoFileIdentifier,
   VideoVisibilty,
 } from '@videos/domain/value-objects';
 
@@ -29,7 +29,7 @@ export class VideoAggregatePersistanceACL
     const videoEntity = new VideoEntity(
       persistance.id,
       VideoTitle.create(persistance.title),
-      VideoUrl.create(persistance.videoFileUrl),
+      VideoFileIdentifier.create(persistance.videoFileUrl),
       VideoPublish.create(persistance.videoPublishStatus.toString()),
       VideoVisibilty.create(persistance.videoVisibiltyStatus.toString()),
       VideoOwner.create(persistance.ownerId),
@@ -46,7 +46,7 @@ export class VideoAggregatePersistanceACL
       title: aggregate.getVideo().getTitle(),
       description: aggregate.getVideo().getDescription() ?? null,
       ownerId: aggregate.getVideo().getOwnerId(),
-      videoFileUrl: aggregate.getVideo().getVideoUrl(),
+      videoFileUrl: aggregate.getVideo().getVideoFileIdentifier(),
       videoPublishStatus: aggregate.getVideo().getPublishStatus(),
       videoVisibiltyStatus: aggregate.getVideo().getVisibiltyStatus(),
     };

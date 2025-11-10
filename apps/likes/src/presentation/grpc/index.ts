@@ -1,3 +1,3 @@
-export * from './likes.controller';
-export * from './likes.module';
-export * from './likes.service';
+export * from './grpc.controller';
+export * from './grpc.module';
+export * from './grpc.service';

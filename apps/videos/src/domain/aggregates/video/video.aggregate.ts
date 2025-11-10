@@ -1,6 +1,6 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 
-import { VideoCreatedDomainEvent } from '@videos/application/events';
+import { VideoCreatedEvent } from '@videos/application/events';
 import {
   VideoDomainPublishStatus,
   VideoDomainVisibiltyStatus,
@@ -10,11 +10,12 @@ import {
   VideoOwner,
   VideoPublish,
   VideoTitle,
-  VideoUrl,
+  VideoFileIdentifier,
   VideoVisibilty,
 } from '@videos/domain/value-objects';
 
 import { VideoEntity } from '../../entities/video/video.entity';
+import { TranscodeVideoMessage } from '@app/contracts/video-transcoder';
 
 export class VideoAggregate extends AggregateRoot {
   public constructor(public videoEntity: VideoEntity) {
@@ -25,7 +26,7 @@ export class VideoAggregate extends AggregateRoot {
     id: string,
     title: string,
     ownerId: string,
-    videoUrl: string,
+    videoFileIdentifier: string,
     publishStatus: VideoDomainPublishStatus,
     visibilityStatus: VideoDomainVisibiltyStatus,
     description?: string,
@@ -33,7 +34,7 @@ export class VideoAggregate extends AggregateRoot {
     const videoEntity = new VideoEntity(
       id,
       VideoTitle.create(title),
-      VideoUrl.create(videoUrl),
+      VideoFileIdentifier.create(videoFileIdentifier),
       VideoPublish.create(publishStatus),
       VideoVisibilty.create(visibilityStatus),
       VideoOwner.create(ownerId),
@@ -41,12 +42,13 @@ export class VideoAggregate extends AggregateRoot {
     );
 
     const videoAggregate = new VideoAggregate(videoEntity);
-    videoAggregate.apply(
-      new VideoCreatedDomainEvent({
-        key: videoAggregate.getVideo().getVideoUrl(),
-        videoId: videoAggregate.getVideo().getId(),
-      }),
-    );
+
+    const transcodeVideoMessage: TranscodeVideoMessage = {
+      fileIdentifier: videoAggregate.getVideo().getVideoFileIdentifier(),
+      videoId: videoAggregate.getVideo().getId(),
+    };
+
+    videoAggregate.apply(new VideoCreatedEvent(transcodeVideoMessage));
     return videoAggregate;
   }
 
@@ -63,6 +65,7 @@ export class VideoAggregate extends AggregateRoot {
     newDescription?: string;
     newPublishStatus?: string;
     newVisibilityStatus?: string;
+    newIdentifier?: string;
   }) {
     if (updateProps.newTitle)
       this.videoEntity.updateTitle(updateProps.newTitle);
@@ -72,6 +75,8 @@ export class VideoAggregate extends AggregateRoot {
       this.videoEntity.updatePublishStatus(updateProps.newPublishStatus);
     if (updateProps.newVisibilityStatus)
       this.videoEntity.updateVisibiltyStatus(updateProps.newVisibilityStatus);
+    if (updateProps.newIdentifier)
+      this.videoEntity.updateVideoFileIdentifier(updateProps.newIdentifier);
     return this.videoEntity;
   }
 }

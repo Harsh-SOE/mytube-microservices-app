@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { EntityInvalidInputException } from '@app/errors';
+
+import { InvalidDobException } from '@users/domain/exceptions';
 
 export class UserDOB {
   private static UserDOBValidationSchema = z
@@ -27,9 +28,9 @@ export class UserDOB {
     if (!parsedDateResult.success) {
       const errorMessage = parsedDateResult.error.message;
       console.log(`Invalid DOB`);
-      throw new EntityInvalidInputException(
-        `DOB validation failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidDobException({
+        message: `DOB validation failed. Reason: ${errorMessage}`,
+      });
     }
     return new UserDOB(parsedDateResult.data);
   }

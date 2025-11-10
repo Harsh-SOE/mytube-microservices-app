@@ -8,11 +8,11 @@ import {
   DATABASE_COMMAND_PORT,
   VideoCommandRepositoryPort,
 } from '@videos/application/ports';
+import { VideoAggregate } from '@videos/domain/aggregates';
 import {
   GrpcToDomainPublishEnumMapper,
   GrpcToDomainVisibilityEnumMapper,
 } from '@videos/infrastructure/anti-corruption';
-import { VideoAggregate } from '@videos/domain/aggregates';
 
 import { PublishVideoCommand } from './publish-video.command';
 
@@ -33,7 +33,7 @@ export class PublishVideoHandler
       title,
       ownerId,
       description,
-      videoFileUrl,
+      videoFileKey,
       videoPublishStatus,
       videoVisibilityStatus,
     } = videoCreateDto;
@@ -55,7 +55,7 @@ export class PublishVideoHandler
         id,
         title,
         ownerId,
-        videoFileUrl,
+        videoFileKey,
         videoDomainPublishStatus,
         videoDomainVisibilityStatus,
         description ?? undefined,

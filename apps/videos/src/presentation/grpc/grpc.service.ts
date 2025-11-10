@@ -1,8 +1,9 @@
 import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import winston from 'winston';
 
 import {
+  GetPresignedUrlDto,
+  GetPreSignedUrlResponse,
   VideoCreateDto,
   VideoFindDto,
   VideoFoundResponse,
@@ -11,30 +12,35 @@ import {
   VideoUpdatedResponse,
   VideoUpdateDto,
 } from '@app/contracts/videos';
-import { WINSTON_LOGGER } from '@app/clients';
 
 import {
   EditVideoCommand,
   PublishVideoCommand,
+  GeneratePreSignedUrlCommand,
 } from '@videos/application/commands';
 import { FindVideoQuery } from '@videos/application/queries';
+import { LOGGER_PORT, LoggerPort } from '@videos/application/ports';
 
 @Injectable()
 export class GrpcService {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-    @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {}
+
+  async generatePreSignedUrl(
+    getPresignedUrlDto: GetPresignedUrlDto,
+  ): Promise<GetPreSignedUrlResponse> {
+    return this.commandBus.execute<
+      GeneratePreSignedUrlCommand,
+      GetPreSignedUrlResponse
+    >(new GeneratePreSignedUrlCommand(getPresignedUrlDto));
+  }
 
   async create(
     videoCreateDto: VideoCreateDto,
   ): Promise<VideoPublishedResponse> {
-    this.logger.log(
-      'info',
-      `VIDEOS::CREATE_VIDEO:: Request recieved: ${JSON.stringify(videoCreateDto)}`,
-    );
-
     return await this.commandBus.execute<
       PublishVideoCommand,
       VideoPublishedResponse
@@ -46,22 +52,12 @@ export class GrpcService {
   }
 
   findOne(videoFindDto: VideoFindDto): Promise<VideoFoundResponse> {
-    this.logger.log(
-      'info',
-      `VIDEOS::FIND_VIDEO:: Request recieved: ${JSON.stringify(videoFindDto)}`,
-    );
-
     return this.queryBus.execute<FindVideoQuery, VideoFoundResponse>(
       new FindVideoQuery(videoFindDto),
     );
   }
 
   async update(videoUpdateDto: VideoUpdateDto): Promise<VideoUpdatedResponse> {
-    this.logger.log(
-      'info',
-      `VIDEOS::UPDATE_VIDEO:: Request recieved: ${JSON.stringify(videoUpdateDto)}`,
-    );
-
     return await this.commandBus.execute<
       EditVideoCommand,
       VideoUpdatedResponse

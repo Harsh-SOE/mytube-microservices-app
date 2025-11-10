@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { EntityInvalidInputException } from '@app/errors';
+
+import { InvalidEmailException } from '@users/domain/exceptions';
 
 export class UserEmail {
   private static readonly UserEmailValidationSchema = z.email();
@@ -14,9 +15,9 @@ export class UserEmail {
       UserEmail.UserEmailValidationSchema.safeParse(value);
     if (!parsedEmailResult.success) {
       const errorMessage = parsedEmailResult.error.message;
-      throw new EntityInvalidInputException(
-        `Email validation failed. Reason: ${errorMessage}`,
-      );
+      throw new InvalidEmailException({
+        message: `Email validation failed. Reason: ${errorMessage}`,
+      });
     }
     return new UserEmail(parsedEmailResult.data);
   }
