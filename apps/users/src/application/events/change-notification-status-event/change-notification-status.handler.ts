@@ -1,13 +1,23 @@
+import { Inject } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
+import { LOGGER_PORT, LoggerPort } from '@users/application/ports';
+
 import { ChangeNotificationStatusEvent } from './change-notification-status.event';
 
 @EventsHandler(ChangeNotificationStatusEvent)
 export class ChangeNotificationStatusEventHandler
   implements IEventHandler<ChangeNotificationStatusEvent>
 {
-  handle({ notificationStatusChangedEventDto }: ChangeNotificationStatusEvent) {
+  public constructor(
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
+  ) {}
+
+  public handle({
+    notificationStatusChangedEventDto,
+  }: ChangeNotificationStatusEvent) {
     const { id, status } = notificationStatusChangedEventDto;
-    console.log(
+    this.logger.info(
       `User with id:${id} turned ${status ? 'on' : 'off'} its notification status`,
     );
   }

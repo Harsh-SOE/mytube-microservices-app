@@ -6,7 +6,8 @@ import { UserPreferredLanguageChangedResponse } from '@app/contracts/users';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports/repository';
+} from '@users/application/ports';
+import { UserNotFoundException } from '@users/application/exceptions';
 
 import { ChangeLanguageCommand } from './change-language.command';
 
@@ -23,27 +24,28 @@ export class ChangeLanguageCommandHandler
   async execute({
     userChangePreferredLanguageDto,
   }: ChangeLanguageCommand): Promise<UserPreferredLanguageChangedResponse> {
-    // extract the inputs...
     const { id, language } = userChangePreferredLanguageDto;
 
-    // load the aggregate...
-    const userAggregate = this.eventPublisher.mergeObjectContext(
-      await this.userRepository.loadOneAggregateById(id),
-    );
+    const foundUserAggregate = await this.userRepository.findOneById(id);
 
-    // apply the business rules here, the rules are abstracted by the domain layer...
-    userAggregate.changeUserPreferredlanguage(language);
+    if (!foundUserAggregate) {
+      throw new UserNotFoundException({
+        message: `User with id:${id} was not found in the database`,
+      });
+    }
 
-    // persist aggregate here...
-    await this.userRepository.updateOneById(id, userAggregate);
+    const userAggregateWithEvent =
+      this.eventPublisher.mergeObjectContext(foundUserAggregate);
 
-    // commit all uncomitted events...
-    userAggregate.commit();
+    userAggregateWithEvent.changeUserPreferredlanguage(language);
 
-    // Optionally, return the updated aggregate id or DTO for UI
+    await this.userRepository.updateOneById(id, userAggregateWithEvent);
+
+    userAggregateWithEvent.commit();
+
     return {
       response: 'Language changed successfully',
-      language: userAggregate.getUserSnapshot().languagePreference,
+      language: userAggregateWithEvent.getUserSnapshot().languagePreference,
     };
   }
 }

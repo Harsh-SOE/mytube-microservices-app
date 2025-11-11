@@ -1,11 +1,14 @@
+import { User } from '@peristance/user';
+import { UserQueryModel } from '@users/application/queries';
+
 import { DatabaseFilter } from './types';
 
-export interface UserQueryRepositoryPort<TPersistence, TQueryModel> {
-  findById(id: string): Promise<TQueryModel>;
+export interface UserQueryRepositoryPort {
+  findOneById(id: string): Promise<UserQueryModel | null>;
 
-  findOne(filter: DatabaseFilter<TPersistence>): Promise<TQueryModel>;
+  findOne(filter: DatabaseFilter<User>): Promise<UserQueryModel | null>;
 
-  findMany(filter: DatabaseFilter<TPersistence>): Promise<TQueryModel[]>;
+  findMany(filter: DatabaseFilter<User>): Promise<UserQueryModel[]>;
 }
 
 export const USER_QUERY_REROSITORY = Symbol('USER_QUERY_REROSITORY');

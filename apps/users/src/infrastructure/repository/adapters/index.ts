@@ -1,2 +1,2 @@
-export * from './command/video-command-repo.adapter';
-export * from './query/video-query.repository.impl';
+export * from './command/user-command-repo.adapter';
+export * from './query/user-query.repository.impl';

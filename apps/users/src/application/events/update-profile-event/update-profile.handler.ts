@@ -1,14 +1,22 @@
+import { Inject } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
+import { LOGGER_PORT, LoggerPort } from '@users/application/ports';
+
 import { UpdateProfileEvent } from './update-profile.event';
 
 @EventsHandler(UpdateProfileEvent)
 export class UpdateProfileEventHandler
   implements IEventHandler<UpdateProfileEvent>
 {
-  handle({ userUpdateProfileDto }: UpdateProfileEvent) {
+  public constructor(
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
+  ) {}
+
+  public handle({ userUpdateProfileDto }: UpdateProfileEvent) {
     const { updatedProfile } = userUpdateProfileDto;
     const { id } = updatedProfile;
-    console.log(
+    this.logger.info(
       `User with id:${id}, updated its profile to: ${JSON.stringify(updatedProfile)}`,
     );
   }

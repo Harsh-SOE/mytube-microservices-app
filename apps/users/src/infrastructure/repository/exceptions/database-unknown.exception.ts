@@ -1,9 +1,9 @@
-import { Components } from '@videos/infrastructure/config';
+import { Components } from '@users/infrastructure/config';
 import {
   DATABASE_EXCEPTION,
   InfrastructureException,
   InfrastructureOperationFailureLevel,
-} from '@videos/infrastructure/exceptions';
+} from '@users/infrastructure/exceptions';
 
 export type DatabaseUnknownExceptionMetaData = {
   host?: string;

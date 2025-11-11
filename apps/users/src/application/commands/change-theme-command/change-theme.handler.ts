@@ -3,11 +3,12 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { UserPreferredThemeChangedResponse } from '@app/contracts/users';
 
-import { GrpcToDomainThemeEnumMapper } from '@users/infrastructure/anti-corruption';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports/repository';
+} from '@users/application/ports';
+import { UserNotFoundException } from '@users/application/exceptions';
+import { GrpcToDomainThemeEnumMapper } from '@users/infrastructure/anti-corruption';
 
 import { ChangeThemeCommand } from './change-theme.command';
 
@@ -23,13 +24,16 @@ export class ChangeThemeCommandHandler
   async execute({
     userChangePreferredThemeDto,
   }: ChangeThemeCommand): Promise<UserPreferredThemeChangedResponse> {
-    // extract the inputs...
     const { id, themePerference } = userChangePreferredThemeDto;
 
-    // load the aggregate...
-    const userAggregate = await this.userRepository.loadOneAggregateById(id);
+    const foundUserAggregate = await this.userRepository.findOneById(id);
 
-    // convert the dto's theme preference to domain's theme preference type...
+    if (!foundUserAggregate) {
+      throw new UserNotFoundException({
+        message: `User with id:${id} was not found in the database`,
+      });
+    }
+
     const domainThemePreference =
       GrpcToDomainThemeEnumMapper.get(themePerference);
 
@@ -37,15 +41,13 @@ export class ChangeThemeCommandHandler
       throw new Error(`Invalid option for theme`);
     }
 
-    // enfoce business rules here...
-    userAggregate.changeUserPreferredTheme(domainThemePreference);
+    foundUserAggregate.changeUserPreferredTheme(domainThemePreference);
 
-    // persist the aggregate...
-    await this.userRepository.updateOneById(id, userAggregate);
+    await this.userRepository.updateOneById(id, foundUserAggregate);
 
     return {
       response: 'Theme was changed successfully',
-      theme: userAggregate.getUserSnapshot().themePreference,
+      theme: foundUserAggregate.getUserSnapshot().themePreference,
     };
   }
 }

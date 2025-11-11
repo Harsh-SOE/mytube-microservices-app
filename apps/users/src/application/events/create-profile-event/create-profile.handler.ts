@@ -1,11 +1,13 @@
 import { Inject } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
+import {
+  LOGGER_PORT,
+  LoggerPort,
+  MESSAGE_BROKER,
+  MessageBrokerPort,
+} from '@users/application/ports';
 import { UserAggregatePersistanceACL } from '@users/infrastructure/anti-corruption';
-import { SendEmailMessage } from '@users/infrastructure/message-broker';
-import { MESSAGE_BROKER } from '@users/application/ports/message-broker';
-
-import { MessageBrokerPort } from '@hub/application/ports';
 
 import { CreateProfileEvent } from './create-profile.event';
 
@@ -16,19 +18,25 @@ export class CompleteProfileEventHandler
   constructor(
     private readonly aggregatePersistanceACL: UserAggregatePersistanceACL,
     @Inject(MESSAGE_BROKER) private readonly messageBroker: MessageBrokerPort,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {}
 
-  handle({ user }: CreateProfileEvent) {
+  async handle({ user }: CreateProfileEvent) {
     const userPayload = user.getUserSnapshot();
     const { id, handle, email } = userPayload;
 
-    this.messageBroker.publishMessage<SendEmailMessage>('user.created', {
+    const sendMailPayload = {
       email,
       handle,
       id,
-    });
+    };
 
-    console.log(
+    await this.messageBroker.publishMessage(
+      'user.created',
+      JSON.stringify(sendMailPayload),
+    );
+
+    this.logger.info(
       `User with email:${email}, created a profile: ${JSON.stringify(user)}`,
     );
   }

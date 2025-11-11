@@ -9,9 +9,9 @@ export interface UserCommandRepositoryPort {
 
   saveMany(domains: UserAggregate[]): Promise<number>;
 
-  findOneById(id: string): Promise<UserAggregate>;
+  findOneById(id: string): Promise<UserAggregate | null>;
 
-  findOne(filter: DatabaseFilter<User>): Promise<UserAggregate>;
+  findOne(filter: DatabaseFilter<User>): Promise<UserAggregate | null>;
 
   findMany(filter: DatabaseFilter<User>): Promise<UserAggregate[]>;
 

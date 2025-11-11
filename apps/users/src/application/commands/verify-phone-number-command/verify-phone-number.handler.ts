@@ -5,7 +5,8 @@ import { UserPhoneNumberVerifiedResponse } from '@app/contracts/users';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports/repository';
+} from '@users/application/ports';
+import { UserNotFoundException } from '@users/application/exceptions';
 
 import { VerifyPhoneNumberCommand } from './verify-phone-number.command';
 
@@ -21,21 +22,20 @@ export class VerifyPhoneNumberCommandHandler
   async execute({
     userVerifyPhoneNumberDto,
   }: VerifyPhoneNumberCommand): Promise<UserPhoneNumberVerifiedResponse> {
-    // extract the inputs...
     const { id } = userVerifyPhoneNumberDto;
 
-    // load the aggregate...
-    const userAggregate = await this.userRepository.loadOneAggregateById(id);
+    const foundUserAggregate = await this.userRepository.findOneById(id);
 
-    // actual logic to verify the phone number here...
+    if (!foundUserAggregate) {
+      throw new UserNotFoundException({
+        message: `User with id:${id} was not found in the database`,
+      });
+    }
 
-    // enforce the business rules...
-    userAggregate.verifyUserPhoneNumber();
+    foundUserAggregate.verifyUserPhoneNumber();
 
-    // perist the aggregate...
-    await this.userRepository.updateOneById(id, userAggregate);
+    await this.userRepository.updateOneById(id, foundUserAggregate);
 
-    // return the response...
     return { response: "The user's was verified successfully", verified: true };
   }
 }

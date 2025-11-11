@@ -1,4 +1,7 @@
+import { Inject } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
+import { LOGGER_PORT, LoggerPort } from '@users/application/ports';
 
 import { ChangeLanguageEvent } from './change-language.event';
 
@@ -6,11 +9,15 @@ import { ChangeLanguageEvent } from './change-language.event';
 export class ChangeLanguageEventHandler
   implements IEventHandler<ChangeLanguageEvent>
 {
-  public constructor() {}
+  public constructor(
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
+  ) {}
 
   public handle({ langaugeChangedEventDto }: ChangeLanguageEvent) {
     const { id, langauge } = langaugeChangedEventDto;
 
-    console.log(`User with id:${id} changed its language to '${langauge}'`);
+    this.logger.info(
+      `User with id:${id} changed its language to '${langauge}'`,
+    );
   }
 }

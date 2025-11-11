@@ -22,15 +22,15 @@ import {
   UserProfileCreatedResponse,
   UserFindByAuthIdDto,
 } from '@app/contracts/users';
-import { GrpcAppExceptionFilter } from '@app/utils';
 
-import { UserService } from './user.service';
+import { GrpcService } from './grpc.service';
+import { GrpcFilter } from '../filters';
 
 @Controller()
-@UseFilters(GrpcAppExceptionFilter)
+@UseFilters(GrpcFilter)
 @UserServiceControllerMethods()
-export class UserController implements UserServiceController {
-  constructor(private readonly userService: UserService) {}
+export class GrpcController implements UserServiceController {
+  constructor(private readonly userService: GrpcService) {}
 
   createProfile(
     userCompleteSignupDto: UserCreateProfileDto,

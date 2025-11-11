@@ -1,14 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Logger } from 'winston';
-
-import { WINSTON_LOGGER } from '@app/clients/constant';
-
-import {
-  FindAllUsersQuery,
-  FindUserByAuthIdQuery,
-  FindUserByIdQuery,
-} from '@users/application/queries';
 
 import {
   UserChangeNotificationStatusDto,
@@ -38,13 +29,17 @@ import {
   UpdateProfileCommand,
   VerifyPhoneNumberCommand,
 } from '@users/application/commands';
+import {
+  FindAllUsersQuery,
+  FindUserByAuthIdQuery,
+  FindUserByIdQuery,
+} from '@users/application/queries';
 
 @Injectable()
-export class UserService {
+export class GrpcService {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-    @Inject(WINSTON_LOGGER) private logger: Logger,
   ) {}
 
   async createProfile(
@@ -113,18 +108,12 @@ export class UserService {
   async findOneUserById(
     userFindByDto: UserFindByIdDto,
   ): Promise<UserFoundResponse> {
-    this.logger.info(
-      `USER::FIND_ONE_BY_ID:: Request recieved: ${userFindByDto.id}`,
-    );
-
     return await this.queryBus.execute<FindUserByIdQuery, UserFoundResponse>(
       new FindUserByIdQuery(userFindByDto),
     );
   }
 
   async findAllUsers(): Promise<UsersFoundResponse> {
-    this.logger.info(`USER::FIND_ALL:: Request recieved`);
-
     return await this.queryBus.execute<FindAllUsersQuery, UsersFoundResponse>(
       new FindAllUsersQuery(),
     );

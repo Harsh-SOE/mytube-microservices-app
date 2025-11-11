@@ -1,16 +1,23 @@
+import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 import { UsersFoundResponse } from '@app/contracts/users';
 
-import { UserQueryRepository } from '@users/infrastructure/repository';
+import {
+  USER_QUERY_REROSITORY,
+  UserQueryRepositoryPort,
+} from '@users/application/ports';
 
 import { FindAllUsersQuery } from './find-all-user.query';
 
 @QueryHandler(FindAllUsersQuery)
 export class FindAllUsersHandler implements IQueryHandler<FindAllUsersQuery> {
-  constructor(private readonly userRepo: UserQueryRepository) {}
+  public constructor(
+    @Inject(USER_QUERY_REROSITORY)
+    private readonly userRepo: UserQueryRepositoryPort,
+  ) {}
 
-  async execute(): Promise<UsersFoundResponse> {
+  public async execute(): Promise<UsersFoundResponse> {
     const allUsers = await this.userRepo.findMany({});
     return {
       userFoundResponse: allUsers.map((user) => ({

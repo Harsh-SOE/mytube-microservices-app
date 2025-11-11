@@ -6,7 +6,8 @@ import { UserNotificationStatusChangedResponse } from '@app/contracts/users';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports/repository';
+} from '@users/application/ports';
+import { UserNotFoundException } from '@users/application/exceptions';
 
 import { ChangeNotificationCommand } from './change-notification-status.command';
 
@@ -22,21 +23,23 @@ export class ChangeNotificationCommandHandler
   async execute({
     userChangeNotificationStatusDto,
   }: ChangeNotificationCommand): Promise<UserNotificationStatusChangedResponse> {
-    // extract the inputs...
     const { id, notificationStatus } = userChangeNotificationStatusDto;
 
-    // load the aggregate here...
-    const userAggregate = await this.userRepository.loadOneAggregateById(id);
+    const foundUserAggregate = await this.userRepository.findOneById(id);
 
-    // enforce business rule by using the domain only...
-    userAggregate.changeUserNotificationPreference(notificationStatus);
+    if (!foundUserAggregate) {
+      throw new UserNotFoundException({
+        message: `User with id:${id} was not found in the database`,
+      });
+    }
 
-    // persist the aggregate...
-    await this.userRepository.updateOneById(id, userAggregate);
+    foundUserAggregate.changeUserNotificationPreference(notificationStatus);
+
+    await this.userRepository.updateOneById(id, foundUserAggregate);
 
     return {
       response: 'notification status changed successfully',
-      status: userAggregate.getUserSnapshot().notification,
+      status: foundUserAggregate.getUserSnapshot().notification,
     };
   }
 }

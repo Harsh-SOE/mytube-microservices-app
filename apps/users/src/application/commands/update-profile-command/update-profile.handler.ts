@@ -6,7 +6,8 @@ import { UserProfileUpdatedResponse } from '@app/contracts/users';
 import {
   USER_COMMAND_REROSITORY,
   UserCommandRepositoryPort,
-} from '@users/application/ports/repository';
+} from '@users/application/ports';
+import { UserNotFoundException } from '@users/application/exceptions';
 
 import { UpdateProfileCommand } from './update-profile.command';
 
@@ -22,24 +23,25 @@ export class UpdateProfileCommandHandler
   async execute({
     userUpdateProfileDto,
   }: UpdateProfileCommand): Promise<UserProfileUpdatedResponse> {
-    // extract the inputs...
     const { id, dob, phoneNumber } = userUpdateProfileDto;
 
-    // load the required aggregate...
-    const userAggregate = await this.userRepository.loadOneAggregateById(id);
+    const foundUserAggregate = await this.userRepository.findOneById(id);
+
+    if (!foundUserAggregate) {
+      throw new UserNotFoundException({
+        message: `User with id:${id} was not found in the database`,
+      });
+    }
 
     const birthday = dob ? new Date(dob) : undefined;
 
-    // enforce the profile updattion business rules here...
-    userAggregate.updateUserProfile(birthday, phoneNumber);
+    foundUserAggregate.updateUserProfile(birthday, phoneNumber);
 
-    // perist the updated aggregate...
-    await this.userRepository.updateOneById(id, userAggregate);
+    await this.userRepository.updateOneById(id, foundUserAggregate);
 
-    // return a response...
     return {
       response: 'User profile updated successfully',
-      userId: userAggregate.getUserSnapshot().id,
+      userId: foundUserAggregate.getUserSnapshot().id,
     };
   }
 }

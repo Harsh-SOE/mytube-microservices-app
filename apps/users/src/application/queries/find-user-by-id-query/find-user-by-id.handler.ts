@@ -1,6 +1,11 @@
+import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { UserQueryRepository } from '@users/infrastructure/repository';
+import {
+  USER_QUERY_REROSITORY,
+  UserQueryRepositoryPort,
+} from '@users/application/ports';
+import { UserNotFoundException } from '@users/application/exceptions';
 
 import { UserFoundResponse } from '@app/contracts/users';
 
@@ -8,13 +13,23 @@ import { FindUserByIdQuery } from './find-user-by-id.query';
 
 @QueryHandler(FindUserByIdQuery)
 export class FindUserByIdHandler implements IQueryHandler<FindUserByIdQuery> {
-  constructor(private readonly userRepo: UserQueryRepository) {}
+  constructor(
+    @Inject(USER_QUERY_REROSITORY)
+    private readonly userRepo: UserQueryRepositoryPort,
+  ) {}
 
   async execute({
     userFindByIdDto,
   }: FindUserByIdQuery): Promise<UserFoundResponse> {
     const { id } = userFindByIdDto;
-    const user = await this.userRepo.findById(id);
+    const user = await this.userRepo.findOneById(id);
+
+    if (!user) {
+      throw new UserNotFoundException({
+        message: `User with id: ${id} was not found in the database`,
+      });
+    }
+
     return {
       ...user,
       dob: user.dob?.toISOString(),
