@@ -21,6 +21,8 @@ import {
   UserCreateProfileDto,
   UserProfileCreatedResponse,
   UserFindByAuthIdDto,
+  GetPresignedUrlDto,
+  GetPreSignedUrlResponse,
 } from '@app/contracts/users';
 
 import { GrpcService } from './grpc.service';
@@ -31,6 +33,15 @@ import { GrpcFilter } from '../filters';
 @UserServiceControllerMethods()
 export class GrpcController implements UserServiceController {
   constructor(private readonly userService: GrpcService) {}
+
+  getPresignedUrlForFileUpload(
+    getPresignedUrlDto: GetPresignedUrlDto,
+  ):
+    | Promise<GetPreSignedUrlResponse>
+    | Observable<GetPreSignedUrlResponse>
+    | GetPreSignedUrlResponse {
+    return this.userService.generatePreSignedUrl(getPresignedUrlDto);
+  }
 
   createProfile(
     userCompleteSignupDto: UserCreateProfileDto,

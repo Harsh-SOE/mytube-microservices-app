@@ -3,24 +3,20 @@ import { ClientsModule } from '@nestjs/microservices';
 
 import { CLIENT_PROVIDER } from '@app/clients/constant';
 
-import { MeasureModule } from '@gateway/infrastructure/measure';
-import { LogsModule } from '@gateway/infrastructure/logs';
 import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
+import { LOGGER_PORT } from '@gateway/application/ports';
+import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
 
 import { VideoService } from './video.service';
 import { VideoController } from './video.controller';
 
 @Module({
-  providers: [VideoService],
   controllers: [VideoController],
   imports: [
-    MeasureModule,
-    LogsModule,
     AppConfigModule,
-    MeasureModule,
     ClientsModule.registerAsync([
       {
         name: CLIENT_PROVIDER.VIDEO,
@@ -30,6 +26,10 @@ import { VideoController } from './video.controller';
           configService.VIDEO_SERVICE_OPTIONS,
       },
     ]),
+  ],
+  providers: [
+    VideoService,
+    { provide: LOGGER_PORT, useClass: WinstonLoggerAdapter },
   ],
 })
 export class VideoModule {}

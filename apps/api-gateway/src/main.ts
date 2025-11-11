@@ -1,15 +1,16 @@
 import { NestFactory } from '@nestjs/core';
+import session from 'express-session';
+import passport from 'passport';
 
 import { AppModule } from './app.module';
-import { GatewayExceptionFilter } from './utils/filter/gateway.filter';
 import { AppConfigService } from './infrastructure/config/config.service';
-import session from 'express-session';
-import passport from 'passport'; // default import
+import { GatewayExceptionFilter } from './persentation/filters';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new GatewayExceptionFilter());
   const configService = app.get(AppConfigService);
+
+  app.useGlobalFilters(new GatewayExceptionFilter());
 
   app.use(
     session({
@@ -27,13 +28,13 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  passport.serializeUser((user: any, done) => {
-    done(null, user);
-  });
+  // passport.serializeUser((user: any, done) => {
+  //   done(null, user);
+  // });
 
-  passport.deserializeUser((user: any, done) => {
-    done(null, user);
-  });
+  // passport.deserializeUser((user: any, done) => {
+  //   done(null, user);
+  // });
 
   await app.listen(configService.PORT, '0.0.0.0');
 }

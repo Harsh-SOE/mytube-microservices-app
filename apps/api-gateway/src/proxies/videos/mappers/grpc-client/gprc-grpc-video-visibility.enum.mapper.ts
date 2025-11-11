@@ -1,21 +1,22 @@
-import { VideoTransportVisibilityStatus } from '@app/contracts/videos';
+import { VideoGrpcVisibilityStatus } from '@app/contracts/videos';
+
 import { VideoRequestVisibilityStatus } from '../../enums';
 
 const GrpcClientVideoVisibilityEnumMapper = new Map<
-  VideoTransportVisibilityStatus,
+  VideoGrpcVisibilityStatus,
   VideoRequestVisibilityStatus
 >();
 
 GrpcClientVideoVisibilityEnumMapper.set(
-  VideoTransportVisibilityStatus.TRANSPORT_PRIVATE,
+  VideoGrpcVisibilityStatus.GRPC_PRIVATE,
   VideoRequestVisibilityStatus.PRIVATE,
 );
 GrpcClientVideoVisibilityEnumMapper.set(
-  VideoTransportVisibilityStatus.TRANSPORT_PUBLIC,
+  VideoGrpcVisibilityStatus.GRPC_PUBLIC,
   VideoRequestVisibilityStatus.PUBLIC,
 );
 GrpcClientVideoVisibilityEnumMapper.set(
-  VideoTransportVisibilityStatus.TRANSPORT_UNLISTED,
+  VideoGrpcVisibilityStatus.GRPC_UNLISTED,
   VideoRequestVisibilityStatus.UNLISTED,
 );
 

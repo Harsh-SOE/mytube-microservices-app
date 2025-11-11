@@ -8,8 +8,6 @@ import {
   AppConfigService,
 } from '@gateway/infrastructure/config';
 import { MeasureModule } from '@gateway/infrastructure/measure';
-import { LogsModule } from '@gateway/infrastructure/logs';
-import { AppJwtModule } from '@gateway/infrastructure/auth/jwt';
 
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -20,8 +18,6 @@ import { UsersService } from './users.service';
   imports: [
     AppConfigModule,
     MeasureModule,
-    AppJwtModule,
-    LogsModule,
     ClientsModule.registerAsync([
       {
         name: CLIENT_PROVIDER.USER,

@@ -4,14 +4,14 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { firstValueFrom } from 'rxjs';
 import { Counter } from 'prom-client';
-import winston from 'winston';
 
-import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
+import { CLIENT_PROVIDER } from '@app/clients/constant';
+import { USER_SERVICE_NAME, UserServiceClient } from '@app/contracts/users';
 import { UserAuthPayload } from '@app/contracts/auth';
 
+import { LOGGER_PORT, LoggerPort } from '@gateway/application/ports';
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
-import { USER_SERVICE_NAME, UserServiceClient } from '@app/contracts/users';
-import { Auth0ProfileUser } from '@gateway/infrastructure/auth/payloads';
+import { Auth0ProfileUser } from '@gateway/proxies/auth/types';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -19,7 +19,7 @@ export class AuthService implements OnModuleInit {
 
   constructor(
     @Inject(CLIENT_PROVIDER.USER) private readonly userClient: ClientGrpc,
-    @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
     @InjectMetric(REQUESTS_COUNTER) private readonly counter: Counter,
     private readonly jwtService: JwtService,
   ) {}
@@ -33,31 +33,34 @@ export class AuthService implements OnModuleInit {
     token: string | undefined;
     userAuthCred: Auth0ProfileUser;
   }> {
-    console.log(userAuthCredentials);
+    this.logger.info(
+      `User Auth Credentials are: ${JSON.stringify(userAuthCredentials)}`,
+    );
 
     const response$ = this.userService.findUserByAuthId({
       authId: userAuthCredentials.providerId,
     });
-    const user = await firstValueFrom(response$);
+    const userInDatabase = await firstValueFrom(response$);
 
-    if (!user) {
+    if (!userInDatabase) {
       return {
-        response: 'Please create a profile inorder to continue',
+        response:
+          'Please complete your profile inorder to login to application [STATUS: Signup-SUCCESS]',
         token: undefined,
         userAuthCred: userAuthCredentials,
       };
     }
 
     const authUserPayload: UserAuthPayload = {
-      id: user.id,
+      id: userInDatabase.id,
       authId: userAuthCredentials.providerId,
-      email: user.email,
-      handle: user.handle,
+      email: userInDatabase.email,
+      handle: userInDatabase.handle,
     };
     return {
       response: 'user logged in successfully',
       token: this.jwtService.sign(authUserPayload),
-      userAuthCred: userAuthCredentials, // for testing purpose...
+      userAuthCred: userAuthCredentials,
     };
   }
 }

@@ -3,22 +3,19 @@ import { ClientsModule } from '@nestjs/microservices';
 
 import { CLIENT_PROVIDER } from '@app/clients/constant';
 
-import { LogsModule } from '@gateway/infrastructure/logs';
-import { MeasureModule } from '@gateway/infrastructure/measure';
 import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
+import { LOGGER_PORT } from '@gateway/application/ports';
+import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
 
 import { LikesController } from './likes.controller';
 import { LikesService } from './likes.service';
 
 @Module({
   controllers: [LikesController],
-  providers: [LikesService],
   imports: [
-    LogsModule,
-    MeasureModule,
     AppConfigModule,
     ClientsModule.registerAsync([
       {
@@ -29,6 +26,10 @@ import { LikesService } from './likes.service';
           configService.LIKE_SERVICE_OPTIONS,
       },
     ]),
+  ],
+  providers: [
+    LikesService,
+    { provide: LOGGER_PORT, useClass: WinstonLoggerAdapter },
   ],
 })
 export class LikesModule {}

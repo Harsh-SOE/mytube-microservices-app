@@ -30,7 +30,7 @@ export class GeneratePreSignedUrlHandler
 
     return {
       response: 'Presigned url generated successfully',
-      url: presignedUrl,
+      fileIdentifier: presignedUrl,
     };
   }
 }

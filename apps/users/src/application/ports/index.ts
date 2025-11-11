@@ -7,3 +7,4 @@ export * from './repository/user-query-repository.port';
 export * from './repository/types';
 
 export * from './logger/logger.port';
+export * from './storage/storage.port';

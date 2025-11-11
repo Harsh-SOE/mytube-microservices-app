@@ -34,7 +34,7 @@ export interface GetPresignedUrlDto {
 export interface VideoCreateDto {
   ownerId: string;
   title: string;
-  videoFileKey: string;
+  videoFileIdentifier: string;
   description?: string | undefined;
   videoPublishStatus: VideoGrpcPublishStatus;
   videoVisibilityStatus: VideoGrpcVisibilityStatus;
@@ -47,7 +47,7 @@ export interface VideoFindDto {
 export interface VideoUpdateDto {
   id: string;
   title?: string | undefined;
-  videoFileUrl?: string | undefined;
+  videoFileIdentifier?: string | undefined;
   description?: string | undefined;
   videoPublishStatus?: VideoGrpcPublishStatus | undefined;
   videoVisibilityStatus?: VideoGrpcVisibilityStatus | undefined;
@@ -55,7 +55,7 @@ export interface VideoUpdateDto {
 
 export interface GetPreSignedUrlResponse {
   response: string;
-  url: string;
+  fileIdentifier: string;
 }
 
 export interface VideoPublishedResponse {
@@ -66,7 +66,7 @@ export interface VideoPublishedResponse {
 export interface VideoFoundResponse {
   id: string;
   title: string;
-  videoFileUrl: string;
+  videoFileIdentifier: string;
   description?: string | undefined;
   videoPublishStatus: VideoGrpcPublishStatus;
   videoVisibilityStatus: VideoGrpcVisibilityStatus;

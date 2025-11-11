@@ -1,25 +1,25 @@
-import { UserTransportThemePreferences } from '@app/contracts/users';
+import { UserGrpcThemePreferences } from '@app/contracts/users';
 
 import { DomainThemePreference } from '@users/domain/enums';
 
 const DomainToGrpcThemeEnumMapper = new Map<
   DomainThemePreference,
-  UserTransportThemePreferences
+  UserGrpcThemePreferences
 >();
 
 DomainToGrpcThemeEnumMapper.set(
   DomainThemePreference.SYSTEM,
-  UserTransportThemePreferences.SYSTEM,
+  UserGrpcThemePreferences.SYSTEM,
 );
 
 DomainToGrpcThemeEnumMapper.set(
   DomainThemePreference.LIGHT,
-  UserTransportThemePreferences.LIGHT,
+  UserGrpcThemePreferences.LIGHT,
 );
 
 DomainToGrpcThemeEnumMapper.set(
   DomainThemePreference.DARK,
-  UserTransportThemePreferences.DARK,
+  UserGrpcThemePreferences.DARK,
 );
 
 export { DomainToGrpcThemeEnumMapper };

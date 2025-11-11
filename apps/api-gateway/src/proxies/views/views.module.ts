@@ -7,6 +7,8 @@ import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
+import { LOGGER_PORT } from '@gateway/application/ports';
+import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
 
 import { WatchService } from './views.service';
 import { WatchController } from './views.controller';
@@ -25,6 +27,9 @@ import { WatchController } from './views.controller';
     ]),
   ],
   controllers: [WatchController],
-  providers: [WatchService],
+  providers: [
+    WatchService,
+    { provide: LOGGER_PORT, useClass: WinstonLoggerAdapter },
+  ],
 })
 export class WatchModule {}

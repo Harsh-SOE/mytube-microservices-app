@@ -1,7 +1,7 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { LikeRequestStatus } from '../enums';
 
-export class VideoLikeStatusCreatedDto {
+export class VideoActionDto {
   @IsNotEmpty()
   @IsEnum(LikeRequestStatus)
   likeStatus: LikeRequestStatus;

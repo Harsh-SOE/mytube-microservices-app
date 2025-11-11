@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import {
+  GetPresignedUrlDto,
+  GetPreSignedUrlResponse,
   UserChangeNotificationStatusDto,
   UserChangePreferredLanguageDto,
   UserChangePreferredThemeDto,
@@ -28,6 +30,7 @@ import {
   CreateProfileCommand,
   UpdateProfileCommand,
   VerifyPhoneNumberCommand,
+  GeneratePreSignedUrlCommand,
 } from '@users/application/commands';
 import {
   FindAllUsersQuery,
@@ -41,6 +44,15 @@ export class GrpcService {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
+
+  async generatePreSignedUrl(
+    getPresignedUrlDto: GetPresignedUrlDto,
+  ): Promise<GetPreSignedUrlResponse> {
+    return this.commandBus.execute<
+      GeneratePreSignedUrlCommand,
+      GetPreSignedUrlResponse
+    >(new GeneratePreSignedUrlCommand(getPresignedUrlDto));
+  }
 
   async createProfile(
     userCompleteSignupDto: UserCreateProfileDto,

@@ -1,20 +1,17 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { CacheModule } from '@nestjs/cache-manager';
 
-import { redisStore } from 'cache-manager-redis-yet';
-import { AppConfigModule, AppConfigService } from './infrastructure/config';
+import { AppConfigModule } from './infrastructure/config';
 import { VideoModule } from './proxies/videos/video.module';
 import { UsersModule } from './proxies/users/users.module';
 import { MeasureModule } from './infrastructure/measure';
-import { CloudModule } from './proxies/cloud/cloud.module';
-import { LogsModule } from './infrastructure/logs';
 import { AuthModule } from './proxies/auth/auth.module';
-import { GatewayAuthModule } from './infrastructure/auth';
 import { LikesModule } from './proxies/likes/likes.module';
 import { WatchModule } from './proxies/views/views.module';
-import { ResponseTimeMiddleware } from './infrastructure/middlewares';
+import { ResponseTimeMiddleware } from './utils/middlewares';
 import { CommentsModule } from './proxies/comments/comments.module';
 import { AppHealthModule } from './infrastructure/health/health.module';
+import { LOGGER_PORT } from './application/ports';
+import { WinstonLoggerAdapter } from './infrastructure/logger';
 
 @Module({
   imports: [
@@ -22,30 +19,13 @@ import { AppHealthModule } from './infrastructure/health/health.module';
     VideoModule,
     UsersModule,
     MeasureModule,
-    CloudModule,
-    CacheModule.registerAsync({
-      imports: [AppConfigModule],
-      inject: [AppConfigService],
-      useFactory: async (configService: AppConfigService) => ({
-        store: await redisStore({
-          socket: {
-            host: configService.REDIS_HOST,
-            port: configService.REDIS_PORT,
-          },
-          ttl: 600,
-        }),
-      }),
-      isGlobal: true,
-    }),
-    MeasureModule,
-    LogsModule,
     AuthModule,
-    GatewayAuthModule,
     LikesModule,
     WatchModule,
     CommentsModule,
     AppHealthModule,
   ],
+  providers: [{ provide: LOGGER_PORT, useClass: WinstonLoggerAdapter }],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -6,7 +6,7 @@ import {
 export class FoundVideoRequestResponse {
   id: string;
   title: string;
-  videoFileUrl: string;
+  videoFileIdentifier: string;
   description?: string | undefined;
   videoPublishStatus: VideoRequestPublishStatus;
   videoVisibilityStatus: VideoRequestVisibilityStatus;

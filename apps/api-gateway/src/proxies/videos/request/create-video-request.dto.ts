@@ -1,4 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+
 import {
   VideoRequestPublishStatus,
   VideoRequestVisibilityStatus,
@@ -15,7 +16,7 @@ export class CreateVideoRequestDto {
 
   @IsNotEmpty()
   @IsString()
-  videoFileUrl: string;
+  videoFileIdentifier: string;
 
   @IsEnum(VideoRequestPublishStatus)
   status: VideoRequestPublishStatus = VideoRequestPublishStatus.PENDING;

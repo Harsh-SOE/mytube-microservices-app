@@ -29,7 +29,7 @@ export class QueryModelResponseMapper {
       id: persistance.id,
       ownerId: persistance.ownerId,
       title: persistance.title,
-      videoFileUrl: persistance.videoFileUrl,
+      videoFileIdentifier: persistance.videoFileUrl,
       description: persistance.description ?? undefined,
       videoPublishStatus,
       videoVisibilityStatus,

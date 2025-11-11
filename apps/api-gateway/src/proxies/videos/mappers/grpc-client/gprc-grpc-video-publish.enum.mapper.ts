@@ -1,29 +1,30 @@
-import { VideoTransportPublishStatus } from '@app/contracts/videos';
+import { VideoGrpcPublishStatus } from '@app/contracts/videos';
+
 import { VideoRequestPublishStatus } from '../../enums';
 
 const GrpcClientVideoPublishEnumMapper = new Map<
-  VideoTransportPublishStatus,
+  VideoGrpcPublishStatus,
   VideoRequestPublishStatus
 >();
 
 GrpcClientVideoPublishEnumMapper.set(
-  VideoTransportPublishStatus.TRANSPORT_PENDING,
+  VideoGrpcPublishStatus.GRPC_PENDING,
   VideoRequestPublishStatus.PENDING,
 );
 GrpcClientVideoPublishEnumMapper.set(
-  VideoTransportPublishStatus.TRANSPORT_PROCESSING,
+  VideoGrpcPublishStatus.GRPC_PROCESSING,
   VideoRequestPublishStatus.PROCESSING,
 );
 GrpcClientVideoPublishEnumMapper.set(
-  VideoTransportPublishStatus.TRANSPORT_PROCESSED,
+  VideoGrpcPublishStatus.GRPC_PROCESSED,
   VideoRequestPublishStatus.PROCESSED,
 );
 GrpcClientVideoPublishEnumMapper.set(
-  VideoTransportPublishStatus.TRANSPORT_PUBLISHED,
+  VideoGrpcPublishStatus.GRPC_PUBLISHED,
   VideoRequestPublishStatus.PUBLISHED,
 );
 GrpcClientVideoPublishEnumMapper.set(
-  VideoTransportPublishStatus.TRANSPORT_FAILED,
+  VideoGrpcPublishStatus.GRPC_FAILED,
   VideoRequestPublishStatus.FAILED,
 );
 

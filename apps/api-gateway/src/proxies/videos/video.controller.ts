@@ -10,14 +10,19 @@ import {
 
 import { UserAuthPayload } from '@app/contracts/auth';
 
-import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
-import { User } from '@gateway/utils/decorators';
+import { GatewayJwtGuard } from '@gateway/proxies/auth/guards';
+import { User } from '@gateway/proxies/auth/decorators';
 
-import { CreateVideoRequestDto, UpdateVideoRequestDto } from './request';
+import {
+  CreateVideoRequestDto,
+  PreSignedUrlRequestDto,
+  UpdateVideoRequestDto,
+} from './request';
 import {
   PublishedVideoRequestResponse,
   FoundVideoRequestResponse,
   UpdatedVideoRequestResponse,
+  PreSignedUrlRequestResponse,
 } from './response';
 import { VideoService } from './video.service';
 import { VIDEO_API } from './api';
@@ -26,6 +31,14 @@ import { VIDEO_API } from './api';
 @UseGuards(GatewayJwtGuard)
 export class VideoController {
   constructor(private videoService: VideoService) {}
+
+  @Post(VIDEO_API.PRESIGNED_URL_FOR_VIDEO_FILE)
+  getPresignedUrl(
+    @Body() FileMetaDataDto: PreSignedUrlRequestDto,
+    @User('id') userId: string,
+  ): Promise<PreSignedUrlRequestResponse> {
+    return this.videoService.getPresignedUploadUrl(FileMetaDataDto, userId);
+  }
 
   @Get(VIDEO_API.FIND_A_VIDEO)
   async findOneVideo(

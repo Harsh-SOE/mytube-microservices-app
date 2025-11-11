@@ -24,7 +24,7 @@ message GetPresignedUrlDto {
 message VideoCreateDto {
   string ownerId = 2;
   string title = 3;
-  string videoFileKey = 4;
+  string videoFileIdentifier = 4;
   optional string description = 5;
   VideoGrpcPublishStatus videoPublishStatus = 6;
   VideoGrpcVisibilityStatus videoVisibilityStatus = 7;
@@ -37,7 +37,7 @@ message VideoFindDto {
 message VideoUpdateDto {
   string id = 1;
   optional string title = 3;
-  optional string videoFileUrl = 4;
+  optional string videoFileIdentifier = 4;
   optional string description = 5;
   optional VideoGrpcPublishStatus videoPublishStatus = 6;
   optional VideoGrpcVisibilityStatus videoVisibilityStatus = 7;
@@ -45,7 +45,7 @@ message VideoUpdateDto {
 
 message GetPreSignedUrlResponse {
   string response = 1;
-  string url = 2;
+  string fileIdentifier = 2;
 }
 
 message VideoPublishedResponse {
@@ -56,7 +56,7 @@ message VideoPublishedResponse {
 message VideoFoundResponse {
   string id = 1;
   string title = 2;
-  string videoFileUrl = 3;
+  string videoFileIdentifier = 3;
   optional string description = 4;
   VideoGrpcPublishStatus videoPublishStatus = 5;
   VideoGrpcVisibilityStatus videoVisibilityStatus = 6;

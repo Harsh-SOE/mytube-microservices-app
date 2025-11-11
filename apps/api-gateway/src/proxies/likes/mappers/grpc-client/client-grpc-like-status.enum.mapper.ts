@@ -1,25 +1,26 @@
-import { LikeTransportStatus } from '@app/contracts/likes';
+import { ReactionType } from '@app/contracts/likes';
+
 import { LikeRequestStatus } from '../../enums';
 
 const GrpcClientLikeStatusEnumMapper = new Map<
-  LikeTransportStatus,
+  ReactionType,
   LikeRequestStatus
 >();
 
 GrpcClientLikeStatusEnumMapper.set(
-  LikeTransportStatus.TRANSPORT_LIKE,
+  ReactionType.REACTION_LIKE,
   LikeRequestStatus.LIKE,
 );
 GrpcClientLikeStatusEnumMapper.set(
-  LikeTransportStatus.TRANSPORT_UNLIKE,
+  ReactionType.REACTION_UNLIKE,
   LikeRequestStatus.UNLIKE,
 );
 GrpcClientLikeStatusEnumMapper.set(
-  LikeTransportStatus.TRANSPORT_DISLIKE,
+  ReactionType.REACTION_DISLIKE,
   LikeRequestStatus.DISLIKE,
 );
 GrpcClientLikeStatusEnumMapper.set(
-  LikeTransportStatus.TRANSPORT_UNDISLIKE,
+  ReactionType.REACTION_UNDISLIKE,
   LikeRequestStatus.UNDISKLIKE,
 );
 

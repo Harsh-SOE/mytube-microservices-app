@@ -17,11 +17,17 @@ import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
 import { UserAuthPayload } from '@app/contracts/auth';
 
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
+import { LOGGER_PORT, LoggerPort } from '@gateway/application/ports';
 
-import { SaveUserProfileDto, UpdateUserRequestDto } from './request';
+import {
+  PreSignedUrlRequestDto,
+  SaveUserProfileDto,
+  UpdateUserRequestDto,
+} from './request';
 import {
   DeleteUserRequestResponse,
   FindUserRequestResponse,
+  PreSignedUrlRequestResponse,
   UpdatedUserRequestResponse,
 } from './response';
 
@@ -31,13 +37,26 @@ export class UsersService implements OnModuleInit {
 
   constructor(
     @Inject(CLIENT_PROVIDER.USER) private readonly userClient: ClientGrpc,
-    @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
     @InjectMetric(REQUESTS_COUNTER) private readonly counter: Counter,
     private jwtService: JwtService,
   ) {}
 
   onModuleInit() {
     this.userService = this.userClient.getService(USER_SERVICE_NAME);
+  }
+
+  async getPresignedUploadUrl(
+    preSignedUrlRequestDto: PreSignedUrlRequestDto,
+    userId: string,
+  ): Promise<PreSignedUrlRequestResponse> {
+    this.counter.inc();
+
+    const result$ = this.userService.getPresignedUrlForFileUpload({
+      ...preSignedUrlRequestDto,
+      userId,
+    });
+    return await firstValueFrom(result$);
   }
 
   async saveUserInDatabase(saveUserProfileDto: SaveUserProfileDto) {
@@ -53,6 +72,7 @@ export class UsersService implements OnModuleInit {
       authId: saveUserProfileDto.authId,
       handle: saveUserProfileDto.handle,
     };
+    // TODO: register Jwt module...
     return { token: this.jwtService.sign(userPayload) };
   }
 
@@ -62,9 +82,8 @@ export class UsersService implements OnModuleInit {
   ): Promise<UpdatedUserRequestResponse> {
     this.counter.inc();
 
-    this.logger.log(
-      'info',
-      `GATEWAY::UPDATE_USER:: Update Request has been made:${JSON.stringify(userUpdateDto)}`,
+    this.logger.info(
+      `Update Request has been made:${JSON.stringify(userUpdateDto)}`,
     );
 
     const response$ = this.userService.updateProfile({
@@ -82,7 +101,7 @@ export class UsersService implements OnModuleInit {
   async getCurrentlyLoggedInUser(id: string): Promise<FindUserRequestResponse> {
     this.counter.inc();
 
-    this.logger.log('info', `GATEWAY::GET_LOGGED_IN_USER:: UserId:${id}`);
+    this.logger.info(`GET_LOGGED_IN_USER, UserId:${id}`);
 
     const response$ = this.userService.findOneUserById({ id });
     const response = await firstValueFrom(response$);
@@ -90,10 +109,7 @@ export class UsersService implements OnModuleInit {
   }
 
   async getAllRegisteredUser(): Promise<FindUserRequestResponse[]> {
-    this.logger.log(
-      'info',
-      `GATEWAY::GET_ALL_USERS:: All users will be fetched`,
-    );
+    this.logger.info(` All users will be fetched`);
 
     const response$ = this.userService.findAllUsers({});
     const users = (await firstValueFrom(response$)).userFoundResponse;

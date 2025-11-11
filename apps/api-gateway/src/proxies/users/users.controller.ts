@@ -8,23 +8,37 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
-import { User } from '@gateway/utils/decorators';
+import { UserAuthPayload } from '@app/contracts/auth';
 
-import { SaveUserProfileDto, UpdateUserRequestDto } from './request';
+import { GatewayJwtGuard } from '@gateway/proxies/auth/guards';
+import { User } from '@gateway/proxies/auth/decorators';
+
+import {
+  PreSignedUrlRequestDto,
+  SaveUserProfileDto,
+  UpdateUserRequestDto,
+} from './request';
 import {
   DeleteUserRequestResponse,
   FindUserRequestResponse,
+  PreSignedUrlRequestResponse,
   UpdatedUserRequestResponse,
 } from './response';
 import { UsersService } from './users.service';
 import { USER_API } from './api';
-import { UserAuthPayload } from '@app/contracts/auth';
 
 @UseGuards(GatewayJwtGuard)
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
+
+  @Post(USER_API.PRESIGNED_URL_FOR_AVATAR_FILE)
+  getPresignedUrl(
+    @Body() FileMetaDataDto: PreSignedUrlRequestDto,
+    @User('id') userId: string,
+  ): Promise<PreSignedUrlRequestResponse> {
+    return this.userService.getPresignedUploadUrl(FileMetaDataDto, userId);
+  }
 
   @Post(USER_API.SAVE_USER)
   async saveUserInDatabase(saveUserProfileDto: SaveUserProfileDto): Promise<{

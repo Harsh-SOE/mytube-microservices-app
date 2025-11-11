@@ -10,7 +10,7 @@ export class VideoQueryModel {
     public readonly videoPublishStatus: VideoGrpcPublishStatus,
     public readonly videoVisibilityStatus: VideoGrpcVisibilityStatus,
     public readonly ownerId: string,
-    public readonly videoFileUrl: string,
+    public readonly videoFileIdentifier: string,
     public readonly description?: string | undefined,
   ) {}
 }

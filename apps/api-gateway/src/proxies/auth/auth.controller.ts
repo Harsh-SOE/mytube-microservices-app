@@ -1,11 +1,11 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
-import { Auth0OAuthGaurd } from '@gateway/infrastructure/auth';
+import { User } from '@gateway/proxies/auth/decorators';
+import { Auth0ProfileUser } from '@gateway/proxies/auth/types';
+import { Auth0OAuthGaurd } from '@gateway/proxies/auth/guards';
 
 import { AuthService } from './auth.service';
 import { AUTH_API } from './api';
-import { User } from '@gateway/utils/decorators';
-import { Auth0ProfileUser } from '@gateway/infrastructure/auth/payloads';
 
 @Controller('auth')
 export class AuthController {
@@ -13,7 +13,7 @@ export class AuthController {
 
   @UseGuards(Auth0OAuthGaurd)
   @Get(AUTH_API.AUTHENTICATE)
-  signup() {}
+  authenticate() {}
 
   @UseGuards(Auth0OAuthGaurd)
   @Get(AUTH_API.AUTH0_REDIRECT)

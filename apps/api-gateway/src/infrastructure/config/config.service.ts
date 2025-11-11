@@ -21,7 +21,7 @@ export class AppConfigService {
   }
 
   get ACCESS_TOKEN_EXPIRY() {
-    return this.configService.getOrThrow<string>('ACCESS_TOKEN_EXPIRY');
+    return this.configService.getOrThrow<number>('ACCESS_TOKEN_EXPIRY');
   }
 
   get GRAFANA_LOKI_URL() {
@@ -219,6 +219,6 @@ export class AppConfigService {
   }
 
   get JWT_ACCESS_TOKEN_EXPIRY() {
-    return this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_EXPIRY');
+    return this.configService.getOrThrow<number>('JWT_ACCESS_TOKEN_EXPIRY');
   }
 }

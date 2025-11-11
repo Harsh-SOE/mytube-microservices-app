@@ -9,8 +9,8 @@ import {
 
 import { UserAuthPayload } from '@app/contracts/auth';
 
-import { GatewayJwtGuard } from '@gateway/infrastructure/auth';
-import { User } from '@gateway/utils/decorators';
+import { GatewayJwtGuard } from '@gateway/proxies/auth/guards';
+import { User } from '@gateway/proxies/auth/decorators';
 
 import {
   VideoLikedStatusCreatedRequestResponse,
@@ -18,7 +18,7 @@ import {
 } from './response';
 import { LikesService } from './likes.service';
 import { LIKE_API } from './api';
-import { VideoLikeStatusCreatedDto } from './request';
+import { VideoActionDto } from './request';
 
 @Controller('likes')
 @UseGuards(GatewayJwtGuard)
@@ -29,7 +29,7 @@ export class LikesController {
   likeVideo(
     @User() loggedInUser: UserAuthPayload,
     @Query('videoId') videoId: string,
-    @Body() likeStatus: VideoLikeStatusCreatedDto,
+    @Body() likeStatus: VideoActionDto,
   ): Promise<VideoLikedStatusCreatedRequestResponse> {
     return this.likeService.modifyLikeStatus(
       loggedInUser.id,

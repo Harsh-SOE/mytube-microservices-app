@@ -76,6 +76,22 @@ export class AppConfigService {
     return this.configService.getOrThrow<number>('DB_QUERY_CONNECTION_TIMEOUT');
   }
 
+  get AWS_REGION() {
+    return this.configService.getOrThrow<string>('AWS_REGION');
+  }
+
+  get AWS_ACCESS_KEY() {
+    return this.configService.getOrThrow<string>('AWS_ACCESS_KEY');
+  }
+
+  get AWS_ACCESS_SECRET() {
+    return this.configService.getOrThrow<string>('AWS_ACCESS_SECRET');
+  }
+
+  get AWS_BUCKET() {
+    return this.configService.getOrThrow<string>('AWS_BUCKET');
+  }
+
   get GRPC_OPTIONS(): GrpcOptions {
     const options: GrpcOptions = {
       transport: Transport.GRPC,

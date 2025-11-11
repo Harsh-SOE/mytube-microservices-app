@@ -1,6 +1,9 @@
 export interface ErrorPayload {
-  statusCode?: string;
-  severity?: string;
-  timestamp?: string;
+  timestamp: string;
+  statusCode: string;
+  serviceExceptionCode: number;
+  httpExceptionCode: number;
+  message: string;
   traceId?: string;
+  severity?: string;
 }

@@ -1,20 +1,21 @@
 import { Module } from '@nestjs/common';
-import { CommentsService } from './comments.service';
-import { CommentsController } from './comments.controller';
+import { ClientsModule } from '@nestjs/microservices';
+
+import { CLIENT_PROVIDER } from '@app/clients';
+
 import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
-import { CLIENT_PROVIDER } from '@app/clients';
-import { ClientsModule } from '@nestjs/microservices';
-import { MeasureModule } from '@gateway/infrastructure/measure';
-import { LogsModule } from '@gateway/infrastructure/logs';
+import { LOGGER_PORT } from '@gateway/application/ports';
+import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
+
+import { CommentsController } from './comments.controller';
+import { CommentsService } from './comments.service';
 
 @Module({
   imports: [
     AppConfigModule,
-    MeasureModule,
-    LogsModule,
     ClientsModule.registerAsync([
       {
         imports: [AppConfigModule],
@@ -25,7 +26,10 @@ import { LogsModule } from '@gateway/infrastructure/logs';
       },
     ]),
   ],
-  providers: [CommentsService],
+  providers: [
+    CommentsService,
+    { provide: LOGGER_PORT, useClass: WinstonLoggerAdapter },
+  ],
   controllers: [CommentsController],
 })
 export class CommentsModule {}

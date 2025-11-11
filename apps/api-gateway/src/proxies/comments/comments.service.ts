@@ -1,12 +1,14 @@
+import { ClientGrpc } from '@nestjs/microservices';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { CommentVideoResponse } from './response';
+import { firstValueFrom } from 'rxjs';
+
+import { CLIENT_PROVIDER } from '@app/clients';
 import {
   COMMENT_SERVICE_NAME,
   CommentServiceClient,
-} from '@app/contracts/comments/comments';
-import { CLIENT_PROVIDER } from '@app/clients';
-import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+} from '@app/contracts/comments';
+
+import { CommentVideoResponse } from './response';
 
 @Injectable()
 export class CommentsService implements OnModuleInit {

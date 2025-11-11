@@ -1,11 +1,11 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 import { CLIENT_PROVIDER } from '@app/clients';
 import { VIEWS_SERVICE_NAME, ViewsServiceClient } from '@app/contracts/views';
 
 import { ViewsVideoResponse } from './response';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class WatchService implements OnModuleInit {

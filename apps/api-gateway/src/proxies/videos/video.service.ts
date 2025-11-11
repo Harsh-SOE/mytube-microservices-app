@@ -3,17 +3,22 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { firstValueFrom } from 'rxjs';
 import { Counter } from 'prom-client';
-import winston from 'winston';
 
 import { VIDEO_SERVICE_NAME, VideoServiceClient } from '@app/contracts/videos';
-import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
+import { CLIENT_PROVIDER } from '@app/clients/constant';
 import { UserAuthPayload } from '@app/contracts/auth';
 
+import { LOGGER_PORT, LoggerPort } from '@gateway/application/ports';
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
 
-import { CreateVideoRequestDto, UpdateVideoRequestDto } from './request';
+import {
+  CreateVideoRequestDto,
+  PreSignedUrlRequestDto,
+  UpdateVideoRequestDto,
+} from './request';
 import {
   FoundVideoRequestResponse,
+  PreSignedUrlRequestResponse,
   PublishedVideoRequestResponse,
   UpdatedVideoRequestResponse,
 } from './response';
@@ -30,7 +35,7 @@ export class VideoService implements OnModuleInit {
 
   constructor(
     @Inject(CLIENT_PROVIDER.VIDEO) private readonly videoClient: ClientGrpc,
-    @Inject(WINSTON_LOGGER) private readonly logger: winston.Logger,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
     @InjectMetric(REQUESTS_COUNTER) private readonly counter: Counter,
   ) {}
 
@@ -38,14 +43,24 @@ export class VideoService implements OnModuleInit {
     this.videoService = this.videoClient.getService(VIDEO_SERVICE_NAME);
   }
 
+  async getPresignedUploadUrl(
+    preSignedUrlRequestDto: PreSignedUrlRequestDto,
+    userId: string,
+  ): Promise<PreSignedUrlRequestResponse> {
+    this.counter.inc();
+
+    const result$ = this.videoService.getPresignedUrlForFileUpload({
+      ...preSignedUrlRequestDto,
+      userId,
+    });
+    return await firstValueFrom(result$);
+  }
+
   async createVideo(
     video: CreateVideoRequestDto,
     user: UserAuthPayload,
   ): Promise<PublishedVideoRequestResponse> {
-    this.logger.log(
-      'info',
-      `GATEWAY::CREATE_VIDEO:: Request recieved:${JSON.stringify(video)}`,
-    );
+    this.logger.info(`Request recieved:${JSON.stringify(video)}`);
 
     const videoServiceVisibilityStatus =
       ClientGrpcVideoVisibilityEnumMapper.get(video.visibility);
@@ -61,7 +76,7 @@ export class VideoService implements OnModuleInit {
       throw new Error(`Invalid Video visibility or publish status`);
     }
     this.counter.inc();
-    const response$ = this.videoService.create({
+    const response$ = this.videoService.save({
       ownerId: user.id,
       videoPublishStatus: videoServicePublishStatus,
       videoVisibilityStatus: videoServiceVisibilityStatus,
@@ -72,7 +87,7 @@ export class VideoService implements OnModuleInit {
 
   // TODO: Fix this type mismatch
   async findOneVideo(id: string): Promise<FoundVideoRequestResponse> {
-    this.logger.log('info', `GATEWAY::FIND_VIDEO:: Request recieved:${id}`);
+    this.logger.info(`Request recieved:${id}`);
 
     this.counter.inc();
     const response$ = this.videoService.findOne({ id });
@@ -89,9 +104,12 @@ export class VideoService implements OnModuleInit {
       );
     }
     return {
-      ...response,
+      id: response.id,
+      title: response.title,
+      videoFileIdentifier: response.videoFileIdentifier,
       videoPublishStatus: videoPublishStatusResponse,
       videoVisibilityStatus: videoVisibilityStatusResponse,
+      description: response.description,
     };
   }
 
@@ -99,10 +117,7 @@ export class VideoService implements OnModuleInit {
     updateVideoDto: UpdateVideoRequestDto,
     videoId: string,
   ): Promise<UpdatedVideoRequestResponse> {
-    this.logger.log(
-      'info',
-      `GATEWAY::UPDATE_VIDEO:: Request recieved:${JSON.stringify(updateVideoDto)}`,
-    );
+    this.logger.info(`Request recieved:${JSON.stringify(updateVideoDto)}`);
 
     const response$ = this.videoService.update({
       id: videoId,

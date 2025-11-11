@@ -1,29 +1,43 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { ClientsModule } from '@nestjs/microservices';
 
 import { CLIENT_PROVIDER } from '@app/clients/constant';
 
 import { MeasureModule } from '@gateway/infrastructure/measure';
-import { LogsModule } from '@gateway/infrastructure/logs';
 import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
-import { GatewayAuthModule } from '@gateway/infrastructure/auth';
-import { AppJwtModule } from '@gateway/infrastructure/auth/jwt';
 
+import { Auth0Strategy, JwtStrategy } from './auth-strategies';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService],
   imports: [
     MeasureModule,
-    LogsModule,
     AppConfigModule,
-    GatewayAuthModule,
-    AppJwtModule,
+    JwtModule.registerAsync({
+      inject: [AppConfigService],
+      imports: [AppConfigModule],
+      useFactory: (configService: AppConfigService) => ({
+        privateKey: configService.JWT_PRIVATE_KEY,
+        signOptions: {
+          algorithm: 'RS256',
+          expiresIn: configService.JWT_ACCESS_TOKEN_EXPIRY,
+        },
+      }),
+    }),
+    JwtModule.registerAsync({
+      imports: [AppConfigModule],
+      inject: [AppConfigService],
+      useFactory: (configService: AppConfigService) =>
+        configService.JWT_TOKEN_OPTIONS,
+    }),
+    PassportModule.register({ defaultStrategy: 'auth0' }),
     ClientsModule.registerAsync([
       {
         imports: [AppConfigModule],
@@ -34,5 +48,7 @@ import { AuthService } from './auth.service';
       },
     ]),
   ],
+  providers: [AuthService, JwtStrategy, Auth0Strategy],
+  exports: [JwtStrategy, Auth0Strategy, JwtModule],
 })
 export class AuthModule {}
