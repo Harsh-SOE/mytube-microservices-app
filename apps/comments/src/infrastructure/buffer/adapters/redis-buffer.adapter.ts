@@ -1,3 +1,4 @@
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
 
@@ -73,7 +74,10 @@ export class RedisStreamBufferAdapter
     );
   }
 
+  @Cron(CronExpression.EVERY_10_SECONDS)
   public async processCommentsBatch() {
+    this.logger.info(`Processing batches of comments now...`);
+
     const streamData = (await this.redisClient.xreadgroup(
       'GROUP',
       this.configService.BUFFER_GROUPNAME,

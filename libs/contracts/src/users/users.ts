@@ -104,7 +104,7 @@ export interface UserPhoneNumberVerifiedResponse {
   verified: boolean;
 }
 
-export interface UserFoundResponse {
+export interface UserPayload {
   id: string;
   authUserId: string;
   email: string;
@@ -119,8 +119,12 @@ export interface UserFoundResponse {
   onBoardingComplete: boolean;
 }
 
+export interface UserFoundResponse {
+  user?: UserPayload | undefined;
+}
+
 export interface UsersFoundResponse {
-  userFoundResponse: UserFoundResponse[];
+  userPayload: UserPayload[];
 }
 
 export interface UserProfileUpdatedResponse {
@@ -148,11 +152,11 @@ export interface UserServiceClient {
 
   verifyPhoneNumber(request: UserVerifyPhoneNumberDto): Observable<UserPhoneNumberVerifiedResponse>;
 
-  findOneUserById(request: UserFindByIdDto): Observable<UserFoundResponse>;
-
   findAllUsers(request: Empty): Observable<UsersFoundResponse>;
 
   findUserByAuthId(request: UserFindByAuthIdDto): Observable<UserFoundResponse>;
+
+  findOneUserById(request: UserFindByIdDto): Observable<UserFoundResponse>;
 
   updateUserProfileById(request: UserUpdateByIdDto): Observable<UserProfileUpdatedResponse>;
 }
@@ -198,14 +202,14 @@ export interface UserServiceController {
     | Observable<UserPhoneNumberVerifiedResponse>
     | UserPhoneNumberVerifiedResponse;
 
-  findOneUserById(
-    request: UserFindByIdDto,
-  ): Promise<UserFoundResponse> | Observable<UserFoundResponse> | UserFoundResponse;
-
   findAllUsers(request: Empty): Promise<UsersFoundResponse> | Observable<UsersFoundResponse> | UsersFoundResponse;
 
   findUserByAuthId(
     request: UserFindByAuthIdDto,
+  ): Promise<UserFoundResponse> | Observable<UserFoundResponse> | UserFoundResponse;
+
+  findOneUserById(
+    request: UserFindByIdDto,
   ): Promise<UserFoundResponse> | Observable<UserFoundResponse> | UserFoundResponse;
 
   updateUserProfileById(
@@ -223,9 +227,9 @@ export function UserServiceControllerMethods() {
       "changePreferredLanguage",
       "changePreferredTheme",
       "verifyPhoneNumber",
-      "findOneUserById",
       "findAllUsers",
       "findUserByAuthId",
+      "findOneUserById",
       "updateUserProfileById",
     ];
     for (const method of grpcMethods) {

@@ -8,12 +8,17 @@ import {
   AppConfigService,
 } from '@gateway/infrastructure/config';
 import { MeasureModule } from '@gateway/infrastructure/measure';
+import { LOGGER_PORT } from '@gateway/application/ports';
+import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
 
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 @Module({
-  providers: [UsersService],
+  providers: [
+    UsersService,
+    { provide: LOGGER_PORT, useClass: WinstonLoggerAdapter },
+  ],
   controllers: [UsersController],
   imports: [
     AppConfigModule,

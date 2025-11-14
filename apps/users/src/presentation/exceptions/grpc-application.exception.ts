@@ -5,6 +5,7 @@ import { Status } from '@grpc/grpc-js/build/src/constants';
 import { ErrorPayload } from '../types';
 
 export class GrpcApplicationException extends RpcException {
+  private metadata: Metadata;
   constructor(
     public readonly code: Status,
     public readonly details: string,
@@ -17,5 +18,14 @@ export class GrpcApplicationException extends RpcException {
       details,
       metadata,
     });
+    this.metadata = metadata;
+  }
+
+  getError(): { code: Status; metadata: Metadata; details: string } {
+    return {
+      code: this.code,
+      details: this.details,
+      metadata: this.metadata,
+    };
   }
 }

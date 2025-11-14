@@ -17,15 +17,15 @@ FROM base AS builder
 
 COPY --from=build-dependencies /home/node/node_modules ./node_modules
 
-COPY apps/hub ./apps/hub
+COPY apps/channel ./apps/channel
 COPY libs ./libs
 COPY nest-cli.json ./nest-cli.json
 COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.build.json ./tsconfig.build.json
 
-RUN npx prisma generate --schema ./apps/hub/prisma/schema.prisma
+RUN npx prisma generate --schema ./apps/channel/prisma/schema.prisma
 
-RUN npx nest build hub
+RUN npx nest build channel
 
 FROM base AS development
 
@@ -33,7 +33,7 @@ ENV NODE_ENV=development
 
 COPY --from=builder /home/node/node_modules ./node_modules
 
-CMD ["yarn", "start:dev", "hub"]
+CMD ["yarn", "start:dev", "channel"]
 
 FROM base AS production-dependencies
 
@@ -48,16 +48,16 @@ ENV NODE_ENV=${NODE_ENV}
 
 COPY --from=base /home/node/package.json /home/node/yarn.lock ./
 COPY --from=production-dependencies /home/node/node_modules ./node_modules
-COPY --from=builder /home/node/apps/hub/prisma/schema.prisma ./apps/hub/prisma/schema.prisma
-COPY --from=builder /home/node/apps/hub/generated/prisma ./apps/hub/generated/prisma
-COPY --from=builder /home/node/dist/apps/hub ./apps/hub
+COPY --from=builder /home/node/apps/channel/prisma/schema.prisma ./apps/channel/prisma/schema.prisma
+COPY --from=builder /home/node/apps/channel/generated/prisma ./apps/channel/generated/prisma
+COPY --from=builder /home/node/dist/apps/channel ./apps/channel
 
 USER root
 
 RUN chown -R node:node /home/node/node_modules/prisma
-RUN chown -R node:node /home/node/apps/hub/prisma
-RUN chown -R node:node /home/node/apps/hub/generated/prisma
+RUN chown -R node:node /home/node/apps/channel/prisma
+RUN chown -R node:node /home/node/apps/channel/generated/prisma
 
 USER node
 
-CMD ["node", "apps/hub/src/main.js"]
+CMD ["node", "apps/channel/src/main.js"]

@@ -33,11 +33,19 @@ export class AppConfigService {
   }
 
   get MESSAGE_BROKER_HOST() {
-    return this.configService.getOrThrow<string>('KAFKA_BROKER_HOST');
+    return this.configService.getOrThrow<string>('MESSAGE_BROKER_HOST');
   }
 
   get MESSAGE_BROKER_PORT() {
-    return this.configService.getOrThrow<number>('KAFKA_BROKER_PORT');
+    return this.configService.getOrThrow<number>('MESSAGE_BROKER_PORT');
+  }
+
+  get COMMENTS_CLIENT_ID() {
+    return this.configService.getOrThrow<string>('COMMENTS_CLIENT_ID');
+  }
+
+  get COMMENTS_CONSUMER_ID() {
+    return this.configService.getOrThrow<string>('COMMENTS_CONSUMER_ID');
   }
 
   get BUFFER_CLIENT_ID() {

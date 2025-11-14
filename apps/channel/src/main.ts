@@ -14,7 +14,7 @@ async function bootstrap() {
 
 bootstrap()
   .then(() => {
-    console.log(`Hub service started successfully`);
+    console.log(`Channel service started successfully`);
   })
   .catch((err) => {
     console.log(`An error occured while starting the channel service`);

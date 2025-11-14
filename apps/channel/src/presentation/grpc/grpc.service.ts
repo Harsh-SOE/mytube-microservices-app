@@ -29,7 +29,7 @@ export class GrpcService {
     public readonly queryBus: QueryBus,
   ) {}
 
-  public createHub(
+  public createChannel(
     channelCreateDto: ChannelCreateDto,
   ): Promise<ChannelCreatedResponse> {
     return this.commandBus.execute<
@@ -56,7 +56,7 @@ export class GrpcService {
     >(new UpdateChannelCommand(updateChannelByIdDto));
   }
 
-  public findHubById(
+  public findChannelById(
     channelFindByIdDto: ChannelFindByIdDto,
   ): Promise<ChannelFindByIdResponse> {
     return this.queryBus.execute<FindChannelByIdQuery, ChannelFindByIdResponse>(

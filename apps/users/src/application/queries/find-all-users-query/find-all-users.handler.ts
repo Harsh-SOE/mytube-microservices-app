@@ -20,7 +20,7 @@ export class FindAllUsersHandler implements IQueryHandler<FindAllUsersQuery> {
   public async execute(): Promise<UsersFoundResponse> {
     const allUsers = await this.userRepo.findMany({});
     return {
-      userFoundResponse: allUsers.map((user) => ({
+      userPayload: allUsers.map((user) => ({
         ...user,
         dob: user.dob?.toISOString(),
         phoneNumber: user.phoneNumber ?? undefined,

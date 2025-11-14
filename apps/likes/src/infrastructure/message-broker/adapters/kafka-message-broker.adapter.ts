@@ -1,15 +1,8 @@
-import {
-  Inject,
-  Injectable,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-
-import { CLIENT_PROVIDER } from '@app/clients';
+import { Consumer, Kafka, Producer } from 'kafkajs';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 
 import { MessageBrokerPort } from '@likes/application/ports';
+import { AppConfigService } from '@likes/infrastructure/config';
 
 import { KafkaMessageHandler } from '../filter';
 
@@ -17,26 +10,40 @@ import { KafkaMessageHandler } from '../filter';
 export class KafkaMessageBrokerAdapter
   implements MessageBrokerPort, OnModuleInit, OnModuleDestroy
 {
+  private kafka: Kafka;
+  private producer: Producer;
+  private consumer: Consumer;
+
   public constructor(
-    @Inject(CLIENT_PROVIDER.COMMENTS_AGGREGATOR)
-    private kafkaClient: ClientKafka,
+    private readonly configService: AppConfigService,
     private kafkaFilter: KafkaMessageHandler,
-  ) {}
+  ) {
+    this.kafka = new Kafka({
+      brokers: [
+        `${this.configService.MESSAGE_BROKER_HOST}:${this.configService.MESSAGE_BROKER_PORT}`,
+      ],
+      clientId: this.configService.LIKE_CLIENT_ID,
+    });
+
+    this.producer = this.kafka.producer({ allowAutoTopicCreation: true });
+    this.consumer = this.kafka.consumer({
+      groupId: this.configService.LIKE_CONSUMER_ID,
+    });
+  }
 
   public async onModuleInit() {
-    await this.kafkaClient.connect();
+    await this.producer.connect();
+    await this.consumer.connect();
   }
 
   public async onModuleDestroy() {
-    await this.kafkaClient.close();
+    await this.producer.disconnect();
+    await this.consumer.disconnect();
   }
 
-  public async publishMessage<TPayload>(
-    topic: string,
-    payload: TPayload,
-  ): Promise<void> {
+  public async publishMessage(topic: string, payload: string): Promise<void> {
     const kafkaPublishMessageOperation = () =>
-      this.kafkaClient.emit(topic, payload);
+      this.producer.send({ topic, messages: [{ key: 'xyz', value: payload }] });
 
     await this.kafkaFilter.filter(kafkaPublishMessageOperation, {
       operationType: 'PUBLISH_OR_SEND',
@@ -47,27 +54,9 @@ export class KafkaMessageBrokerAdapter
     });
   }
 
-  public async send<TPayload, TResponse>(
-    topic: string,
-    payload: TPayload,
-  ): Promise<TResponse> {
-    const kafkaSendMessageOperation = () =>
-      this.kafkaClient.send<TResponse, TPayload>(topic, payload);
-
-    const response$ = await this.kafkaFilter.filter(kafkaSendMessageOperation, {
-      operationType: 'PUBLISH_OR_SEND',
-      topic,
-      message: String(payload),
-      logErrors: true,
-      suppressErrors: false,
-    });
-
-    return await firstValueFrom(response$);
-  }
-
   public async subscribeTo(topic: string): Promise<void> {
     const kafkaSubscribeOperation = () =>
-      this.kafkaClient.subscribeToResponseOf(topic);
+      this.consumer.subscribe({ topic, fromBeginning: true });
     await this.kafkaFilter.filter(kafkaSubscribeOperation, {
       operationType: 'SUBSCRIBE',
       topic,

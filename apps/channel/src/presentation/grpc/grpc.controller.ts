@@ -32,7 +32,7 @@ export class GrpcController implements ChannelServiceController {
     | Promise<ChannelCreatedResponse>
     | Observable<ChannelCreatedResponse>
     | ChannelCreatedResponse {
-    return this.grpcService.createHub(channelCreateDto);
+    return this.grpcService.createChannel(channelCreateDto);
   }
 
   activateMonitization(
@@ -52,7 +52,7 @@ export class GrpcController implements ChannelServiceController {
     | Promise<ChannelFindByIdResponse>
     | Observable<ChannelFindByIdResponse>
     | ChannelFindByIdResponse {
-    return this.grpcService.findHubById(channelFindByIdDto);
+    return this.grpcService.findChannelById(channelFindByIdDto);
   }
 
   channelUpdateById(

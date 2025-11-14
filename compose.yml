@@ -15,7 +15,7 @@ services:
     ports:
       - 5433:5432
     volumes:
-      - users-database-volume:/var/lib/postgresql/data
+      - users-database-volume:/var/lib/postgresql
     networks:
       - users-database-network
     healthcheck:
@@ -50,7 +50,7 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - videos-database-volume:/var/lib/postgresql/data
+      - videos-database-volume:/var/lib/postgresql
     networks:
       - videos-database-network
     healthcheck:
@@ -72,7 +72,7 @@ services:
     ports:
       - 5437:5432
     volumes:
-      - views-database-volume:/var/lib/postgresql/data
+      - views-database-volume:/var/lib/postgresql
     networks:
       - views-database-network
     healthcheck:
@@ -94,7 +94,7 @@ services:
     ports:
       - 5436:5432
     volumes:
-      - comments-database-volume:/var/lib/postgresql/data
+      - comments-database-volume:/var/lib/postgresql
     networks:
       - comments-database-network
     healthcheck:
@@ -106,23 +106,23 @@ services:
     deploy: *postgres-resources
     logging: *logging
 
-  hub-database:
+  channel-database:
     image: postgres:latest
-    container_name: hub-database
+    container_name: channel-database
     env_file:
-      - apps/hub/.env
+      - apps/channel/.env
     environment:
       POSTGRES_USER: harsh
       POSTGRES_PASSWORD: harsh123
-      POSTGRES_DB: hub
+      POSTGRES_DB: channel
     ports:
       - 5438:5432
     volumes:
-      - hub-database-volume:/var/lib/postgresql/data
+      - channel-database-volume:/var/lib/postgresql
     networks:
-      - hub-database-network
+      - channel-database-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U harsh -d hub"]
+      test: ["CMD-SHELL", "pg_isready -U harsh -d channel"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -224,7 +224,7 @@ services:
         condition: service_healthy
       users:
         condition: service_healthy
-      hub:
+      channel:
         condition: service_healthy
       videos:
         condition: service_healthy
@@ -235,8 +235,6 @@ services:
       views:
         condition: service_healthy
       comments:
-        condition: service_healthy
-      cloud:
         condition: service_healthy
       email:
         condition: service_healthy
@@ -427,7 +425,7 @@ services:
     depends_on:
       users:
         condition: service_healthy
-      hub:
+      channel:
         condition: service_healthy
       videos:
         condition: service_healthy
@@ -440,8 +438,6 @@ services:
       comments:
         condition: service_healthy
       email:
-        condition: service_healthy
-      cloud:
         condition: service_healthy
       saga:
         condition: service_healthy
@@ -498,9 +494,7 @@ services:
         "npx",
         "prisma",
         "migrate",
-        "dev",
-        "--name",
-        "initialize",
+        "deploy",
         "--schema",
         "apps/users/prisma/schema.prisma",
       ]
@@ -508,15 +502,15 @@ services:
       users-database:
         condition: service_healthy
 
-  hub:
-    image: mytube/hub/production:latest
-    container_name: hub
+  channel:
+    image: mytube/channel/production:latest
+    container_name: channel
     build:
       context: .
-      dockerfile: apps/hub/Dockerfile
+      dockerfile: apps/channel/Dockerfile
       target: production
     env_file:
-      - apps/hub/.env
+      - apps/channel/.env
     environment:
       - KAFKAJS_NO_PARTITIONER_WARNING=1
     networks:
@@ -524,13 +518,13 @@ services:
       - cache
       - message-broker
       - observer
-      - hub-database-network
+      - channel-database-network
     deploy: *service_resources
     healthcheck: *grpc-healthcheck
     depends_on:
-      hub-database:
+      channel-database:
         condition: service_healthy
-      hub-migrate:
+      channel-migrate:
         condition: service_completed_successfully
       email:
         condition: service_healthy
@@ -539,30 +533,28 @@ services:
       redis-cache:
         condition: service_healthy
 
-  hub-migrate:
-    image: mytube/hub/production:latest
-    container_name: hub-database-migrate
+  channel-migrate:
+    image: mytube/channel/production:latest
+    container_name: channel-database-migrate
     env_file:
-      - apps/hub/.env
+      - apps/channel/.env
     networks:
       - services
       - cache
       - message-broker
       - observer
-      - hub-database-network
+      - channel-database-network
     entrypoint:
       [
         "npx",
         "prisma",
         "migrate",
-        "dev",
-        "--name",
-        "initialize",
+        "deploy",
         "--schema",
-        "apps/hub/prisma/schema.prisma",
+        "apps/channel/prisma/schema.prisma",
       ]
     depends_on:
-      hub-database:
+      channel-database:
         condition: service_healthy
 
   videos:
@@ -612,9 +604,7 @@ services:
         "npx",
         "prisma",
         "migrate",
-        "dev",
-        "--name",
-        "initialize",
+        "deploy",
         "--schema",
         "apps/videos/prisma/schema.prisma",
       ]
@@ -668,6 +658,7 @@ services:
       - cache
       - message-broker
       - observer
+      - views-database-network
     healthcheck: *grpc-healthcheck
     deploy: *service_resources
     depends_on:
@@ -692,9 +683,7 @@ services:
         "npx",
         "prisma",
         "migrate",
-        "dev",
-        "--name",
-        "initialize",
+        "deploy",
         "--schema",
         "apps/views/prisma/schema.prisma",
       ]
@@ -742,6 +731,7 @@ services:
       - cache
       - observer
       - message-broker
+      - comments-database-network
     healthcheck: *grpc-healthcheck
     deploy: *service_resources
     depends_on:
@@ -766,9 +756,7 @@ services:
         "npx",
         "prisma",
         "migrate",
-        "dev",
-        "--name",
-        "initialize",
+        "deploy",
         "--schema",
         "apps/comments/prisma/schema.prisma",
       ]
@@ -794,28 +782,6 @@ services:
       - observer
     healthcheck: *message-broker-healthcheck
     deploy: *service_resources
-    depends_on:
-      kafka:
-        condition: service_healthy
-
-  cloud:
-    image: mytube/cloud/production:latest
-    container_name: cloud
-    build:
-      context: .
-      dockerfile: apps/cloud/Dockerfile
-      target: production
-    env_file:
-      - apps/cloud/.env
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    networks:
-      - services
-      - cache
-      - message-broker
-      - observer
-    deploy: *service_resources
-    healthcheck: *grpc-healthcheck
     depends_on:
       kafka:
         condition: service_healthy
@@ -851,7 +817,7 @@ volumes:
   videos-database-volume: {}
   views-database-volume: {}
   comments-database-volume: {}
-  hub-database-volume: {}
+  channel-database-volume: {}
 
 #-------------------------------------------------------------------------------------------------------------#
 #                                                 NETWORKS                                                    #
@@ -865,6 +831,6 @@ networks:
   observer: {}
   users-database-network: {}
   videos-database-network: {}
-  hub-database-network: {}
+  channel-database-network: {}
   views-database-network: {}
   comments-database-network: {}

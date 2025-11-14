@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ClientsModule } from '@nestjs/microservices';
 
@@ -10,8 +9,10 @@ import {
   AppConfigModule,
   AppConfigService,
 } from '@gateway/infrastructure/config';
+import { LOGGER_PORT } from '@gateway/application/ports';
+import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
 
-import { Auth0Strategy, JwtStrategy } from './auth-strategies';
+import { Auth0Strategy } from './auth0-strategies';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -20,24 +21,7 @@ import { AuthService } from './auth.service';
   imports: [
     MeasureModule,
     AppConfigModule,
-    JwtModule.registerAsync({
-      inject: [AppConfigService],
-      imports: [AppConfigModule],
-      useFactory: (configService: AppConfigService) => ({
-        privateKey: configService.JWT_PRIVATE_KEY,
-        signOptions: {
-          algorithm: 'RS256',
-          expiresIn: configService.JWT_ACCESS_TOKEN_EXPIRY,
-        },
-      }),
-    }),
-    JwtModule.registerAsync({
-      imports: [AppConfigModule],
-      inject: [AppConfigService],
-      useFactory: (configService: AppConfigService) =>
-        configService.JWT_TOKEN_OPTIONS,
-    }),
-    PassportModule.register({ defaultStrategy: 'auth0' }),
+    PassportModule.register({ defaultStrategy: 'auth0', session: true }),
     ClientsModule.registerAsync([
       {
         imports: [AppConfigModule],
@@ -48,7 +32,11 @@ import { AuthService } from './auth.service';
       },
     ]),
   ],
-  providers: [AuthService, JwtStrategy, Auth0Strategy],
-  exports: [JwtStrategy, Auth0Strategy, JwtModule],
+  providers: [
+    AuthService,
+    Auth0Strategy,
+    { provide: LOGGER_PORT, useClass: WinstonLoggerAdapter },
+  ],
+  exports: [Auth0Strategy],
 })
 export class AuthModule {}

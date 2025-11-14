@@ -18,23 +18,16 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 60000,
+        maxAge: 1000 * 60 * 60, // 1 hour,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
+        sameSite: 'lax',
       },
     }),
   );
 
   app.use(passport.initialize());
   app.use(passport.session());
-
-  // passport.serializeUser((user: any, done) => {
-  //   done(null, user);
-  // });
-
-  // passport.deserializeUser((user: any, done) => {
-  //   done(null, user);
-  // });
 
   await app.listen(configService.PORT, '0.0.0.0');
 }

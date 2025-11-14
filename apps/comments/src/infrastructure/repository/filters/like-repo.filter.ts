@@ -18,12 +18,11 @@ import {
   PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
 
-import { DatabaseConnectionException } from '@app/infrastructure';
-
 import { LoggerPort, LOGGER_PORT } from '@comments/application/ports';
 import { AppConfigService, Components } from '@comments/infrastructure/config';
 
 import {
+  DatabaseConnectionException,
   DatabaseEntryAlreadyExistsException,
   DatabaseInvalidQueryException,
   DatabaseUnknownException,
@@ -31,7 +30,7 @@ import {
 import { DatabaseFilterOptions } from '../types';
 
 @Injectable()
-export class LikeRepoFilter {
+export class CommentsRepoFilter {
   private retryPolicy: RetryPolicy;
   private circuitBreakerPolicy: CircuitBreakerPolicy;
   private operationPolicy: IPolicy;

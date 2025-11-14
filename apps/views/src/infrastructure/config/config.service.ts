@@ -18,7 +18,7 @@ export class AppConfigService {
   }
 
   public get GRPC_PORT() {
-    return this.configService.getOrThrow<number>('SERVICE_PORT');
+    return this.configService.getOrThrow<number>('GRPC_PORT');
   }
 
   public get HTTP_PORT() {

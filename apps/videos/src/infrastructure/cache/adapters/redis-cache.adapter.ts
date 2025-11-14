@@ -34,19 +34,17 @@ export class RedisCacheAdapter
     });
 
     this.redisClient.on('connecting', () => {
-      this.logger.info('⏳ Redis connecting...');
+      this.logger.info('⏳ Redis cache connecting...');
     });
     this.redisClient.on('connect', () => {
-      this.logger.info('✅ Redis connected');
+      this.logger.info('✅ Redis cache connected');
     });
     this.redisClient.on('error', (error) => {
       this.logger.error('❌ An Error occured in redis cache', error);
     });
   }
 
-  public async onModuleInit() {
-    await this.redisClient.connect();
-  }
+  public async onModuleInit() {}
 
   public onModuleDestroy() {
     this.redisClient.disconnect();
@@ -55,6 +53,7 @@ export class RedisCacheAdapter
   cacheVideo(videoId: string, userId: string): Promise<number> {
     throw new Error('Method not implemented.');
   }
+
   getVideo(videoId: string): Promise<number> {
     throw new Error('Method not implemented.');
   }

@@ -1,6 +1,6 @@
 import { Video } from '@peristance/videos';
 
-import { VideoQueryModel } from '@videos/application/queries';
+import { VideoQueryModel } from '@videos/query';
 
 import { DatabaseFilter } from './types';
 

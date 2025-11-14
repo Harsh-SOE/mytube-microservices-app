@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import LokiTransport from 'winston-loki';
 import winston, {
   createLogger,
@@ -38,11 +38,26 @@ export interface MyConsoleLogCompleteInfo extends Logform.TransformableInfo {
 }
 
 @Injectable()
-export class WinstonLoggerAdapter implements OnModuleInit, LoggerPort {
+export class WinstonLoggerAdapter implements LoggerPort {
   private logger: Logger;
 
   public constructor(private readonly configService: AppConfigService) {
     winston.addColors(colors);
+    const loggerTransports: transport[] = [
+      this.consoleTransport(),
+      this.lokiTransport(),
+    ];
+
+    this.logger = createLogger({
+      levels: levels,
+      level: 'debug',
+      format: format.combine(
+        format.timestamp(),
+        format.json(),
+        format.errors(),
+      ),
+      transports: loggerTransports,
+    });
   }
 
   private consoleTransport() {
@@ -74,37 +89,19 @@ export class WinstonLoggerAdapter implements OnModuleInit, LoggerPort {
     });
   }
 
-  public onModuleInit() {
-    const loggerTransports: transport[] = [
-      this.consoleTransport(),
-      this.lokiTransport(),
-    ];
-
-    this.logger = createLogger({
-      levels: levels,
-      level: 'debug',
-      format: format.combine(
-        format.timestamp(),
-        format.json(),
-        format.errors(),
-      ),
-      transports: loggerTransports,
-    });
-  }
-
   public info(message: string, ...meta: Record<string, any>[]): void {
-    this.logger.log('info', message, ...meta);
+    this.logger.log('info', message, ...(meta || ''));
   }
 
   public error(message: string, ...meta: Record<string, any>[]): void {
-    this.logger.log('error', message, meta);
+    this.logger.log('error', message, ...(meta || ''));
   }
 
   public alert(message: string, ...meta: Record<string, any>[]): void {
-    this.logger.log('alert', message, meta);
+    this.logger.log('alert', message, ...(meta || ''));
   }
 
   public fatal(message: string, ...meta: Record<string, any>[]): void {
-    this.logger.log('fatal', message, meta);
+    this.logger.log('fatal', message, ...(meta || ''));
   }
 }

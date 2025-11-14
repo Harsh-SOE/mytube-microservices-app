@@ -98,6 +98,7 @@ export class UsersService implements OnModuleInit {
     throw new NotImplementedException(`Delete user is not yet implemented!`);
   }
 
+  // TODO: fix this by creating a dedicated command in the user service, which will either return the response or return an error...
   async getCurrentlyLoggedInUser(id: string): Promise<FindUserRequestResponse> {
     this.counter.inc();
 
@@ -105,14 +106,19 @@ export class UsersService implements OnModuleInit {
 
     const response$ = this.userService.findOneUserById({ id });
     const response = await firstValueFrom(response$);
-    return response;
+    const foundUser = response.user;
+    if (!foundUser) {
+      throw new Error();
+    }
+    return foundUser;
   }
 
   async getAllRegisteredUser(): Promise<FindUserRequestResponse[]> {
     this.logger.info(` All users will be fetched`);
 
     const response$ = this.userService.findAllUsers({});
-    const users = (await firstValueFrom(response$)).userFoundResponse;
-    return users;
+    const users = await firstValueFrom(response$);
+    const foundUsers = users.userPayload;
+    return foundUsers;
   }
 }

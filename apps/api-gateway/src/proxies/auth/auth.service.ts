@@ -37,12 +37,18 @@ export class AuthService implements OnModuleInit {
       `User Auth Credentials are: ${JSON.stringify(userAuthCredentials)}`,
     );
 
+    if (!userAuthCredentials.providerId) {
+      throw new Error(`No Provider was found...`);
+    }
+
     const response$ = this.userService.findUserByAuthId({
       authId: userAuthCredentials.providerId,
     });
-    const userInDatabase = await firstValueFrom(response$);
+    const userFoundResponse = await firstValueFrom(response$);
 
-    if (!userInDatabase) {
+    const foundUser = userFoundResponse.user;
+
+    if (!foundUser) {
       return {
         response:
           'Please complete your profile inorder to login to application [STATUS: Signup-SUCCESS]',
@@ -52,11 +58,12 @@ export class AuthService implements OnModuleInit {
     }
 
     const authUserPayload: UserAuthPayload = {
-      id: userInDatabase.id,
+      id: foundUser.id,
       authId: userAuthCredentials.providerId,
-      email: userInDatabase.email,
-      handle: userInDatabase.handle,
+      email: foundUser.email,
+      handle: foundUser.handle,
     };
+
     return {
       response: 'user logged in successfully',
       token: this.jwtService.sign(authUserPayload),

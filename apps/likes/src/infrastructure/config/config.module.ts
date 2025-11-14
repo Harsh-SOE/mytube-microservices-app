@@ -19,6 +19,8 @@ import { AppConfigService } from './config.service';
         CACHE_PORT: joi.number().required(),
         MESSAGE_BROKER_HOST: joi.string().required(),
         MESSAGE_BROKER_PORT: joi.number().required(),
+        LIKE_CLIENT_ID: joi.string().required(),
+        LIKE_CONSUMER_ID: joi.string().required(),
         BUFFER_KEY: joi.string().required(),
         BUFFER_GROUPNAME: joi.string().required(),
         BUFFER_REDIS_CONSUMER_ID: joi.string().required(),

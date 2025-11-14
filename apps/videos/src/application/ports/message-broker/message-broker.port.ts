@@ -1,13 +1,5 @@
 export interface MessageBrokerPort {
-  publishMessage<TPayload>(
-    topic: string,
-    payload: TPayload,
-  ): void | Promise<void>;
-
-  send<TPayload, TResponse>(
-    topic: string,
-    payload: TPayload,
-  ): TResponse | Promise<TResponse>;
+  publishMessage(topic: string, payload: string): Promise<void>;
 
   subscribeTo(topic: string): void | Promise<void>;
 }

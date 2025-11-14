@@ -12,11 +12,13 @@ import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
 
 import { LikesController } from './likes.controller';
 import { LikesService } from './likes.service';
+import { MeasureModule } from '@gateway/infrastructure/measure';
 
 @Module({
   controllers: [LikesController],
   imports: [
     AppConfigModule,
+    MeasureModule,
     ClientsModule.registerAsync([
       {
         name: CLIENT_PROVIDER.LIKE,

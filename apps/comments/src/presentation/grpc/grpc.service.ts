@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ICommandBus } from '@nestjs/cqrs';
+import { CommandBus } from '@nestjs/cqrs';
 
 import { CommentVideoDto, CommentVideoResponse } from '@app/contracts/comments';
 
@@ -7,7 +7,7 @@ import { CreateCommentCommand } from '@comments/application/commands';
 
 @Injectable()
 export class GrpcService {
-  public constructor(private readonly commandBus: ICommandBus) {}
+  public constructor(private readonly commandBus: CommandBus) {}
 
   public async commentOnVideo(
     commentVideoDto: CommentVideoDto,

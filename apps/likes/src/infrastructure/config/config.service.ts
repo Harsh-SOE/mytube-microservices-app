@@ -17,7 +17,7 @@ export class AppConfigService {
   }
 
   get GRPC_PORT() {
-    return this.configService.getOrThrow<number>('SERVICE_PORT');
+    return this.configService.getOrThrow<number>('GRPC_PORT');
   }
 
   public get DATABASE_URL() {
@@ -30,6 +30,14 @@ export class AppConfigService {
 
   get CACHE_PORT() {
     return this.configService.getOrThrow<number>('CACHE_PORT');
+  }
+
+  get LIKE_CLIENT_ID() {
+    return this.configService.getOrThrow<string>('LIKE_CLIENT_ID');
+  }
+
+  get LIKE_CONSUMER_ID() {
+    return this.configService.getOrThrow<string>('LIKE_CONSUMER_ID');
   }
 
   get MESSAGE_BROKER_HOST() {

@@ -8,3 +8,4 @@ export * from './logger/logger.port';
 export * from './repository/comment-repo.port';
 
 export * from './buffer/buffer.port';
+export * from './repository/types';

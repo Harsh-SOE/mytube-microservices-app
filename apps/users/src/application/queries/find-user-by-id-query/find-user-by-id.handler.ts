@@ -31,9 +31,11 @@ export class FindUserByIdHandler implements IQueryHandler<FindUserByIdQuery> {
     }
 
     return {
-      ...user,
-      dob: user.dob?.toISOString(),
-      phoneNumber: user.phoneNumber ?? undefined,
+      user: {
+        ...user,
+        dob: user.dob?.toISOString(),
+        phoneNumber: user.phoneNumber ?? undefined,
+      },
     };
   }
 }

@@ -32,14 +32,12 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('DATABASE_URL');
   }
 
-  get VIDEO_TRANSCODER_CLIENT_ID() {
-    return this.configService.getOrThrow<string>('VIDEO_TRANSCODER_CLIENT_ID');
+  get VIDEO_CLIENT_ID() {
+    return this.configService.getOrThrow<string>('VIDEO_CLIENT_ID');
   }
 
-  get VIDEO_TRANSCODER_CONSUMER_GROUP_ID() {
-    return this.configService.getOrThrow<string>(
-      'VIDEO_TRANSCODER_CONSUMER_GROUP_ID',
-    );
+  get VIDEO_CONSUMER_ID() {
+    return this.configService.getOrThrow<string>('VIDEO_CONSUMER_ID');
   }
 
   get MESSAGE_BROKER_HOST() {
@@ -101,11 +99,11 @@ export class AppConfigService {
       transport: Transport.KAFKA,
       options: {
         client: {
-          clientId: this.VIDEO_TRANSCODER_CLIENT_ID,
+          clientId: this.VIDEO_CLIENT_ID,
           brokers: [`${this.MESSAGE_BROKER_HOST}:${this.MESSAGE_BROKER_PORT}`],
         },
         consumer: {
-          groupId: this.VIDEO_TRANSCODER_CONSUMER_GROUP_ID,
+          groupId: this.VIDEO_CONSUMER_ID,
         },
       },
     };

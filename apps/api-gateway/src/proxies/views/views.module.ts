@@ -12,10 +12,12 @@ import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
 
 import { WatchService } from './views.service';
 import { WatchController } from './views.controller';
+import { MeasureModule } from '@gateway/infrastructure/measure';
 
 @Module({
   imports: [
     AppConfigModule,
+    MeasureModule,
     ClientsModule.registerAsync([
       {
         name: CLIENT_PROVIDER.WATCH,

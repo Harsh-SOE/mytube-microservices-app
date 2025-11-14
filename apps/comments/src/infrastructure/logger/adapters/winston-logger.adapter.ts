@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import LokiTransport from 'winston-loki';
 import winston, {
   createLogger,
@@ -38,11 +38,26 @@ export interface MyConsoleLogCompleteInfo extends Logform.TransformableInfo {
 }
 
 @Injectable()
-export class WinstonLoggerAdapter implements LoggerPort, OnModuleInit {
+export class WinstonLoggerAdapter implements LoggerPort {
   private logger: Logger;
 
   public constructor(private readonly configService: AppConfigService) {
     winston.addColors(colors);
+    const loggerTransports: transport[] = [
+      this.consoleTransport(),
+      this.lokiTransport(),
+    ];
+
+    this.logger = createLogger({
+      levels: levels,
+      level: 'debug',
+      format: format.combine(
+        format.timestamp(),
+        format.json(),
+        format.errors(),
+      ),
+      transports: loggerTransports,
+    });
   }
 
   private consoleTransport() {
@@ -71,24 +86,6 @@ export class WinstonLoggerAdapter implements LoggerPort, OnModuleInit {
       host: this.configService.GRAFANA_LOKI_URL,
       level: 'debug',
       format: lokiFormatPipeline,
-    });
-  }
-
-  public onModuleInit() {
-    const loggerTransports: transport[] = [
-      this.consoleTransport(),
-      this.lokiTransport(),
-    ];
-
-    this.logger = createLogger({
-      levels: levels,
-      level: 'debug',
-      format: format.combine(
-        format.timestamp(),
-        format.json(),
-        format.errors(),
-      ),
-      transports: loggerTransports,
     });
   }
 

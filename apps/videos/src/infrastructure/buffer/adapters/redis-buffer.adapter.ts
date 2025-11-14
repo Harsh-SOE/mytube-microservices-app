@@ -30,15 +30,18 @@ export class RedisStreamBufferAdapter implements OnModuleInit, BufferPort {
     });
 
     this.redisClient.on('connecting', () => {
-      this.logger.info(`⏳ Redis connecting...`);
+      this.logger.info(`⏳ Redis buffer connecting...`);
     });
 
     this.redisClient.on('connect', () => {
-      this.logger.info('✅ Redis connected');
+      this.logger.info('✅ Redis buffer connected');
     });
 
     this.redisClient.on('error', (error) => {
-      this.logger.info('❌ Error occured while connecting to redis', error);
+      this.logger.info(
+        '❌ Error buffer occured while connecting to redis',
+        error,
+      );
     });
   }
 

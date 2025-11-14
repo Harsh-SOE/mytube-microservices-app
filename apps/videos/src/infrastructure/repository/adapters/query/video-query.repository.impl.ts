@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 
 import { LogExecutionTime } from '@app/utils';
 import { UserNotFoundGrpcException } from '@app/errors';
@@ -7,9 +7,9 @@ import {
   DatabaseFilter,
   VideoQueryRepositoryPort,
 } from '@videos/application/ports';
-import { VideoQueryModel } from '@videos/application/queries/dto';
-import { QueryModelResponseMapper } from '@videos/application/queries/adapter';
+import { VideoQueryModel } from '@videos/query';
 import { PersistanceService } from '@videos/infrastructure/persistance/adapter';
+import { VideoQueryPeristanceACL } from '@videos/infrastructure/anti-corruption';
 
 import { Prisma, Video } from '@peristance/videos';
 
@@ -18,9 +18,10 @@ import { VideoRepoFilter } from '../../filters';
 @Injectable()
 export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
   constructor(
+    @Inject(forwardRef(() => VideoQueryPeristanceACL))
+    private readonly videoQueryPersistanceACL: VideoQueryPeristanceACL,
     private readonly persistanceService: PersistanceService,
-    private readonly videoQueryToResponseMapper: QueryModelResponseMapper,
-    private readonly likeRepoFilter: VideoRepoFilter,
+    private readonly videoRepoFilter: VideoRepoFilter,
   ) {}
 
   toPrismaFilter(
@@ -77,7 +78,7 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
       });
     };
 
-    const foundVideo = await this.likeRepoFilter.filter(findVideoOperation, {
+    const foundVideo = await this.videoRepoFilter.filter(findVideoOperation, {
       operationType: 'CREATE',
       entry: {},
     });
@@ -88,7 +89,7 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
       );
     }
 
-    return this.videoQueryToResponseMapper.toResponse(foundVideo);
+    return this.videoQueryPersistanceACL.toQueryModel(foundVideo);
   }
 
   async findMany(filter: DatabaseFilter<Video>): Promise<VideoQueryModel[]> {
@@ -101,7 +102,7 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
       });
     };
 
-    const foundVideos = await this.likeRepoFilter.filter(findVideosOperation, {
+    const foundVideos = await this.videoRepoFilter.filter(findVideosOperation, {
       operationType: 'CREATE',
       entry: {},
     });
@@ -113,7 +114,7 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
     }
 
     return foundVideos.map((video) =>
-      this.videoQueryToResponseMapper.toResponse(video),
+      this.videoQueryPersistanceACL.toQueryModel(video),
     );
   }
 
@@ -124,7 +125,7 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
       });
     };
 
-    const foundVideo = await this.likeRepoFilter.filter(findVideoOperation, {
+    const foundVideo = await this.videoRepoFilter.filter(findVideoOperation, {
       operationType: 'CREATE',
       entry: {},
     });
@@ -135,6 +136,6 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
       );
     }
 
-    return this.videoQueryToResponseMapper.toResponse(foundVideo);
+    return this.videoQueryPersistanceACL.toQueryModel(foundVideo);
   }
 }

@@ -12,10 +12,13 @@ import { getErrorPayload } from '../types';
 
 @Catch()
 export class GatewayExceptionFilter implements ExceptionFilter {
+  constructor() {}
+
   catch(exception: any, host: ArgumentsHost) {
     const httpContext = host.switchToHttp();
     const response = httpContext.getResponse<Response>();
 
+    console.info(`Unknown exception captured`);
     console.log(exception);
 
     let statusCode = 'Error';
@@ -25,6 +28,8 @@ export class GatewayExceptionFilter implements ExceptionFilter {
 
     switch (true) {
       case isGrpcApplicationError(exception): {
+        console.error(`Grpc exception recieved`, exception);
+
         const errorPayload = getErrorPayload(exception);
         statusCode = errorPayload.statusCode ?? 'UNKNOWN';
         timestamp = errorPayload.timestamp;

@@ -16,6 +16,7 @@ export function isGrpcApplicationError(err: unknown): err is ServiceError {
     errorPayloadvalue.length === 0 ||
     !(typeof errorPayloadvalue[0] === 'string')
   ) {
+    console.log(`Error payload was not found...`);
     return false;
   }
 

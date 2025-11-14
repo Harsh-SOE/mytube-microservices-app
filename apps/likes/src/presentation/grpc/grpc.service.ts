@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ICommandBus, IQueryBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import {
   DislikesFindCountForAVideoDto,
@@ -30,8 +30,8 @@ export class LikeService {
   public static readonly SHARDS = 64;
 
   public constructor(
-    private readonly commandBus: ICommandBus,
-    private readonly queryBus: IQueryBus,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {}
 

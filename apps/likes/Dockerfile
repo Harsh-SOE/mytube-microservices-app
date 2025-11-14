@@ -23,7 +23,7 @@ COPY nest-cli.json ./nest-cli.json
 COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.build.json ./tsconfig.build.json
 
-RUN npx prisma generate --schema ./apps/likes-aggregator/prisma/schema.prisma
+RUN npx prisma generate --schema ./apps/likes/prisma/schema.prisma
 
 RUN npx nest build likes
 

@@ -2,7 +2,7 @@ import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 
 import { UserAuthPayload } from '@app/contracts/auth';
 
-import { GatewayJwtGuard } from '@gateway/proxies/auth/guards';
+import { GatewayJwtGuard } from '@gateway/infrastructure/jwt/guard';
 import { User } from '@gateway/proxies/auth/decorators';
 
 import { COMMENT_API } from './api';

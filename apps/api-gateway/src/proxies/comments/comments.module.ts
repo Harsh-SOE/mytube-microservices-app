@@ -12,10 +12,12 @@ import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
 
 import { CommentsController } from './comments.controller';
 import { CommentsService } from './comments.service';
+import { MeasureModule } from '@gateway/infrastructure/measure';
 
 @Module({
   imports: [
     AppConfigModule,
+    MeasureModule,
     ClientsModule.registerAsync([
       {
         imports: [AppConfigModule],

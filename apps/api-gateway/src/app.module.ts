@@ -12,10 +12,12 @@ import { CommentsModule } from './proxies/comments/comments.module';
 import { AppHealthModule } from './infrastructure/health/health.module';
 import { LOGGER_PORT } from './application/ports';
 import { WinstonLoggerAdapter } from './infrastructure/logger';
+import { AppJwtModule } from './infrastructure/jwt/jwt.module';
 
 @Module({
   imports: [
     AppConfigModule,
+    AppJwtModule,
     VideoModule,
     UsersModule,
     MeasureModule,

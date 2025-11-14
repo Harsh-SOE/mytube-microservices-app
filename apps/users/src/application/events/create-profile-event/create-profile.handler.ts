@@ -7,8 +7,6 @@ import {
   MESSAGE_BROKER,
   MessageBrokerPort,
 } from '@users/application/ports';
-import { UserAggregatePersistanceACL } from '@users/infrastructure/anti-corruption';
-
 import { CreateProfileEvent } from './create-profile.event';
 
 @EventsHandler(CreateProfileEvent)
@@ -16,7 +14,6 @@ export class CompleteProfileEventHandler
   implements IEventHandler<CreateProfileEvent>
 {
   constructor(
-    private readonly aggregatePersistanceACL: UserAggregatePersistanceACL,
     @Inject(MESSAGE_BROKER) private readonly messageBroker: MessageBrokerPort,
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {}

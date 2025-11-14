@@ -38,6 +38,7 @@ export class VideoAggregatePersistanceACL
 
     return new VideoAggregate(videoEntity);
   }
+
   public toPersistance(
     aggregate: VideoAggregate,
   ): Omit<Video, 'publishedAt' | 'updatedAt'> {

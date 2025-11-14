@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ReplyError } from 'ioredis';
 import {
   retry,
@@ -22,6 +22,7 @@ import {
 } from '@comments/infrastructure/cache/exceptions';
 import { AppConfigService, Components } from '@comments/infrastructure/config';
 import { WinstonLoggerAdapter } from '@comments/infrastructure/logger';
+import { LOGGER_PORT } from '@comments/application/ports';
 
 import { RedisOptions } from '../types';
 
@@ -33,7 +34,7 @@ export class RedisCacheFilter implements OnModuleInit {
 
   constructor(
     private configService: AppConfigService,
-    private readonly logger: WinstonLoggerAdapter,
+    @Inject(LOGGER_PORT) private readonly logger: WinstonLoggerAdapter,
   ) {}
 
   public enableRetries(maxRetryAttempts: number) {

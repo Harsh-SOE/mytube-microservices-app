@@ -1,35 +1,16 @@
+import { CqrsModule } from '@nestjs/cqrs';
 import { Module } from '@nestjs/common';
 
-import {
-  BUFFER_PORT,
-  CACHE_PORT,
-  DATABASE_PORT,
-  MESSAGE_BROKER,
-} from '@likes/application/ports';
-import {
-  AppConfigService,
-  AppConfigModule,
-} from '@videos/infrastructure/config';
+import { AppConfigModule } from '@videos/infrastructure/config';
 import { VideoEventHandler } from '@videos/application/events';
-import { RedisCacheAdapter } from '@videos/infrastructure/cache/adapters';
-import { VideoCommandRepositoryAdapter } from '@videos/infrastructure/repository/adapters';
-import { RedisStreamBufferAdapter } from '@videos/infrastructure/buffer/adapters';
-import { KafkaMessageBrokerAdapter } from '@videos/infrastructure/message-broker/adapters';
 
 import { MessageController } from './message.controller';
 import { MessageHandlerService } from './message.service';
+import { InfrastructureModule } from '../infrastructure/infrastructure.module';
 
 @Module({
-  imports: [AppConfigModule],
+  imports: [AppConfigModule, InfrastructureModule, CqrsModule],
   controllers: [MessageController],
-  providers: [
-    MessageHandlerService,
-    AppConfigService,
-    { provide: DATABASE_PORT, useClass: VideoCommandRepositoryAdapter },
-    { provide: CACHE_PORT, useClass: RedisCacheAdapter },
-    { provide: MESSAGE_BROKER, useClass: KafkaMessageBrokerAdapter },
-    { provide: BUFFER_PORT, useClass: RedisStreamBufferAdapter },
-    ...VideoEventHandler,
-  ],
+  providers: [...VideoEventHandler, MessageHandlerService],
 })
 export class MessageModule {}

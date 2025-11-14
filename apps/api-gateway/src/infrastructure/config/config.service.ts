@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
 import { join } from 'path';
 
-import { CLOUD_PACKAGE_NAME } from '@app/contracts/cloud';
 import { USER_PACKAGE_NAME } from '@app/contracts/users';
 import { LIKE_PACKAGE_NAME } from '@app/contracts/likes';
 import { VIDEO_PACKAGE_NAME } from '@app/contracts/videos';
@@ -20,36 +19,20 @@ export class AppConfigService {
     return this.configService.getOrThrow<number>('PORT');
   }
 
-  get ACCESS_TOKEN_EXPIRY() {
-    return this.configService.getOrThrow<number>('ACCESS_TOKEN_EXPIRY');
+  get NODE_ENV() {
+    return this.configService.getOrThrow<string>('NODE_ENVIRONMENT');
   }
 
   get GRAFANA_LOKI_URL() {
     return this.configService.getOrThrow<string>('GRAFANA_LOKI_URL');
   }
 
-  get JWT_PUBLIC_KEY() {
-    const publicKey = this.configService.getOrThrow<string>('PUBLIC_KEY');
-    return Buffer.from(publicKey, 'base64').toString('utf8');
+  get JWT_ACCESS_TOKEN_SECRET() {
+    return this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_SECRET');
   }
 
-  get CLOUD_SERVICE_PORT() {
-    return this.configService.getOrThrow<number>('CLOUD_SERVICE_PORT');
-  }
-
-  get CLOUD_SERVICE_HOST() {
-    return this.configService.getOrThrow<string>('CLOUD_SERVICE_HOST');
-  }
-
-  get CLOUD_SERVICE_OPTIONS(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        protoPath: join(__dirname, '../proto/cloud.proto'),
-        package: CLOUD_PACKAGE_NAME,
-        url: `${this.CLOUD_SERVICE_HOST}:${this.CLOUD_SERVICE_PORT}`,
-      },
-    };
+  get JWT_ACCESS_TOKEN_EXPIRY() {
+    return this.configService.getOrThrow<number>('JWT_ACCESS_TOKEN_EXPIRY');
   }
 
   get USER_SERVICE_PORT() {
@@ -60,34 +43,12 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('USER_SERVICE_HOST');
   }
 
-  get USER_SERVICE_OPTIONS(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        protoPath: join(__dirname, '../proto/users.proto'),
-        package: USER_PACKAGE_NAME,
-        url: `${this.USER_SERVICE_HOST}:${this.USER_SERVICE_PORT}`,
-      },
-    };
-  }
-
   get LIKE_SERVICE_PORT() {
     return this.configService.getOrThrow<number>('LIKE_SERVICE_PORT');
   }
 
   get LIKE_SERVICE_HOST() {
     return this.configService.getOrThrow<string>('LIKE_SERVICE_HOST');
-  }
-
-  get LIKE_SERVICE_OPTIONS(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        protoPath: join(__dirname, '../proto/likes.proto'),
-        package: LIKE_PACKAGE_NAME,
-        url: `${this.LIKE_SERVICE_HOST}:${this.LIKE_SERVICE_PORT}`,
-      },
-    };
   }
 
   get VIDEO_SERVICE_PORT() {
@@ -98,34 +59,12 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('VIDEO_SERVICE_HOST');
   }
 
-  get VIDEO_SERVICE_OPTIONS(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        protoPath: join(__dirname, '../proto/videos.proto'),
-        package: VIDEO_PACKAGE_NAME,
-        url: `${this.VIDEO_SERVICE_HOST}:${this.VIDEO_SERVICE_PORT}`,
-      },
-    };
-  }
-
   get SAGA_SERVICE_PORT() {
     return this.configService.getOrThrow<number>('SAGA_SERVICE_PORT');
   }
 
   get SAGA_SERVICE_HOST() {
     return this.configService.getOrThrow<string>('SAGA_SERVICE_HOST');
-  }
-
-  get SAGA_SERVICE_OPTIONS(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        protoPath: join(__dirname, '../proto/saga.proto'),
-        package: SAGA_PACKAGE_NAME,
-        url: `${this.SAGA_SERVICE_HOST}:${this.SAGA_SERVICE_PORT}`,
-      },
-    };
   }
 
   get COMMENT_SERVICE_PORT() {
@@ -136,38 +75,12 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('COMMENT_SERVICE_HOST');
   }
 
-  get COMMENT_SERVICE_OPTIONS(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        protoPath: join(__dirname, '../proto/comments.proto'),
-        package: COMMENT_PACKAGE_NAME,
-        url: `${this.COMMENT_SERVICE_HOST}:${this.CLOUD_SERVICE_PORT}`,
-      },
-    };
+  get CACHE_PORT() {
+    return this.configService.getOrThrow<number>('CACHE_PORT');
   }
 
-  get REDIS_PORT() {
-    return this.configService.getOrThrow<number>('REDIS_PORT');
-  }
-
-  get REDIS_HOST() {
-    return this.configService.getOrThrow<string>('REDIS_HOST');
-  }
-
-  get NODE_ENV() {
-    return this.configService.getOrThrow<string>('NODE_ENVIRONMENT');
-  }
-
-  get JWT_TOKEN_OPTIONS() {
-    const options: JwtModuleOptions = {
-      publicKey: this.JWT_PUBLIC_KEY,
-      signOptions: {
-        algorithm: 'RS256',
-        expiresIn: this.ACCESS_TOKEN_EXPIRY,
-      },
-    };
-    return options;
+  get CACHE_HOST() {
+    return this.configService.getOrThrow<string>('CACHE_HOST');
   }
 
   get WATCH_SERVICE_HOST() {
@@ -176,17 +89,6 @@ export class AppConfigService {
 
   get WATCH_SERVICE_PORT() {
     return this.configService.getOrThrow<number>('WATCH_SERVICE_PORT');
-  }
-
-  get WATCH_SERVICE_OPTION(): GrpcOptions {
-    return {
-      transport: Transport.GRPC,
-      options: {
-        package: VIEWS_PACKAGE_NAME,
-        protoPath: join(__dirname, '../proto/views.proto'),
-        url: `${this.WATCH_SERVICE_HOST}:${this.WATCH_SERVICE_PORT}`,
-      },
-    };
   }
 
   get AUTH0_CLIENT_ID() {
@@ -213,12 +115,80 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('EXPRESS_SESSION_SECRET');
   }
 
-  get JWT_PRIVATE_KEY() {
-    const privateKey = this.configService.getOrThrow<string>('PRIVATE_KEY');
-    return Buffer.from(privateKey, 'base64').toString('utf8');
+  get JWT_TOKEN_OPTIONS() {
+    const options: JwtModuleOptions = {
+      secret: this.JWT_ACCESS_TOKEN_SECRET,
+      signOptions: {
+        algorithm: 'HS256',
+        expiresIn: this.JWT_ACCESS_TOKEN_EXPIRY,
+      },
+    };
+    return options;
   }
 
-  get JWT_ACCESS_TOKEN_EXPIRY() {
-    return this.configService.getOrThrow<number>('JWT_ACCESS_TOKEN_EXPIRY');
+  get LIKE_SERVICE_OPTIONS(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        protoPath: join(__dirname, '../proto/likes.proto'),
+        package: LIKE_PACKAGE_NAME,
+        url: `${this.LIKE_SERVICE_HOST}:${this.LIKE_SERVICE_PORT}`,
+      },
+    };
+  }
+
+  get VIDEO_SERVICE_OPTIONS(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        protoPath: join(__dirname, '../proto/videos.proto'),
+        package: VIDEO_PACKAGE_NAME,
+        url: `${this.VIDEO_SERVICE_HOST}:${this.VIDEO_SERVICE_PORT}`,
+      },
+    };
+  }
+
+  get USER_SERVICE_OPTIONS(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        protoPath: join(__dirname, '../proto/users.proto'),
+        package: USER_PACKAGE_NAME,
+        url: `${this.USER_SERVICE_HOST}:${this.USER_SERVICE_PORT}`,
+      },
+    };
+  }
+
+  get SAGA_SERVICE_OPTIONS(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        protoPath: join(__dirname, '../proto/saga.proto'),
+        package: SAGA_PACKAGE_NAME,
+        url: `${this.SAGA_SERVICE_HOST}:${this.SAGA_SERVICE_PORT}`,
+      },
+    };
+  }
+
+  get COMMENT_SERVICE_OPTIONS(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        protoPath: join(__dirname, '../proto/comments.proto'),
+        package: COMMENT_PACKAGE_NAME,
+        url: `${this.COMMENT_SERVICE_HOST}:${this.COMMENT_SERVICE_PORT}`,
+      },
+    };
+  }
+
+  get WATCH_SERVICE_OPTION(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        package: VIEWS_PACKAGE_NAME,
+        protoPath: join(__dirname, '../proto/views.proto'),
+        url: `${this.WATCH_SERVICE_HOST}:${this.WATCH_SERVICE_PORT}`,
+      },
+    };
   }
 }

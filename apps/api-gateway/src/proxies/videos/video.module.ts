@@ -9,6 +9,7 @@ import {
 } from '@gateway/infrastructure/config';
 import { LOGGER_PORT } from '@gateway/application/ports';
 import { WinstonLoggerAdapter } from '@gateway/infrastructure/logger';
+import { MeasureModule } from '@gateway/infrastructure/measure';
 
 import { VideoService } from './video.service';
 import { VideoController } from './video.controller';
@@ -17,6 +18,7 @@ import { VideoController } from './video.controller';
   controllers: [VideoController],
   imports: [
     AppConfigModule,
+    MeasureModule,
     ClientsModule.registerAsync([
       {
         name: CLIENT_PROVIDER.VIDEO,

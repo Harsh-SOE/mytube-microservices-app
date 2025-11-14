@@ -7,7 +7,6 @@ import {
   USER_QUERY_REROSITORY,
   UserQueryRepositoryPort,
 } from '@users/application/ports';
-import { UserNotFoundException } from '@users/application/exceptions';
 
 import { FindUserByAuthIdQuery } from './find-by-auth-id.query';
 
@@ -24,18 +23,16 @@ export class FindUserByAuthIdQueryHandler
     findUserbyAuthIdDto,
   }: FindUserByAuthIdQuery): Promise<UserFoundResponse> {
     const { authId } = findUserbyAuthIdDto;
-    const userQueryModel = await this.userRepo.findOne({ authUserId: authId });
-
-    if (!userQueryModel) {
-      throw new UserNotFoundException({
-        message: `User with auth id: ${authId} was not found in the database`,
-      });
-    }
+    const user = await this.userRepo.findOne({ authUserId: authId });
 
     return {
-      ...userQueryModel,
-      dob: userQueryModel.dob?.toISOString(),
-      phoneNumber: userQueryModel.phoneNumber ?? undefined,
+      user: user
+        ? {
+            ...user,
+            dob: user.dob?.toISOString(),
+            phoneNumber: user.phoneNumber ?? undefined,
+          }
+        : undefined,
     };
   }
 }

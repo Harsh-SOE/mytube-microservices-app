@@ -95,7 +95,7 @@ message UserPhoneNumberVerifiedResponse {
   bool verified = 2;
 }
 
-message UserFoundResponse {
+message UserPayload {
   string id = 1;
   string authUserId = 2;
   string email = 3;
@@ -110,8 +110,12 @@ message UserFoundResponse {
   bool onBoardingComplete = 12;
 }
 
+message UserFoundResponse {
+  optional UserPayload user = 1;
+}
+
 message UsersFoundResponse {
-  repeated UserFoundResponse userFoundResponse = 1;
+  repeated UserPayload userPayload = 1;
 }
 
 message UserProfileUpdatedResponse {
@@ -130,8 +134,8 @@ service UserService {
   rpc changePreferredLanguage(UserChangePreferredLanguageDto) returns (UserPreferredLanguageChangedResponse) {}
   rpc changePreferredTheme(UserChangePreferredThemeDto) returns (UserPreferredThemeChangedResponse) {}
   rpc verifyPhoneNumber(UserVerifyPhoneNumberDto) returns (UserPhoneNumberVerifiedResponse) {}
-  rpc findOneUserById(UserFindByIdDto) returns (UserFoundResponse) {}
   rpc findAllUsers(Empty) returns (UsersFoundResponse) {}
   rpc findUserByAuthId(UserFindByAuthIdDto) returns (UserFoundResponse) {}
+  rpc findOneUserById(UserFindByIdDto) returns (UserFoundResponse) {}
   rpc updateUserProfileById(UserUpdateByIdDto) returns (UserProfileUpdatedResponse) {}
 }

@@ -58,29 +58,11 @@ services:
     #     - action: rebuild
     #       path: package*.json
 
-  cloud:
-    image: cloud-dev
+  channel:
+    image: channel-dev
     build:
       target: development
-    command: yarn start:dev cloud
-    volumes:
-      - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
-      - .:/usr/src/app # Mount source code
-    # develop: &hot-reload
-    #   watch:
-    #     - path: .
-    #       action: sync
-    #       target: /usr/src/app
-    #       ignore:
-    #         - node_modules
-    #     - action: rebuild
-    #       path: package*.json
-
-  hub:
-    image: hub-dev
-    build:
-      target: development
-    command: yarn start:dev hub
+    command: yarn start:dev channel
     volumes:
       - /usr/src/app/node_modules # Anonymous volume to prevent overwriting
       - .:/usr/src/app # Mount source code

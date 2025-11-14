@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 
 import { UserNotFoundGrpcException } from '@app/errors';
 
@@ -26,7 +26,8 @@ export class VideoCommandRepositoryAdapter
   implements VideoCommandRepositoryPort
 {
   public constructor(
-    private videoPersistanceACL: VideoAggregatePersistanceACL,
+    @Inject(forwardRef(() => VideoAggregatePersistanceACL))
+    private readonly videoPersistanceACL: VideoAggregatePersistanceACL,
     private readonly videoRepoFilter: VideoRepoFilter,
     private persistanceService: PersistanceService,
     @Inject(LOGGER_PORT) private logger: LoggerPort,

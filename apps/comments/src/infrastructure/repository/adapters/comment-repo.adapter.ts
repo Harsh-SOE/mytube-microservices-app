@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { DatabaseFilter } from '@app/infrastructure';
-
 import {
   CommentRepositoryPort,
+  DatabaseFilter,
   LOGGER_PORT,
   LoggerPort,
 } from '@comments/application/ports';
@@ -13,13 +12,14 @@ import { CommentAggregatePersistance } from '@comments/infrastructure/anti-corru
 import { Components } from '@comments/infrastructure/config';
 
 import { Prisma } from '@peristance/comments';
-import { LikeRepoFilter } from '../filters';
+
+import { CommentsRepoFilter } from '../filters';
 
 @Injectable()
 export class PrismaMongoDBRepositoryAdapter implements CommentRepositoryPort {
   public constructor(
     private readonly commentPersistanceACL: CommentAggregatePersistance,
-    private readonly likeRepoFilter: LikeRepoFilter,
+    private readonly commentsRepoFilter: CommentsRepoFilter,
     private readonly persistanceService: PersistanceService,
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {}
@@ -97,7 +97,7 @@ export class PrismaMongoDBRepositoryAdapter implements CommentRepositoryPort {
         ),
       });
 
-    const createdEntities = await this.likeRepoFilter.filter(
+    const createdEntities = await this.commentsRepoFilter.filter(
       createdEntitiesFunc,
       { operationType: 'CREATE', entry: dataToCreate },
     );
@@ -117,11 +117,14 @@ export class PrismaMongoDBRepositoryAdapter implements CommentRepositoryPort {
         data: { commentText: newCommentText },
       });
 
-    const updatedLike = await this.likeRepoFilter.filter(updateLikeOperation, {
-      operationType: 'UPDATE',
-      entry: {},
-      filter: { newCommentText },
-    });
+    const updatedLike = await this.commentsRepoFilter.filter(
+      updateLikeOperation,
+      {
+        operationType: 'UPDATE',
+        entry: {},
+        filter: { newCommentText },
+      },
+    );
 
     return this.commentPersistanceACL.toAggregate(updatedLike);
   }
@@ -136,7 +139,7 @@ export class PrismaMongoDBRepositoryAdapter implements CommentRepositoryPort {
         data: { commentText: newCommentText },
       });
 
-    const updatedLikes = await this.likeRepoFilter.filter(
+    const updatedLikes = await this.commentsRepoFilter.filter(
       updatedLikesOperation,
       {
         operationType: 'UPDATE',

@@ -1,8 +1,7 @@
 import { Inject } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
-import { CLIENT_PROVIDER, VIDEO_TRANSCODER_PATTERN } from '@app/clients';
+import { MESSAGE_BROKER, MessageBrokerPort } from '@videos/application/ports';
 
 import { VideoCreatedEvent } from './video-created.event';
 
@@ -11,13 +10,13 @@ export class VideoCreatedEventHandler
   implements IEventHandler<VideoCreatedEvent>
 {
   constructor(
-    @Inject(CLIENT_PROVIDER.VIDEO_TRANSCODER) private videoClient: ClientKafka,
+    @Inject(MESSAGE_BROKER) private messaageBroker: MessageBrokerPort,
   ) {}
 
-  public handle({ videoCreatedEventDto }: VideoCreatedEvent) {
-    this.videoClient.emit(VIDEO_TRANSCODER_PATTERN.TRANSCODE_VIDEO, {
-      key: `TranscodeVideo`,
-      value: JSON.stringify(videoCreatedEventDto),
-    });
+  public async handle({ videoCreatedEventDto }: VideoCreatedEvent) {
+    await this.messaageBroker.publishMessage(
+      'video.transcode',
+      JSON.stringify(videoCreatedEventDto),
+    );
   }
 }
