@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.14.0
- * Query Engine version: 717184b7b35ea05dfa71a3236b7af656013e1e49
+ * Prisma Client JS version: 6.18.0
+ * Query Engine version: 34b5a692b7bd79939a9a2c3ef97d816e749cda2f
  */
 Prisma.prismaVersion = {
-  client: "6.14.0",
-  engine: "717184b7b35ea05dfa71a3236b7af656013e1e49"
+  client: "6.18.0",
+  engine: "34b5a692b7bd79939a9a2c3ef97d816e749cda2f"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -126,7 +126,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/harsh/Files/NestJS/books/apps/comments-aggregator/generated/prisma",
+      "value": "/home/harsh/Files/Development/NestJS/mytube/apps/comments/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -144,20 +144,20 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/harsh/Files/NestJS/books/apps/comments-aggregator/prisma/schema.prisma",
+    "sourceFilePath": "/home/harsh/Files/Development/NestJS/mytube/apps/comments/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../prisma/.env"
   },
   "relativePath": "../../prisma",
-  "clientVersion": "6.14.0",
-  "engineVersion": "717184b7b35ea05dfa71a3236b7af656013e1e49",
+  "clientVersion": "6.18.0",
+  "engineVersion": "34b5a692b7bd79939a9a2c3ef97d816e749cda2f",
   "datasourceNames": [
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

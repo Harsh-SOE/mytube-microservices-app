@@ -51,8 +51,8 @@ WORKDIR /home/node
 
 COPY --from=base /home/node/package.json /home/node/yarn.lock ./
 COPY --from=production-dependencies /home/node/node_modules ./node_modules
-COPY --from=builder /home/node/apps/views/prisma/schema.prisma ./apps/views/prisma/schema.prisma
-COPY --from=builder /home/node/apps/views/generated/prisma ./apps/views/generated/prisma
+COPY --from=builder /home/node/apps/views/prisma ./apps/views/prisma
+COPY --from=builder /home/node/apps/views/generated ./apps/views/generated
 COPY --from=builder /home/node/dist/apps/views ./apps/views
 
 USER root

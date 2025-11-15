@@ -9,7 +9,6 @@ scrape_configs:
             'gateway:3000',
             'users:3000',
             'email:3000',
-            'auth:3000',
             'videos:3000',
             'likes:3000',
           ]

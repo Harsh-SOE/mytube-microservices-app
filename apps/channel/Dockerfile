@@ -48,8 +48,8 @@ ENV NODE_ENV=${NODE_ENV}
 
 COPY --from=base /home/node/package.json /home/node/yarn.lock ./
 COPY --from=production-dependencies /home/node/node_modules ./node_modules
-COPY --from=builder /home/node/apps/channel/prisma/schema.prisma ./apps/channel/prisma/schema.prisma
-COPY --from=builder /home/node/apps/channel/generated/prisma ./apps/channel/generated/prisma
+COPY --from=builder /home/node/apps/channel/prisma ./apps/channel/prisma
+COPY --from=builder /home/node/apps/channel/generated ./apps/channel/generated
 COPY --from=builder /home/node/dist/apps/channel ./apps/channel
 
 USER root
