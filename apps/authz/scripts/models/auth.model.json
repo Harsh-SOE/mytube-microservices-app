@@ -1,0 +1,369 @@
+{
+  "schema_version": "1.1",
+  "type_definitions": [
+    { "type": "user" },
+    {
+      "metadata": {
+        "relations": {
+          "member": { "directly_related_user_types": [{ "type": "user" }] }
+        }
+      },
+      "relations": { "member": { "this": {} } },
+      "type": "group"
+    },
+    {
+      "metadata": {
+        "relations": {
+          "blocked": { "directly_related_user_types": [{ "type": "user" }] },
+          "can_delete_comment": {},
+          "can_delete_video": {},
+          "can_edit_metadata": {},
+          "can_invite_roles": {},
+          "can_replace_video": {},
+          "editor": { "directly_related_user_types": [{ "type": "user" }] },
+          "manager": { "directly_related_user_types": [{ "type": "user" }] },
+          "member": { "directly_related_user_types": [{ "type": "user" }] },
+          "moderator": { "directly_related_user_types": [{ "type": "user" }] },
+          "owner": { "directly_related_user_types": [{ "type": "user" }] },
+          "subscriber": { "directly_related_user_types": [{ "type": "user" }] }
+        }
+      },
+      "relations": {
+        "blocked": { "this": {} },
+        "can_delete_comment": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "moderator" } }
+            ]
+          }
+        },
+        "can_delete_video": { "computedUserset": { "relation": "owner" } },
+        "can_edit_metadata": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "manager" } }
+            ]
+          }
+        },
+        "can_invite_roles": { "computedUserset": { "relation": "owner" } },
+        "can_replace_video": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "editor" } }
+            ]
+          }
+        },
+        "editor": { "this": {} },
+        "manager": { "this": {} },
+        "member": { "this": {} },
+        "moderator": { "this": {} },
+        "owner": { "this": {} },
+        "subscriber": { "this": {} }
+      },
+      "type": "channel"
+    },
+    {
+      "metadata": {
+        "relations": {
+          "blocked": {},
+          "can_delete": {},
+          "can_delete_comment": {},
+          "can_edit_metadata": {},
+          "can_moderate_chat": {},
+          "can_replace_video": {},
+          "can_view": {},
+          "editor": {},
+          "manager": {},
+          "member": {},
+          "moderator": {},
+          "owner": {},
+          "parent": { "directly_related_user_types": [{ "type": "channel" }] },
+          "subscriber": {},
+          "viewer": {
+            "directly_related_user_types": [
+              { "type": "user" },
+              { "type": "user", "wildcard": {} },
+              { "relation": "member", "type": "group" }
+            ]
+          }
+        }
+      },
+      "relations": {
+        "blocked": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "blocked" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "can_delete": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              {
+                "tupleToUserset": {
+                  "computedUserset": { "relation": "owner" },
+                  "tupleset": { "relation": "parent" }
+                }
+              }
+            ]
+          }
+        },
+        "can_delete_comment": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "moderator" } },
+              {
+                "tupleToUserset": {
+                  "computedUserset": { "relation": "moderator" },
+                  "tupleset": { "relation": "parent" }
+                }
+              }
+            ]
+          }
+        },
+        "can_edit_metadata": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "manager" } },
+              {
+                "tupleToUserset": {
+                  "computedUserset": { "relation": "owner" },
+                  "tupleset": { "relation": "parent" }
+                }
+              },
+              {
+                "tupleToUserset": {
+                  "computedUserset": { "relation": "manager" },
+                  "tupleset": { "relation": "parent" }
+                }
+              }
+            ]
+          }
+        },
+        "can_moderate_chat": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "moderator" } },
+              {
+                "tupleToUserset": {
+                  "computedUserset": { "relation": "moderator" },
+                  "tupleset": { "relation": "parent" }
+                }
+              }
+            ]
+          }
+        },
+        "can_replace_video": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "editor" } },
+              {
+                "tupleToUserset": {
+                  "computedUserset": { "relation": "owner" },
+                  "tupleset": { "relation": "parent" }
+                }
+              },
+              {
+                "tupleToUserset": {
+                  "computedUserset": { "relation": "editor" },
+                  "tupleset": { "relation": "parent" }
+                }
+              }
+            ]
+          }
+        },
+        "can_view": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "viewer" } },
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "member" } },
+              { "computedUserset": { "relation": "subscriber" } }
+            ]
+          }
+        },
+        "editor": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "editor" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "manager": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "manager" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "member": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "member" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "moderator": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "moderator" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "owner": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "owner" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "parent": { "this": {} },
+        "subscriber": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "subscriber" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "viewer": { "this": {} }
+      },
+      "type": "video"
+    },
+    {
+      "metadata": {
+        "relations": {
+          "can_chat": {},
+          "can_moderate_chat": {},
+          "can_start_stop": {},
+          "can_view": {},
+          "editor": {},
+          "manager": {},
+          "member": {},
+          "moderator": {},
+          "owner": {},
+          "parent": { "directly_related_user_types": [{ "type": "channel" }] },
+          "subscriber": {},
+          "viewer": {
+            "directly_related_user_types": [
+              { "type": "user" },
+              { "type": "user", "wildcard": {} },
+              { "relation": "member", "type": "group" }
+            ]
+          }
+        }
+      },
+      "relations": {
+        "can_chat": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "moderator" } },
+              { "computedUserset": { "relation": "member" } },
+              { "computedUserset": { "relation": "subscriber" } }
+            ]
+          }
+        },
+        "can_moderate_chat": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "moderator" } }
+            ]
+          }
+        },
+        "can_start_stop": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "manager" } }
+            ]
+          }
+        },
+        "can_view": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "viewer" } },
+              { "computedUserset": { "relation": "owner" } },
+              { "computedUserset": { "relation": "member" } },
+              { "computedUserset": { "relation": "subscriber" } }
+            ]
+          }
+        },
+        "editor": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "editor" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "manager": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "manager" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "member": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "member" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "moderator": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "moderator" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "owner": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "owner" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "parent": { "this": {} },
+        "subscriber": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "subscriber" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "viewer": { "this": {} }
+      },
+      "type": "stream"
+    },
+    {
+      "metadata": {
+        "relations": {
+          "can_delete": {},
+          "can_read": {},
+          "owner": { "directly_related_user_types": [{ "type": "user" }] },
+          "parent": { "directly_related_user_types": [{ "type": "video" }] }
+        }
+      },
+      "relations": {
+        "can_delete": {
+          "union": {
+            "child": [
+              { "computedUserset": { "relation": "owner" } },
+              {
+                "tupleToUserset": {
+                  "computedUserset": { "relation": "can_delete_comment" },
+                  "tupleset": { "relation": "parent" }
+                }
+              }
+            ]
+          }
+        },
+        "can_read": {
+          "tupleToUserset": {
+            "computedUserset": { "relation": "can_view" },
+            "tupleset": { "relation": "parent" }
+          }
+        },
+        "owner": { "this": {} },
+        "parent": { "this": {} }
+      },
+      "type": "comment"
+    }
+  ]
+}

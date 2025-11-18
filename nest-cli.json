@@ -22,6 +22,28 @@
         "watchAssets": true
       }
     },
+    "authz": {
+      "type": "application",
+      "root": "apps/authz",
+      "sourceRoot": "apps/authz/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "webpack": true,
+        "webpackConfigPath": "apps/authz/webpack.config.js",
+        "tsConfigPath": "apps/authz/tsconfig.app.json"
+      }
+    },
+    "channel": {
+      "type": "application",
+      "root": "apps/channel",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/channel/tsconfig.app.json",
+        "assets": ["libs/proto/channel.proto", "libs/proto/health.proto"],
+        "watchAssets": true
+      }
+    },
     "clients": {
       "type": "library",
       "root": "libs/clients",
@@ -85,17 +107,6 @@
       "sourceRoot": "libs/errors/src",
       "compilerOptions": {
         "tsConfigPath": "libs/errors/tsconfig.lib.json"
-      }
-    },
-    "channel": {
-      "type": "application",
-      "root": "apps/channel",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
-      "compilerOptions": {
-        "tsConfigPath": "apps/channel/tsconfig.app.json",
-        "assets": ["libs/proto/channel.proto", "libs/proto/health.proto"],
-        "watchAssets": true
       }
     },
     "infrastructure": {

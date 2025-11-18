@@ -27,11 +27,11 @@ import {
 import { UsersService } from './users.service';
 import { USER_API } from './api';
 
-@UseGuards(GatewayJwtGuard)
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
+  @UseGuards(GatewayJwtGuard)
   @Post(USER_API.PRESIGNED_URL_FOR_AVATAR_FILE)
   getPresignedUrl(
     @Body() FileMetaDataDto: PreSignedUrlRequestDto,
@@ -41,12 +41,15 @@ export class UsersController {
   }
 
   @Post(USER_API.SAVE_USER)
-  async saveUserInDatabase(saveUserProfileDto: SaveUserProfileDto): Promise<{
+  async saveUserInDatabase(
+    @Body() saveUserProfileDto: SaveUserProfileDto,
+  ): Promise<{
     token: string;
   }> {
     return await this.userService.saveUserInDatabase(saveUserProfileDto);
   }
 
+  @UseGuards(GatewayJwtGuard)
   @Patch(USER_API.UPDATE_DETAILS)
   updateUserDetails(
     @Body() updateUserDto: UpdateUserRequestDto,
@@ -55,6 +58,7 @@ export class UsersController {
     return this.userService.updateUserDetails(loggedInUser.id, updateUserDto);
   }
 
+  @UseGuards(GatewayJwtGuard)
   @Delete(USER_API.DELETE_USER)
   deleteUser(
     @User() loggedInUser: UserAuthPayload,
@@ -62,6 +66,7 @@ export class UsersController {
     return this.userService.deleteUser(loggedInUser);
   }
 
+  @UseGuards(GatewayJwtGuard)
   @Get(USER_API.GET_CURRENTLY_LOGGED_IN_USER)
   GetCurrentlySignedInUser(
     @User() loggedInUser: UserAuthPayload,
@@ -69,6 +74,7 @@ export class UsersController {
     return this.userService.getCurrentlyLoggedInUser(loggedInUser.id);
   }
 
+  @UseGuards(GatewayJwtGuard)
   @Get(USER_API.GET_ALL_USERS)
   getAllRegisteredUser(): Promise<FindUserRequestResponse[]> {
     return this.userService.getAllRegisteredUser();

@@ -1,4 +1,5 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 
 import { User } from '@gateway/proxies/auth/decorators';
 import { Auth0ProfileUser } from '@gateway/proxies/auth/types';
@@ -17,11 +18,10 @@ export class AuthController {
 
   @UseGuards(Auth0OAuthGaurd)
   @Get(AUTH_API.AUTH0_REDIRECT)
-  onAuthRedirect(@User() auth0User: Auth0ProfileUser): Promise<{
-    response: string;
-    token: string | undefined;
-    userAuthCred: Auth0ProfileUser;
-  }> {
-    return this.authService.onAuthRedirect(auth0User);
+  onAuthRedirect(
+    @User() auth0User: Auth0ProfileUser,
+    @Res() response: Response,
+  ): Promise<void> {
+    return this.authService.onAuthRedirect(auth0User, response);
   }
 }

@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
@@ -28,11 +29,10 @@ export class AuthService implements OnModuleInit {
     this.userService = this.userClient.getService(USER_SERVICE_NAME);
   }
 
-  async onAuthRedirect(userAuthCredentials: Auth0ProfileUser): Promise<{
-    response: string;
-    token: string | undefined;
-    userAuthCred: Auth0ProfileUser;
-  }> {
+  async onAuthRedirect(
+    userAuthCredentials: Auth0ProfileUser,
+    response: Response,
+  ): Promise<void> {
     this.logger.info(
       `User Auth Credentials are: ${JSON.stringify(userAuthCredentials)}`,
     );
@@ -49,12 +49,26 @@ export class AuthService implements OnModuleInit {
     const foundUser = userFoundResponse.user;
 
     if (!foundUser) {
-      return {
+      this.logger.info(`No User found in user's database...`);
+
+      const cookiePayload = {
         response:
           'Please complete your profile inorder to login to application [STATUS: Signup-SUCCESS]',
         token: undefined,
-        userAuthCred: userAuthCredentials,
+        userAuthCred: {
+          email: userAuthCredentials.email,
+          authId: userAuthCredentials.providerId,
+        },
       };
+      response.cookie('onboarding_info', JSON.stringify(cookiePayload), {
+        httpOnly: false,
+        secure: false,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 1000 * 60 * 5,
+      });
+
+      return response.redirect('http://localhost:4545/onboard');
     }
 
     const authUserPayload: UserAuthPayload = {
@@ -64,10 +78,20 @@ export class AuthService implements OnModuleInit {
       handle: foundUser.handle,
     };
 
-    return {
+    const cookiePayload = {
       response: 'user logged in successfully',
       token: this.jwtService.sign(authUserPayload),
       userAuthCred: userAuthCredentials,
     };
+
+    response.cookie('user_info', JSON.stringify(cookiePayload), {
+      httpOnly: false,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 1000 * 60 * 5,
+    });
+
+    return response.redirect('http://localhost:4545/homepage');
   }
 }

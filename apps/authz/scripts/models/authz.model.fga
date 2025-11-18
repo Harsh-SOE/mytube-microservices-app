@@ -1,0 +1,69 @@
+model
+  schema 1.1
+
+type user
+
+type group
+  relations
+    define member: [user]
+
+type channel
+  relations
+    # direct role assignments on a channel
+    define owner:    [user]
+    define manager:  [user]
+    define editor:   [user]
+    define moderator:[user]
+    define member:   [user]        # paid/paid-tier members
+    define subscriber: [user]      # free subscribers if needed
+    define blocked:  [user]        # banned users for channel-wide ban
+
+    # derived permissions on channel
+    define can_edit_metadata: owner or manager
+    define can_replace_video: owner or editor
+    define can_delete_comment: owner or moderator
+    define can_delete_video: owner
+    define can_invite_roles: owner
+
+type video
+  relations
+    define parent: [channel]
+    define owner: owner from parent
+    define manager: manager from parent
+    define editor: editor from parent
+    define moderator: moderator from parent
+    define member: member from parent
+    define subscriber: subscriber from parent
+    define blocked: blocked from parent
+    define viewer: [user, user:*, group#member]
+
+    define can_view: viewer or owner or member or subscriber
+    define can_edit_metadata: owner or manager or owner from parent or manager from parent
+    define can_replace_video: owner or editor or owner from parent or editor from parent
+    define can_delete: owner or owner from parent
+    define can_delete_comment: owner or moderator or moderator from parent
+    define can_moderate_chat: owner or moderator or moderator from parent
+
+type stream
+  relations
+    define parent: [channel]
+    define owner: owner from parent
+    define manager: manager from parent
+    define editor: editor from parent
+    define moderator: moderator from parent
+    define member: member from parent
+    define subscriber: subscriber from parent
+    define viewer: [user, user:*, group#member]
+
+    define can_view: viewer or owner or member or subscriber
+    define can_chat: owner or moderator or member or subscriber
+    define can_start_stop: owner or manager
+    define can_moderate_chat: owner or moderator
+
+type comment
+  relations
+    define parent: [video]
+    define owner: [user]
+
+    define can_delete: owner or can_delete_comment from parent
+    define can_read: can_view from parent

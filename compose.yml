@@ -422,6 +422,8 @@ services:
         limits:
           cpus: "0.25"
           memory: "512M"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       users:
         condition: service_healthy
@@ -477,6 +479,24 @@ services:
         condition: service_healthy
       redis-cache:
         condition: service_healthy
+
+  authz:
+    image: mytube/authz/production:latest
+    container_name: authz
+    build:
+      context: .
+      dockerfile: apps/authz/Dockerfile
+      target: production
+    env_file:
+      - apps/authz/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - authorization
+    deploy: *service_resources
+    healthcheck: *grpc-healthcheck
 
   users-migrate:
     image: mytube/users/production:latest
