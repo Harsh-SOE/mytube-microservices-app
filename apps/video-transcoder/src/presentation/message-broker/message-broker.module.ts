@@ -13,7 +13,7 @@ import {
   AppConfigService,
 } from '@transcoder/infrastructure/config';
 import { AwsS3StorageAdapter } from '@transcoder/infrastructure/storage/adapters';
-import { FFmpegVideoTranscoderAdapter } from '@transcoder/infrastructure/transcoder/adapters';
+import { FFmpegVideoTranscoderUploaderAdapter } from '@transcoder/infrastructure/transcoder/adapters';
 import { KafkaMessageBrokerAdapter } from '@transcoder/infrastructure/message-broker/adapters';
 import { KafkaMessageHandler } from '@transcoder/infrastructure/message-broker/filter';
 import { WinstonLoggerAdapter } from '@transcoder/infrastructure/logger';
@@ -29,7 +29,10 @@ import { VideoTranscoderController } from './message-broker.controller';
     AppConfigService,
     KafkaMessageHandler,
     { provide: STORAGE_PORT, useClass: AwsS3StorageAdapter },
-    { provide: TRANSCODER_PORT, useClass: FFmpegVideoTranscoderAdapter },
+    {
+      provide: TRANSCODER_PORT,
+      useClass: FFmpegVideoTranscoderUploaderAdapter,
+    },
     { provide: LOGGER_PORT, useClass: WinstonLoggerAdapter },
     { provide: MESSAGE_BROKER, useClass: KafkaMessageBrokerAdapter },
     ...VideoTranscoderCommandHandlers,

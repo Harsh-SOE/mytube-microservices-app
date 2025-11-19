@@ -1,6 +1,6 @@
 FROM node:24-alpine AS base
 
-WORKDIR /home/node
+WORKDIR /@streamforge
 
 RUN apk add --no-cache ffmpeg curl
 
@@ -12,7 +12,7 @@ RUN yarn install --frozen-lockfile --production=false
 
 FROM base AS builder
 
-COPY --from=build-dependencies /home/node/node_modules ./node_modules
+COPY --from=build-dependencies /@streamforge/node_modules ./node_modules
 
 COPY apps/video-transcoder ./apps/video-transcoder
 COPY libs ./libs
@@ -27,9 +27,9 @@ FROM base AS development
 ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=builder /home/node/node_modules ./node_modules
+COPY --from=builder /@streamforge/node_modules ./node_modules
 
-CMD ["yarn", "start:dev", "video-transcoder"]
+ENTRYPOINT [ "apps/video-transcoder/scripts/entrypoint.dev.bash" ]
 
 FROM base AS production-dependencies
 
@@ -38,20 +38,21 @@ RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
-WORKDIR /home/node
+WORKDIR /@streamforge
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=base /home/node/package.json /home/node/yarn.lock ./
-COPY --from=production-dependencies /home/node/node_modules ./node_modules
-COPY --from=builder /home/node/dist/apps/video-transcoder ./apps/video-transcoder
+COPY --from=base /@streamforge/package.json /@streamforge/yarn.lock ./
+COPY --from=production-dependencies /@streamforge/node_modules ./node_modules
+COPY --from=builder /@streamforge/dist/apps/video-transcoder/main.js ./src/main.js
+COPY --from=builder /@streamforge/dist/apps/video-transcoder/scripts/entrypoint.prod.bash ./scripts/entrypoint.prod.bash
 
 USER root
 
-RUN mkdir /home/node/transcoded-videos
-RUN chown -R node:node /home/node/transcoded-videos
+RUN mkdir /@streamforge/transcoded-videos
+RUN chown -R node:node /@streamforge/transcoded-videos
 
 USER node
 
-CMD ["node", "./apps/video-transcoder/src/main.js"]
+CMD ["node", "src/main"]

@@ -1,21 +1,14 @@
 import { Module } from '@nestjs/common';
-import { EmailService } from './email/email.service';
-import { EmailController } from './email/email.controller';
-import { EmailModule } from './email/email.module';
-import { AppConfigModule } from './config/config.module';
-import { MeasureModule } from './measure/measure.module';
-import { LogsModule } from './logs/logs.module';
-import { AppHealthModule } from './health/health.module';
+import { KafkaService } from './presentation/kafka/kafka.service';
+import { KafkaController } from './presentation/kafka/kafka.controller';
+import { KakfaModule } from './presentation/kafka/kafka.module';
+import { AppConfigModule } from './infrastructure/config/config.module';
+import { MeasureModule } from './infrastructure/measure/measure.module';
+import { AppHealthModule } from './infrastructure/health';
 
 @Module({
-  imports: [
-    EmailModule,
-    AppConfigModule,
-    MeasureModule,
-    LogsModule,
-    AppHealthModule,
-  ],
-  providers: [EmailService],
-  controllers: [EmailController],
+  imports: [KakfaModule, AppConfigModule, MeasureModule, AppHealthModule],
+  providers: [KafkaService],
+  controllers: [KafkaController],
 })
 export class AppModule {}

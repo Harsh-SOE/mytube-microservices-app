@@ -1,6 +1,6 @@
 FROM node:24-alpine AS base
 
-WORKDIR /home/node
+WORKDIR /@streamforge
 
 RUN apk add --no-cache curl
 
@@ -8,21 +8,21 @@ COPY package.json yarn.lock ./
 
 FROM base AS build-dependencies
 
-# installs at /home/node/node_modules
+# installs at /@streamforge/node_modules
 
 RUN yarn install --frozen-lockfile --production=false
 
 FROM base AS builder
 
 # file structure of builder:
-  # /home/node:
+  # /@streamforge:
     # apps/api-gateway
     # node_modules
     # libs
     # nest-cli.json
     # tsconfig.json
 
-COPY --from=build-dependencies /home/node/node_modules ./node_modules
+COPY --from=build-dependencies /@streamforge/node_modules ./node_modules
 
 COPY apps/api-gateway ./apps/api-gateway
 COPY libs ./libs
@@ -32,7 +32,7 @@ COPY tsconfig.build.json ./tsconfig.build.json
 
 RUN npx nest build api-gateway
 
-# dist generated at /home/node/dist and contains:
+# dist generated at /@streamforge/dist and contains:
   # apps/api-gateway:
     # src/main.js
     # proto/*
@@ -42,9 +42,11 @@ FROM base AS development
 ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=builder /home/node/node_modules ./node_modules
+COPY --from=builder /@streamforge/node_modules ./node_modules
 
-CMD ["yarn", "start:dev", "api-gateway"]
+RUN chmod +x apps/api-gateway/scripts/entrypoint.dev.bash
+
+CMD ["apps/api-gateway/scripts/entrypoint.dev.bash"]
 
 FROM base AS production-dependencies
 
@@ -52,24 +54,30 @@ RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
-WORKDIR /home/node
+WORKDIR /@streamforge
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
 # file structure of production stage:
-  # /home/node:
+  # /@streamforge:
     # package.json
     # yarn.lock
     # node_modules
-    # apps/api-gateway:
-      # src/main.js
-      # proto
+    # src/main.js
+    # proto
+    # scripts
 
-COPY --from=base /home/node/package.json /home/node/yarn.lock ./
-COPY --from=production-dependencies /home/node/node_modules ./node_modules
-COPY --from=builder /home/node/dist/apps/api-gateway ./apps/api-gateway
+COPY --from=base /@streamforge/package.json /@streamforge/yarn.lock ./
+COPY --from=production-dependencies /@streamforge/node_modules ./node_modules
+COPY --from=builder /@streamforge/dist/apps/api-gateway/main.js ./src/main.js
+COPY --from=builder /@streamforge/dist/apps/api-gateway/proto ./proto
+COPY --from=builder /@streamforge/dist/apps/api-gateway/scripts/entrypoint.prod.bash ./scripts/entrypoint.prod.bash
+
+USER root
+
+RUN chmod +x scripts/entrypoint.prod.bash
 
 USER node
 
-CMD ["node", "apps/api-gateway/src/main.js"]
+CMD ["node", "src/main"]

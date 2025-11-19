@@ -10,8 +10,8 @@ export enum CLOUD_PATTERN {
   PRESIGNED_URL = 'cloud.pre-signed-url',
 }
 
-export enum EMAIL_CLIENT {
-  USER_CREATED = 'email.user-created',
+export enum EVENTS {
+  USER_CREATED_EVENT = 'user-created',
 }
 
 export enum WATCH_CLIENT {

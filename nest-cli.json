@@ -14,11 +14,12 @@
     "api-gateway": {
       "type": "application",
       "root": "apps/api-gateway",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/api-gateway/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
-        "assets": ["libs/proto/*.proto"],
+        "webpack": true,
+        "webpackConfigPath": "apps/api-gateway/webpack.config.js",
         "watchAssets": true
       }
     },
@@ -36,12 +37,13 @@
     "channel": {
       "type": "application",
       "root": "apps/channel",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/channel/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/channel/tsconfig.app.json",
-        "assets": ["libs/proto/channel.proto", "libs/proto/health.proto"],
-        "watchAssets": true
+        "watchAssets": true,
+        "webpack": true,
+        "webpackConfigPath": "apps/channel/webpack.config.js"
       }
     },
     "clients": {
@@ -56,19 +58,13 @@
     "comments": {
       "type": "application",
       "root": "apps/comments",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/comments/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/comments/tsconfig.app.json",
-        "assets": [
-          "libs/proto/comments.proto",
-          "libs/proto/health.proto",
-          {
-            "include": "apps/comments/src/scripts/*.lua",
-            "outDir": "dist/apps"
-          }
-        ],
-        "watchAssets": true
+        "watchAssets": true,
+        "webpack": true,
+        "webpackConfigPath": "apps/comments/webpack.config.js"
       }
     },
     "contracts": {
@@ -92,12 +88,13 @@
     "email": {
       "type": "application",
       "root": "apps/email",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/email/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/email/tsconfig.app.json",
-        "assets": ["libs/proto/email.proto"],
-        "watchAssets": true
+        "watchAssets": true,
+        "webpack": true,
+        "webpackConfigPath": "apps/email/webpack.config.js"
       }
     },
     "errors": {
@@ -121,18 +118,12 @@
     "likes": {
       "type": "application",
       "root": "apps/likes",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/likes/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/likes/tsconfig.app.json",
-        "assets": [
-          "libs/proto/likes.proto",
-          "libs/proto/health.proto",
-          {
-            "include": "apps/likes/src/scripts/*.lua",
-            "outDir": "dist/apps"
-          }
-        ],
+        "webpack": true,
+        "webpackConfigPath": "apps/likes/webpack.config.js",
         "watchAssets": true
       }
     },
@@ -157,17 +148,13 @@
     "saga": {
       "type": "application",
       "root": "apps/saga",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/saga/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/saga/tsconfig.app.json",
-        "assets": [
-          "libs/proto/saga.proto",
-          "libs/proto/auth.proto",
-          "libs/proto/users.proto",
-          "libs/proto/health.proto"
-        ],
-        "watchAssets": true
+        "watchAssets": true,
+        "webpack": true,
+        "webpackConfigPath": "apps/saga/webpack.config.js"
       }
     },
     "testing": {
@@ -182,13 +169,12 @@
     "users": {
       "type": "application",
       "root": "apps/users",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/users/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/users/tsconfig.app.json",
-        "assets": ["libs/proto/users.proto", "libs/proto/health.proto"],
         "webpack": true,
-        "watchAssets": true
+        "webpackConfigPath": "apps/users/webpack.config.js"
       }
     },
     "utils": {
@@ -203,41 +189,35 @@
     "video-transcoder": {
       "type": "application",
       "root": "apps/video-transcoder",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/video-transcoder/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/video-transcoder/tsconfig.app.json",
-        "assets": ["libs/proto/cloud.proto"],
-        "watchAssets": true
+        "watchAssets": true,
+        "webpackConfigPath": "apps/video-transcoder/webpack.config.js"
       }
     },
     "videos": {
       "type": "application",
       "root": "apps/videos",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/videos/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/videos/tsconfig.app.json",
-        "assets": ["libs/proto/videos.proto", "libs/proto/health.proto"],
+        "webpack": true,
+        "webpackConfigPath": "apps/videos/webpack.config.js",
         "watchAssets": true
       }
     },
     "views": {
       "type": "application",
       "root": "apps/views",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "sourceRoot": "apps/views/src",
+      "entryFile": "main",
       "compilerOptions": {
         "tsConfigPath": "apps/views/tsconfig.app.json",
-        "assets": [
-          "libs/proto/views.proto",
-          "libs/proto/health.proto",
-          {
-            "include": "apps/views/src/scripts/*.lua",
-            "outDir": "dist/apps"
-          }
-        ],
         "webpack": true,
+        "webpackConfigPath": "apps/views/webpack.config.js",
         "watchAssets": true
       }
     }

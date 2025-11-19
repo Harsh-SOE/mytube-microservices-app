@@ -1,6 +1,6 @@
 FROM node:24-alpine AS base
 
-WORKDIR /home/node
+WORKDIR /@streamforge
 
 RUN apk add --no-cache curl
 RUN curl -fL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.21/grpc_health_probe-linux-amd64 -o /usr/local/bin/grpc_health_probe
@@ -15,7 +15,7 @@ RUN yarn install --frozen-lockfile --production=false
 
 FROM base AS builder
 
-COPY --from=build-dependencies /home/node/node_modules ./node_modules
+COPY --from=build-dependencies /@streamforge/node_modules ./node_modules
 
 COPY apps/likes ./apps/likes
 COPY libs ./libs
@@ -32,9 +32,11 @@ FROM base AS development
 ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=builder /home/node/node_modules ./node_modules
+COPY --from=builder /@streamforge/node_modules ./node_modules
 
-CMD ["yarn", "start:dev", "likes"]
+RUN chmod +x apps/likes/scripts/entrypoint.dev.bash
+
+CMD ["apps/likes/scripts/entrypoint.dev.bash"]
 
 FROM base AS production-dependencies
 
@@ -42,23 +44,25 @@ RUN yarn install --frozen-lockfile --production=true
 
 FROM base AS production
 
-WORKDIR /home/node
+WORKDIR /@streamforge
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-COPY --from=base /home/node/package.json /home/node/yarn.lock ./
-COPY --from=production-dependencies /home/node/node_modules ./node_modules
-COPY --from=builder /home/node/apps/likes/prisma ./apps/likes/prisma
-COPY --from=builder /home/node/apps/likes/generated ./apps/likes/generated
-COPY --from=builder /home/node/dist/apps/likes ./apps/likes
+COPY --from=base /@streamforge/package.json /@streamforge/yarn.lock ./
+COPY --from=production-dependencies /@streamforge/node_modules ./node_modules
+COPY --from=builder /@streamforge/apps/likes/prisma ./prisma
+COPY --from=builder /@streamforge/apps/likes/generated/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node /.prisma/client/libquery_engine-linux-musl-openssl-3.0.x.so.node
+COPY --from=builder /@streamforge/dist/apps/likes/main.js ./src/main.js
+COPY --from=builder /@streamforge/dist/apps/likes/proto ./proto
+COPY --from=builder /@streamforge/dist/apps/likes/scripts/entrypoint.prod.bash ./scripts/entrypoint.prod.bash
 
 USER root
 
-RUN chown -R node:node /home/node/node_modules/prisma
-RUN chown -R node:node /home/node/apps/likes/generated/prisma
-RUN chown -R node:node /home/node/apps/likes/prisma
+RUN chown -R node:node /@streamforge/node_modules/prisma
+RUN chown -R node:node /@streamforge/prisma
+RUN chmod +x scripts/entrypoint.prod.bash
 
 USER node
 
-CMD ["node", "apps/likes/src/main.js"]
+CMD ["node", "src/main"]

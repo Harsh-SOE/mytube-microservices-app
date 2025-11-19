@@ -54,7 +54,8 @@
       "@users/*": ["apps/users/src/*"],
       "@videos/*": ["apps/videos/src/*"],
       "@views/*": ["apps/views/src/*"],
-      "@authz/*": ["apps/authz/src/*"]
+      "@authz/*": ["apps/authz/src/*"],
+      "@email/*": ["apps/email/src/*"]
     }
   }
 }

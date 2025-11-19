@@ -510,14 +510,7 @@ services:
       - observer
       - users-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/users/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       users-database:
         condition: service_healthy
@@ -565,14 +558,7 @@ services:
       - observer
       - channel-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/channel/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       channel-database:
         condition: service_healthy

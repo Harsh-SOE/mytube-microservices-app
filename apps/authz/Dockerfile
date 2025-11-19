@@ -35,6 +35,8 @@ RUN chmod +x apps/authz/scripts/openfga.bash
 
 ENTRYPOINT [ "apps/authz/scripts/entrypoint.bash" ]
 
+CMD [ "yarn", "start:dev", "authz" ]
+
 FROM base AS production-dependencies
 
 RUN yarn install --frozen-lockfile --production=true
