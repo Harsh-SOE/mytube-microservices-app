@@ -1,3 +1,4 @@
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import session from 'express-session';
 import passport from 'passport';
@@ -11,6 +12,23 @@ async function bootstrap() {
   const configService = app.get(AppConfigService);
 
   app.useGlobalFilters(new GatewayExceptionFilter());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
+
+  app.enableCors({
+    origin: 'http://localhost:4545',
+    credentials: true,
+  });
 
   app.use(
     session({
@@ -28,11 +46,6 @@ async function bootstrap() {
 
   app.use(passport.initialize());
   app.use(passport.session());
-
-  app.enableCors({
-    origin: 'http://localhost:3333',
-    credentials: true,
-  });
 
   await app.listen(configService.PORT, '0.0.0.0');
 }

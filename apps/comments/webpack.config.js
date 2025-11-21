@@ -24,6 +24,10 @@ module.exports = (options, webpack) => {
             from: path.join(__dirname, 'scripts/entrypoint.prod.bash'),
             to: path.join(__dirname, '../../dist/apps/comments/scripts'),
           },
+          {
+            from: path.join(__dirname, 'scripts/comments.lua'),
+            to: path.join(__dirname, '../../dist/apps/comments/scripts'),
+          },
         ],
       }),
     ],

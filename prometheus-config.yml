@@ -10,5 +10,5 @@ scrape_configs:
             'users:3000',
             'email:3000',
             'videos:3000',
-            'likes:3000',
+            'reaction:3000',
           ]

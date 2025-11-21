@@ -115,15 +115,15 @@
         "tsConfigPath": "libs/infrastructure/tsconfig.lib.json"
       }
     },
-    "likes": {
+    "reaction": {
       "type": "application",
-      "root": "apps/likes",
-      "sourceRoot": "apps/likes/src",
+      "root": "apps/reaction",
+      "sourceRoot": "apps/reaction/src",
       "entryFile": "main",
       "compilerOptions": {
-        "tsConfigPath": "apps/likes/tsconfig.app.json",
+        "tsConfigPath": "apps/reaction/tsconfig.app.json",
         "webpack": true,
-        "webpackConfigPath": "apps/likes/webpack.config.js",
+        "webpackConfigPath": "apps/reaction/webpack.config.js",
         "watchAssets": true
       }
     },

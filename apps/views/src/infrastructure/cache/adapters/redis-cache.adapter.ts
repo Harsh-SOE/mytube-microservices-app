@@ -50,7 +50,7 @@ export class ViewCacheAdapter
 
   public onModuleInit() {
     const watchScript = fs.readFileSync(
-      join(__dirname, './scripts/watch.lua'),
+      join(__dirname, '../scripts/watch.lua'),
       'utf8',
     );
 

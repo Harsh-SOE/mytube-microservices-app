@@ -230,7 +230,7 @@ services:
         condition: service_healthy
       video-transcoder:
         condition: service_healthy
-      likes:
+      reaction:
         condition: service_healthy
       views:
         condition: service_healthy
@@ -269,6 +269,7 @@ services:
     networks:
       - observer
       - services
+    user: root
     deploy:
       resources:
         reservations:
@@ -435,7 +436,7 @@ services:
         condition: service_healthy
       views:
         condition: service_healthy
-      likes:
+      reaction:
         condition: service_healthy
       comments:
         condition: service_healthy
@@ -606,14 +607,7 @@ services:
       - observer
       - videos-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/videos/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       videos-database:
         condition: service_healthy
@@ -643,6 +637,8 @@ services:
       retries: 5
     deploy: *service_resources
     depends_on:
+      videos:
+        condition: service_healthy
       kafka:
         condition: service_healthy
       redis-cache:
@@ -668,6 +664,10 @@ services:
     healthcheck: *grpc-healthcheck
     deploy: *service_resources
     depends_on:
+      views-database:
+        condition: service_healthy
+      views-migrate:
+        condition: service_completed_successfully
       kafka:
         condition: service_healthy
       redis-cache:
@@ -685,27 +685,20 @@ services:
       - observer
       - views-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/views/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       views-database:
         condition: service_healthy
 
-  likes:
-    image: mytube/likes/production:latest
-    container_name: likes
+  reaction:
+    image: mytube/reaction/production:latest
+    container_name: reaction
     build:
       context: .
-      dockerfile: apps/likes/Dockerfile
+      dockerfile: apps/reaction/Dockerfile
       target: production
     env_file:
-      - apps/likes/.env
+      - apps/reaction/.env
     environment:
       - KAFKAJS_NO_PARTITIONER_WARNING=1
     networks:
@@ -741,6 +734,10 @@ services:
     healthcheck: *grpc-healthcheck
     deploy: *service_resources
     depends_on:
+      comments-database:
+        condition: service_healthy
+      comments-migrate:
+        condition: service_completed_successfully
       kafka:
         condition: service_healthy
       redis-cache:
@@ -758,14 +755,7 @@ services:
       - observer
       - comments-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/comments/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       comments-database:
         condition: service_healthy

@@ -30,8 +30,11 @@ import { AppConfigService } from './config.service';
         USER_SERVICE_HOST: joi.string().required(),
         USER_SERVICE_PORT: joi.number().required(),
 
-        LIKE_SERVICE_HOST: joi.string().required(),
-        LIKE_SERVICE_PORT: joi.number().required(),
+        CHANNEL_SERVICE_HOST: joi.string().required(),
+        CHANNEL_SERVICE_PORT: joi.number().required(),
+
+        REACTION_SERVICE_HOST: joi.string().required(),
+        REACTION_SERVICE_PORT: joi.number().required(),
 
         VIDEO_SERVICE_HOST: joi.string().required(),
         VIDEO_SERVICE_PORT: joi.number().required(),

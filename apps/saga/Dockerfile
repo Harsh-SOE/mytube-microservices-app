@@ -50,7 +50,7 @@ ENV NODE_ENV=${NODE_ENV}
 COPY --from=base /@streamforge/package.json /@streamforge/yarn.lock ./
 COPY --from=production-dependencies /@streamforge/node_modules ./node_modules
 COPY --from=builder /@streamforge/dist/apps/saga/main.js ./src/main.js
-COPY --from=builder /@streamforge/dist/apps/saga/scripts/entrypoint.prod.bash ./scripts/entrypoint.prod.bash
+COPY --from=builder /@streamforge/dist/apps/saga/scripts ./scripts
 COPY --from=builder /@streamforge/dist/apps/saga/proto ./proto
 
 USER root

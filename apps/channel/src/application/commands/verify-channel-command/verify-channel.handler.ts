@@ -11,7 +11,7 @@ import {
 import { VerifyChannelCommand } from './verify-channel.command';
 
 @CommandHandler(VerifyChannelCommand)
-export class VerifyChannelEventHandler
+export class VerifyChannelHandler
   implements ICommandHandler<VerifyChannelCommand>
 {
   public constructor(

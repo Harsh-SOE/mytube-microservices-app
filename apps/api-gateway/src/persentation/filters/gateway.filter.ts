@@ -18,9 +18,6 @@ export class GatewayExceptionFilter implements ExceptionFilter {
     const httpContext = host.switchToHttp();
     const response = httpContext.getResponse<Response>();
 
-    console.info(`Unknown exception captured`);
-    console.log(exception);
-
     let statusCode = 'Error';
     let timestamp = new Date().toISOString();
     let errorCode: number = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -28,8 +25,6 @@ export class GatewayExceptionFilter implements ExceptionFilter {
 
     switch (true) {
       case isGrpcApplicationError(exception): {
-        console.error(`Grpc exception recieved`, exception);
-
         const errorPayload = getErrorPayload(exception);
         statusCode = errorPayload.statusCode ?? 'UNKNOWN';
         timestamp = errorPayload.timestamp;

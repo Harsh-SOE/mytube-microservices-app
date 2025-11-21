@@ -12,11 +12,14 @@ import {
   ChannelUpdateByIdResponse,
   ChannelVerifyByIdResponse,
   ChannelVerifyByIdDto,
+  GetPresignedUrlDto,
+  GetPreSignedUrlResponse,
 } from '@app/contracts/channel';
 
 import {
   ActivateMonitizationCommand,
   CreateChannelCommand,
+  GeneratePreSignedUrlCommand,
   UpdateChannelCommand,
   VerifyChannelCommand,
 } from '@channel/application/commands';
@@ -28,6 +31,15 @@ export class GrpcService {
     public readonly commandBus: CommandBus,
     public readonly queryBus: QueryBus,
   ) {}
+
+  generatePreSignedUrl(
+    generatePreSignedUrlDto: GetPresignedUrlDto,
+  ): Promise<GetPreSignedUrlResponse> {
+    return this.commandBus.execute<
+      GeneratePreSignedUrlCommand,
+      GetPreSignedUrlResponse
+    >(new GeneratePreSignedUrlCommand(generatePreSignedUrlDto));
+  }
 
   public createChannel(
     channelCreateDto: ChannelCreateDto,

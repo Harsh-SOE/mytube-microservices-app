@@ -5,7 +5,6 @@ import { VideoModule } from './proxies/videos/video.module';
 import { UsersModule } from './proxies/users/users.module';
 import { MeasureModule } from './infrastructure/measure';
 import { AuthModule } from './proxies/auth/auth.module';
-import { LikesModule } from './proxies/likes/likes.module';
 import { WatchModule } from './proxies/views/views.module';
 import { ResponseTimeMiddleware } from './utils/middlewares';
 import { CommentsModule } from './proxies/comments/comments.module';
@@ -13,6 +12,7 @@ import { AppHealthModule } from './infrastructure/health/health.module';
 import { LOGGER_PORT } from './application/ports';
 import { WinstonLoggerAdapter } from './infrastructure/logger';
 import { AppJwtModule } from './infrastructure/jwt/jwt.module';
+import { ReactionModule } from './proxies/reactions/reaction.module';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { AppJwtModule } from './infrastructure/jwt/jwt.module';
     UsersModule,
     MeasureModule,
     AuthModule,
-    LikesModule,
+    ReactionModule,
     WatchModule,
     CommentsModule,
     AppHealthModule,

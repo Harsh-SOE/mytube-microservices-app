@@ -57,12 +57,13 @@ COPY --from=builder /@streamforge/apps/views/prisma ./prisma
 COPY --from=builder /@streamforge/apps/views/generated/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node /.prisma/client/libquery_engine-linux-musl-openssl-3.0.x.so.node
 COPY --from=builder /@streamforge/dist/apps/views/main.js ./src/main.js
 COPY --from=builder /@streamforge/dist/apps/views/proto ./proto
-COPY --from=builder /@streamforge/dist/apps/views/scripts ./src/scripts
+COPY --from=builder /@streamforge/dist/apps/views/scripts ./scripts
 
 USER root
 
 RUN chown -R node:node /@streamforge/node_modules/prisma
 RUN chown -R node:node /@streamforge/prisma
+RUN chmod +x scripts/entrypoint.prod.bash
 
 USER node
 

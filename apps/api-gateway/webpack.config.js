@@ -2,7 +2,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 module.exports = (options, webpack) => {
-  console.log(`Copying files`);
   return {
     ...options,
     plugins: [
@@ -34,7 +33,7 @@ module.exports = (options, webpack) => {
             to: path.join(__dirname, '../../dist/apps/api-gateway/proto'),
           },
           {
-            from: path.join(__dirname, 'proto/likes.proto'),
+            from: path.join(__dirname, 'proto/reaction.proto'),
             to: path.join(__dirname, '../../dist/apps/api-gateway/proto'),
           },
           {

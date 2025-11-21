@@ -5,7 +5,7 @@ SERVICES = {
   'users': './apps/users',
   'videos': './apps/videos',
   'email': './apps/email',
-  'likes': './apps/likes',
+  'reaction': './apps/reaction',
   'video-transcoder': './apps/video-transcoder',
   'saga': './apps/saga',
   'views': './apps/views',

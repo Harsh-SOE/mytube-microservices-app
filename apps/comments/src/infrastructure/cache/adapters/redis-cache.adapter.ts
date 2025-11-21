@@ -45,7 +45,7 @@ export class RedisCacheAdapter implements CommentCachePort, OnModuleInit {
 
   public onModuleInit() {
     const commentVideoScript = readFileSync(
-      join(__dirname, './scripts/comments.lua'),
+      join(__dirname, '../scripts/comments.lua'),
       'utf-8',
     );
 

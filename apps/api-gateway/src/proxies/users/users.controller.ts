@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  Version,
 } from '@nestjs/common';
 
 import { UserAuthPayload } from '@app/contracts/auth';
@@ -15,7 +16,7 @@ import { User } from '@gateway/proxies/auth/decorators';
 
 import {
   PreSignedUrlRequestDto,
-  SaveUserProfileDto,
+  CompleteUserProfileDto,
   UpdateUserRequestDto,
 } from './request';
 import {
@@ -25,14 +26,15 @@ import {
   UpdatedUserRequestResponse,
 } from './response';
 import { UsersService } from './users.service';
-import { USER_API } from './api';
+import { USER_API, USER_API_VERSION } from './api';
 
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
   @UseGuards(GatewayJwtGuard)
-  @Post(USER_API.PRESIGNED_URL_FOR_AVATAR_FILE)
+  @Post(USER_API.PRESIGNED_URL_AVATAR)
+  @Version(USER_API_VERSION.V1)
   getPresignedUrl(
     @Body() FileMetaDataDto: PreSignedUrlRequestDto,
     @User('id') userId: string,
@@ -40,9 +42,10 @@ export class UsersController {
     return this.userService.getPresignedUploadUrl(FileMetaDataDto, userId);
   }
 
-  @Post(USER_API.SAVE_USER)
+  @Post(USER_API.COMPLETE_PROFILE)
+  @Version(USER_API_VERSION.V1)
   async saveUserInDatabase(
-    @Body() saveUserProfileDto: SaveUserProfileDto,
+    @Body() saveUserProfileDto: CompleteUserProfileDto,
   ): Promise<{
     token: string;
   }> {
@@ -51,6 +54,7 @@ export class UsersController {
 
   @UseGuards(GatewayJwtGuard)
   @Patch(USER_API.UPDATE_DETAILS)
+  @Version(USER_API_VERSION.V1)
   updateUserDetails(
     @Body() updateUserDto: UpdateUserRequestDto,
     @User() loggedInUser: UserAuthPayload,
@@ -60,6 +64,7 @@ export class UsersController {
 
   @UseGuards(GatewayJwtGuard)
   @Delete(USER_API.DELETE_USER)
+  @Version(USER_API_VERSION.V1)
   deleteUser(
     @User() loggedInUser: UserAuthPayload,
   ): Promise<DeleteUserRequestResponse> {
@@ -68,6 +73,7 @@ export class UsersController {
 
   @UseGuards(GatewayJwtGuard)
   @Get(USER_API.GET_CURRENTLY_LOGGED_IN_USER)
+  @Version(USER_API_VERSION.V1)
   GetCurrentlySignedInUser(
     @User() loggedInUser: UserAuthPayload,
   ): Promise<FindUserRequestResponse> {
@@ -76,6 +82,7 @@ export class UsersController {
 
   @UseGuards(GatewayJwtGuard)
   @Get(USER_API.GET_ALL_USERS)
+  @Version(USER_API_VERSION.V1)
   getAllRegisteredUser(): Promise<FindUserRequestResponse[]> {
     return this.userService.getAllRegisteredUser();
   }

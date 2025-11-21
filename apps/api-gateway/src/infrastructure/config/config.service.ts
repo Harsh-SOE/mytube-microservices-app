@@ -5,11 +5,12 @@ import { JwtModuleOptions } from '@nestjs/jwt';
 import { join } from 'path';
 
 import { USER_PACKAGE_NAME } from '@app/contracts/users';
-import { LIKE_PACKAGE_NAME } from '@app/contracts/likes';
 import { VIDEO_PACKAGE_NAME } from '@app/contracts/videos';
 import { SAGA_PACKAGE_NAME } from '@app/contracts/saga';
 import { VIEWS_PACKAGE_NAME } from '@app/contracts/views';
 import { COMMENT_PACKAGE_NAME } from '@app/contracts/comments';
+import { CHANNEL_PACKAGE_NAME } from '@app/contracts/channel';
+import { REACTION_PACKAGE_NAME } from '@app/contracts/reaction';
 
 @Injectable()
 export class AppConfigService {
@@ -43,12 +44,20 @@ export class AppConfigService {
     return this.configService.getOrThrow<string>('USER_SERVICE_HOST');
   }
 
-  get LIKE_SERVICE_PORT() {
-    return this.configService.getOrThrow<number>('LIKE_SERVICE_PORT');
+  get CHANNEL_SERVICE_PORT() {
+    return this.configService.getOrThrow<number>('CHANNEL_SERVICE_PORT');
   }
 
-  get LIKE_SERVICE_HOST() {
-    return this.configService.getOrThrow<string>('LIKE_SERVICE_HOST');
+  get CHANNEL_SERVICE_HOST() {
+    return this.configService.getOrThrow<string>('CHANNEL_SERVICE_HOST');
+  }
+
+  get REACTION_SERVICE_PORT() {
+    return this.configService.getOrThrow<number>('REACTION_SERVICE_PORT');
+  }
+
+  get REACTION_SERVICE_HOST() {
+    return this.configService.getOrThrow<string>('REACTION_SERVICE_HOST');
   }
 
   get VIDEO_SERVICE_PORT() {
@@ -126,13 +135,13 @@ export class AppConfigService {
     return options;
   }
 
-  get LIKE_SERVICE_OPTIONS(): GrpcOptions {
+  get REACTION_SERVICE_OPTIONS(): GrpcOptions {
     return {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../proto/likes.proto'),
-        package: LIKE_PACKAGE_NAME,
-        url: `${this.LIKE_SERVICE_HOST}:${this.LIKE_SERVICE_PORT}`,
+        protoPath: join(__dirname, '../proto/reaction.proto'),
+        package: REACTION_PACKAGE_NAME,
+        url: `${this.REACTION_SERVICE_HOST}:${this.REACTION_SERVICE_PORT}`,
       },
     };
   }
@@ -155,6 +164,17 @@ export class AppConfigService {
         protoPath: join(__dirname, '../proto/users.proto'),
         package: USER_PACKAGE_NAME,
         url: `${this.USER_SERVICE_HOST}:${this.USER_SERVICE_PORT}`,
+      },
+    };
+  }
+
+  get CHANNEL_SERVICE_OPTIONS(): GrpcOptions {
+    return {
+      transport: Transport.GRPC,
+      options: {
+        protoPath: join(__dirname, '../proto/channel.proto'),
+        package: CHANNEL_PACKAGE_NAME,
+        url: `${this.CHANNEL_SERVICE_HOST}:${this.CHANNEL_SERVICE_PORT}`,
       },
     };
   }

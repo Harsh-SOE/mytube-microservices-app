@@ -1,8 +1,12 @@
 export enum USER_API {
-  PRESIGNED_URL_FOR_AVATAR_FILE = 'presigned-url-avatar-file',
-  SAVE_USER = 'profile',
-  UPDATE_DETAILS = 'details',
-  DELETE_USER = 'unregister',
+  PRESIGNED_URL_AVATAR = 'avatar/presign',
+  COMPLETE_PROFILE = 'profile/complete',
+  UPDATE_DETAILS = 'profile/details',
+  DELETE_USER = 'me/unregister',
   GET_CURRENTLY_LOGGED_IN_USER = 'me',
-  GET_ALL_USERS = 'all',
+  GET_ALL_USERS = '',
+}
+export enum USER_API_VERSION {
+  V1 = '1',
+  V2 = '2',
 }

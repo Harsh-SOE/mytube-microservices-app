@@ -13,7 +13,7 @@ import { Counter } from 'prom-client';
 import { firstValueFrom } from 'rxjs';
 
 import { USER_SERVICE_NAME, UserServiceClient } from '@app/contracts/users';
-import { CLIENT_PROVIDER, WINSTON_LOGGER } from '@app/clients/constant';
+import { CLIENT_PROVIDER } from '@app/clients/constant';
 import { UserAuthPayload } from '@app/contracts/auth';
 
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
@@ -21,7 +21,7 @@ import { LOGGER_PORT, LoggerPort } from '@gateway/application/ports';
 
 import {
   PreSignedUrlRequestDto,
-  SaveUserProfileDto,
+  CompleteUserProfileDto,
   UpdateUserRequestDto,
 } from './request';
 import {
@@ -59,7 +59,7 @@ export class UsersService implements OnModuleInit {
     return await firstValueFrom(result$);
   }
 
-  async saveUserInDatabase(saveUserProfileDto: SaveUserProfileDto) {
+  async saveUserInDatabase(saveUserProfileDto: CompleteUserProfileDto) {
     const response$ = this.userService.createProfile({
       authId: saveUserProfileDto.authId,
       email: saveUserProfileDto.email,

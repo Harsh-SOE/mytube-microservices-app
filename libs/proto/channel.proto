@@ -1,6 +1,11 @@
 syntax = "proto3";
 package Channel;
 
+message GetPresignedUrlDto {
+  optional string fileName = 1;
+  string userId = 2;
+}
+
 message ChannelCreateDto {
   string userId = 1;
   optional string channelBio = 3;
@@ -25,6 +30,11 @@ message ChannelUpdateByIdDto {
 
 message ChannelVerifyByIdDto {
   string id = 1;
+}
+
+message GetPreSignedUrlResponse {
+  string response = 1;
+  string fileIdentifier = 2;
 }
 
 message ChannelCreatedResponse {
@@ -55,6 +65,7 @@ message ChannelVerifyByIdResponse {
 }
 
 service ChannelService {
+  rpc getPresignedUrlForFileUpload(GetPresignedUrlDto) returns (GetPreSignedUrlResponse) {}
   rpc createChannel(ChannelCreateDto) returns (ChannelCreatedResponse) {}
   rpc activateMonitization(ChannelActivateMonitizationDto) returns (ChannelMonitizationActivatedResponse) {}
   rpc findChannelById(ChannelFindByIdDto) returns (ChannelFindByIdResponse) {}

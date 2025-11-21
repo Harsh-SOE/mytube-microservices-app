@@ -14,6 +14,8 @@ import {
   ChannelUpdateByIdResponse,
   ChannelVerifyByIdResponse,
   ChannelVerifyByIdDto,
+  GetPresignedUrlDto,
+  GetPreSignedUrlResponse,
 } from '@app/contracts/channel';
 
 import { GrpcAppExceptionFilter } from '@app/utils';
@@ -25,6 +27,15 @@ import { GrpcService } from './grpc.service';
 @ChannelServiceControllerMethods()
 export class GrpcController implements ChannelServiceController {
   constructor(private readonly grpcService: GrpcService) {}
+
+  getPresignedUrlForFileUpload(
+    getPresignedUrlDto: GetPresignedUrlDto,
+  ):
+    | Promise<GetPreSignedUrlResponse>
+    | Observable<GetPreSignedUrlResponse>
+    | GetPreSignedUrlResponse {
+    return this.grpcService.generatePreSignedUrl(getPresignedUrlDto);
+  }
 
   createChannel(
     channelCreateDto: ChannelCreateDto,

@@ -10,6 +10,11 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "Channel";
 
+export interface GetPresignedUrlDto {
+  fileName?: string | undefined;
+  userId: string;
+}
+
 export interface ChannelCreateDto {
   userId: string;
   channelBio?: string | undefined;
@@ -34,6 +39,11 @@ export interface ChannelUpdateByIdDto {
 
 export interface ChannelVerifyByIdDto {
   id: string;
+}
+
+export interface GetPreSignedUrlResponse {
+  response: string;
+  fileIdentifier: string;
 }
 
 export interface ChannelCreatedResponse {
@@ -66,6 +76,8 @@ export interface ChannelVerifyByIdResponse {
 export const CHANNEL_PACKAGE_NAME = "Channel";
 
 export interface ChannelServiceClient {
+  getPresignedUrlForFileUpload(request: GetPresignedUrlDto): Observable<GetPreSignedUrlResponse>;
+
   createChannel(request: ChannelCreateDto): Observable<ChannelCreatedResponse>;
 
   activateMonitization(request: ChannelActivateMonitizationDto): Observable<ChannelMonitizationActivatedResponse>;
@@ -78,6 +90,10 @@ export interface ChannelServiceClient {
 }
 
 export interface ChannelServiceController {
+  getPresignedUrlForFileUpload(
+    request: GetPresignedUrlDto,
+  ): Promise<GetPreSignedUrlResponse> | Observable<GetPreSignedUrlResponse> | GetPreSignedUrlResponse;
+
   createChannel(
     request: ChannelCreateDto,
   ): Promise<ChannelCreatedResponse> | Observable<ChannelCreatedResponse> | ChannelCreatedResponse;
@@ -105,6 +121,7 @@ export interface ChannelServiceController {
 export function ChannelServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
+      "getPresignedUrlForFileUpload",
       "createChannel",
       "activateMonitization",
       "findChannelById",

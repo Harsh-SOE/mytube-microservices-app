@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  Version,
 } from '@nestjs/common';
 
 import { UserAuthPayload } from '@app/contracts/auth';
@@ -25,7 +26,7 @@ import {
   PreSignedUrlRequestResponse,
 } from './response';
 import { VideoService } from './video.service';
-import { VIDEO_API } from './api';
+import { VIDEO_API, VIDEO_API_VERSION } from './api';
 
 @Controller('videos')
 @UseGuards(GatewayJwtGuard)
@@ -33,6 +34,7 @@ export class VideoController {
   constructor(private videoService: VideoService) {}
 
   @Post(VIDEO_API.PRESIGNED_URL_FOR_VIDEO_FILE)
+  @Version(VIDEO_API_VERSION.V1)
   getPresignedUrl(
     @Body() FileMetaDataDto: PreSignedUrlRequestDto,
     @User('id') userId: string,
@@ -41,6 +43,7 @@ export class VideoController {
   }
 
   @Get(VIDEO_API.FIND_A_VIDEO)
+  @Version(VIDEO_API_VERSION.V1)
   async findOneVideo(
     @Param('id') id: string,
   ): Promise<FoundVideoRequestResponse> {
@@ -49,6 +52,7 @@ export class VideoController {
   }
 
   @Post(VIDEO_API.PUBLISH_VIDEO)
+  @Version(VIDEO_API_VERSION.V1)
   createVideo(
     @Body() createBookDto: CreateVideoRequestDto,
     @User() user: UserAuthPayload,
@@ -57,6 +61,7 @@ export class VideoController {
   }
 
   @Patch(VIDEO_API.UPDATE_A_VIDEO)
+  @Version(VIDEO_API_VERSION.V1)
   updateVideo(
     @Body() videoUpdateDto: UpdateVideoRequestDto,
     @Param('id') videoId: string,
