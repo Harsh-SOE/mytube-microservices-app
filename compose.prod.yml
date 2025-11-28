@@ -130,6 +130,78 @@ services:
     deploy: *postgres-resources
     logging: *logging
 
+  subscribe-database:
+    image: postgres:latest
+    container_name: subscribe-database
+    env_file:
+      - apps/subscribe/.env
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: subscribe
+    ports:
+      - 5439:5432
+    volumes:
+      - subscribe-database-volume:/var/lib/postgresql
+    networks:
+      - subscribe-database-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U harsh -d subscribe"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy: *postgres-resources
+    logging: *logging
+
+  playlist-database:
+    image: postgres:latest
+    container_name: playlist-database
+    env_file:
+      - apps/playlist/.env
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: playlist
+    ports:
+      - 5440:5432
+    volumes:
+      - playlist-database-volume:/var/lib/postgresql
+    networks:
+      - playlist-database-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U harsh -d playlist"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy: *postgres-resources
+    logging: *logging
+
+  history-database:
+    image: postgres:latest
+    container_name: history-database
+    env_file:
+      - apps/history/.env
+    environment:
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: harsh123
+      POSTGRES_DB: history
+    ports:
+      - 5441:5432
+    volumes:
+      - history-database-volume:/var/lib/postgresql
+    networks:
+      - history-database-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U harsh -d history"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy: *postgres-resources
+    logging: *logging
+
   #-------------------------------------------------------------------------------------------------------------#
   #                                            MESSAGE BROKER                                                   #
   #-------------------------------------------------------------------------------------------------------------#
@@ -237,8 +309,6 @@ services:
       comments:
         condition: service_healthy
       email:
-        condition: service_healthy
-      saga:
         condition: service_healthy
 
   grafana:
@@ -398,7 +468,6 @@ services:
     build:
       context: .
       dockerfile: apps/api-gateway/Dockerfile
-      target: production
     env_file:
       - apps/api-gateway/.env
     ports:
@@ -414,7 +483,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 1m
     deploy: &service_resources
       resources:
         reservations:
@@ -442,8 +511,6 @@ services:
         condition: service_healthy
       email:
         condition: service_healthy
-      saga:
-        condition: service_healthy
 
   users:
     image: mytube/users/production:latest
@@ -451,7 +518,6 @@ services:
     build:
       context: .
       dockerfile: apps/users/Dockerfile
-      target: production
     env_file:
       - apps/users/.env
     environment:
@@ -466,8 +532,8 @@ services:
       test: ["CMD", "grpc_health_probe", "-addr=:5000"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 15s
+      retries: 12
+      start_period: 180s
     deploy: *service_resources
     depends_on:
       users-database:
@@ -487,7 +553,6 @@ services:
     build:
       context: .
       dockerfile: apps/authz/Dockerfile
-      target: production
     env_file:
       - apps/authz/.env
     networks:
@@ -529,7 +594,6 @@ services:
     build:
       context: .
       dockerfile: apps/channel/Dockerfile
-      target: production
     env_file:
       - apps/channel/.env
     environment:
@@ -560,7 +624,6 @@ services:
     build:
       context: .
       dockerfile: apps/channel/Dockerfile
-      target: production
     env_file:
       - apps/channel/.env
     networks:
@@ -588,7 +651,6 @@ services:
     build:
       context: .
       dockerfile: apps/videos/Dockerfile
-      target: production
     env_file:
       - apps/videos/.env
     environment:
@@ -643,7 +705,6 @@ services:
     build:
       context: .
       dockerfile: apps/video-transcoder/Dockerfile
-      target: production
     env_file:
       - apps/video-transcoder/.env
     environment:
@@ -659,7 +720,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 12
+      start_period: 180s
     deploy: *service_resources
     depends_on:
       videos:
@@ -675,7 +737,6 @@ services:
     build:
       context: .
       dockerfile: apps/views/Dockerfile
-      target: production
     env_file:
       - apps/views/.env
     environment:
@@ -728,7 +789,6 @@ services:
     build:
       context: .
       dockerfile: apps/reaction/Dockerfile
-      target: production
     env_file:
       - apps/reaction/.env
     environment:
@@ -752,7 +812,6 @@ services:
     build:
       context: .
       dockerfile: apps/comments/Dockerfile
-      target: production
     env_file:
       - apps/comments/.env
     environment:
@@ -799,13 +858,168 @@ services:
       comments-database:
         condition: service_healthy
 
+  playlist:
+    image: mytube/playlist/production:latest
+    container_name: playlist
+    build:
+      context: .
+      dockerfile: apps/playlist/Dockerfile
+    env_file:
+      - apps/playlist/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - observer
+      - message-broker
+      - playlist-database-network
+    healthcheck: *grpc-healthcheck
+    deploy: *service_resources
+    depends_on:
+      playlist-database:
+        condition: service_healthy
+      playlist-migrate:
+        condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  playlist-migrate:
+    image: mytube/playlist/production:latest
+    container_name: playlist-database-migrate
+    env_file:
+      - apps/playlist/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - playlist-database-network
+    entrypoint:
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "apps/playlist/prisma/schema.prisma",
+      ]
+    depends_on:
+      playlist-database:
+        condition: service_healthy
+
+  subscribe:
+    image: mytube/subscribe/production:latest
+    container_name: subscribe
+    build:
+      context: .
+      dockerfile: apps/subscribe/Dockerfile
+    env_file:
+      - apps/subscribe/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - observer
+      - message-broker
+      - subscribe-database-network
+    healthcheck: *grpc-healthcheck
+    deploy: *service_resources
+    depends_on:
+      subscribe-database:
+        condition: service_healthy
+      subscribe-migrate:
+        condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  subscribe-migrate:
+    image: mytube/subscribe/production:latest
+    container_name: subscribe-database-migrate
+    env_file:
+      - apps/subscribe/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - subscribe-database-network
+    entrypoint:
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "apps/subscribe/prisma/schema.prisma",
+      ]
+    depends_on:
+      subscribe-database:
+        condition: service_healthy
+
+  history:
+    image: mytube/history/production:latest
+    container_name: history
+    build:
+      context: .
+      dockerfile: apps/history/Dockerfile
+    env_file:
+      - apps/history/.env
+    environment:
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    networks:
+      - services
+      - cache
+      - observer
+      - message-broker
+      - history-database-network
+    healthcheck: *grpc-healthcheck
+    deploy: *service_resources
+    depends_on:
+      history-database:
+        condition: service_healthy
+      history-migrate:
+        condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  history-migrate:
+    image: mytube/history/production:latest
+    container_name: history-database-migrate
+    env_file:
+      - apps/history/.env
+    networks:
+      - services
+      - cache
+      - message-broker
+      - observer
+      - history-database-network
+    entrypoint:
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "apps/history/prisma/schema.prisma",
+      ]
+    depends_on:
+      history-database:
+        condition: service_healthy
+
   email:
     image: mytube/email/production:latest
     container_name: email
     build:
       context: .
       dockerfile: apps/email/Dockerfile
-      target: production
     env_file:
       - apps/email/.env
     environment:
@@ -821,25 +1035,6 @@ services:
       kafka:
         condition: service_healthy
 
-  saga:
-    image: mytube/saga/production:latest
-    container_name: saga
-    build:
-      context: .
-      dockerfile: apps/saga/Dockerfile
-      target: production
-    env_file:
-      - apps/saga/.env
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    networks:
-      - services
-      - cache
-      - message-broker
-      - observer
-    healthcheck: *grpc-healthcheck
-    deploy: *service_resources
-
 #-------------------------------------------------------------------------------------------------------------#
 #                                                  VOLUMES                                                    #
 #-------------------------------------------------------------------------------------------------------------#
@@ -853,6 +1048,9 @@ volumes:
   views-database-volume: {}
   comments-database-volume: {}
   channel-database-volume: {}
+  subscribe-database-volume: {}
+  playlist-database-volume: {}
+  history-database-volume: {}
 
 #-------------------------------------------------------------------------------------------------------------#
 #                                                 NETWORKS                                                    #
@@ -869,3 +1067,6 @@ networks:
   channel-database-network: {}
   views-database-network: {}
   comments-database-network: {}
+  subscribe-database-network: {}
+  playlist-database-network: {}
+  history-database-network: {}

@@ -1,4 +1,16 @@
-docker_compose('compose.yml')
+# MODE = "development" or "production"
+MODE = os.getenv("MODE", "development")
+
+
+# -----------------------------------------
+# Choose the docker compose file
+# -----------------------------------------
+if MODE == "production":
+    docker_compose('compose.prod.yml')
+    print('Starting App in production mode...')
+else:
+    docker_compose('compose.dev.yml')
+    print('Starting App in development mode...')
 
 SERVICES = {
   'users': './apps/users',
@@ -6,14 +18,19 @@ SERVICES = {
   'email': './apps/email',
   'reaction': './apps/reaction',
   'video-transcoder': './apps/video-transcoder',
-  'saga': './apps/saga',
   'views': './apps/views',
   'comments': './apps/comments',
   'channel': './apps/channel',
   'gateway': './apps/api-gateway',
+  'history': './apps/history',
+  'subscribe': './apps/subscribe',
+  'playlist': './apps/playlist',
 }
 
-def start_services(name, rel_path):
+# -----------------------------------------
+# Build fns
+# -----------------------------------------
+def start_services_development(name, rel_path):
     image_name = "mytube/" + name + "/development"
 
     prisma_generate_command = 'npx prisma generate --schema apps/' + name + '/prisma/schema.prisma'
@@ -32,5 +49,21 @@ def start_services(name, rel_path):
         ]
     )
 
+def start_services_production(name, rel_path):
+    image_name = "mytube/" + name + "/production"
+
+    docker_build(
+        ref=image_name,
+        context='.',
+        dockerfile=rel_path + "/Dockerfile",
+        target="production"
+    )
+
+# -----------------------------------------
+# Start all services
+# -----------------------------------------
 for name, path in SERVICES.items():
-    start_services(name, path)
+    if MODE == "production":
+        start_services_production(name, path)
+    else:
+        start_services_development(name, path)
