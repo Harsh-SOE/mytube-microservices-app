@@ -11,6 +11,15 @@
   "monorepo": true,
   "root": "apps/api-gateway",
   "projects": {
+    "analytics": {
+      "type": "application",
+      "root": "apps/analytics",
+      "entryFile": "main",
+      "sourceRoot": "apps/analytics/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/analytics/tsconfig.app.json"
+      }
+    },
     "api-gateway": {
       "type": "application",
       "root": "apps/api-gateway",
@@ -106,6 +115,18 @@
         "tsConfigPath": "libs/errors/tsconfig.lib.json"
       }
     },
+    "history": {
+      "type": "application",
+      "root": "apps/history",
+      "entryFile": "main",
+      "sourceRoot": "apps/history/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/history/tsconfig.app.json",
+        "webpack": true,
+        "webpackConfigPath": "apps/history/webpack.config.js",
+        "watchAssets": true
+      }
+    },
     "infrastructure": {
       "type": "library",
       "root": "libs/infrastructure",
@@ -113,6 +134,36 @@
       "sourceRoot": "libs/infrastructure/src",
       "compilerOptions": {
         "tsConfigPath": "libs/infrastructure/tsconfig.lib.json"
+      }
+    },
+    "observable-stream": {
+      "type": "library",
+      "root": "libs/observable-stream",
+      "entryFile": "index",
+      "sourceRoot": "libs/observable-stream/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/observable-stream/tsconfig.lib.json"
+      }
+    },
+    "playlist": {
+      "type": "application",
+      "root": "apps/playlist",
+      "entryFile": "main",
+      "sourceRoot": "apps/playlist/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/playlist/tsconfig.app.json",
+        "webpack": true,
+        "webpackConfigPath": "apps/playlist/webpack.config.js",
+        "watchAssets": true
+      }
+    },
+    "proto": {
+      "type": "library",
+      "root": "libs/proto",
+      "entryFile": "index",
+      "sourceRoot": "libs/proto/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/proto/tsconfig.lib.json"
       }
     },
     "reaction": {
@@ -127,24 +178,6 @@
         "watchAssets": true
       }
     },
-    "observable-stream": {
-      "type": "library",
-      "root": "libs/observable-stream",
-      "entryFile": "index",
-      "sourceRoot": "libs/observable-stream/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/observable-stream/tsconfig.lib.json"
-      }
-    },
-    "proto": {
-      "type": "library",
-      "root": "libs/proto",
-      "entryFile": "index",
-      "sourceRoot": "libs/proto/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/proto/tsconfig.lib.json"
-      }
-    },
     "saga": {
       "type": "application",
       "root": "apps/saga",
@@ -155,6 +188,18 @@
         "watchAssets": true,
         "webpack": true,
         "webpackConfigPath": "apps/saga/webpack.config.js"
+      }
+    },
+    "subscribe": {
+      "type": "application",
+      "root": "apps/subscribe",
+      "entryFile": "main",
+      "sourceRoot": "apps/subscribe/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/subscribe/tsconfig.app.json",
+        "watchAssets": true,
+        "webpack": true,
+        "webpackConfigPath": "apps/subscribe/webpack.config.js"
       }
     },
     "testing": {

@@ -38,11 +38,12 @@
       "@app/utils": ["libs/utils/src"],
       "@app/utils/*": ["libs/utils/src/*"],
       "@auth/*": ["apps/auth/src/*"],
+      "@authz/*": ["apps/authz/src/*"],
       "@channel/*": ["apps/channel/src/*"],
       "@cloud/*": ["apps/cloud/src/*"],
       "@comments/*": ["apps/comments/src/*"],
+      "@email/*": ["apps/email/src/*"],
       "@gateway/*": ["apps/api-gateway/src/*"],
-      "@reaction/*": ["apps/reaction/src/*"],
       "@peristance/channel": ["apps/channel/generated/prisma"],
       "@peristance/comments": ["apps/comments/generated/prisma"],
       "@peristance/reaction": ["apps/reaction/generated/prisma"],
@@ -50,12 +51,14 @@
       "@peristance/videos": ["apps/videos/generated/prisma"],
       "@persistance/auth": ["apps/auth/generated/prisma"],
       "@persistance/views": ["apps/views/generated/prisma"],
+      "@reaction/*": ["apps/reaction/src/*"],
       "@transcoder/*": ["apps/video-transcoder/src/*"],
       "@users/*": ["apps/users/src/*"],
       "@videos/*": ["apps/videos/src/*"],
       "@views/*": ["apps/views/src/*"],
-      "@authz/*": ["apps/authz/src/*"],
-      "@email/*": ["apps/email/src/*"]
+      "@subscribe/*": ["apps/subscribe/src/*"],
+      "@playlist/*": ["apps/playlist/src/*"],
+      "@history/*": ["apps/history/src/*"]
     }
   }
 }
