@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 import {
@@ -10,8 +10,10 @@ import {
 } from '@app/contracts/authz';
 
 import { GrpcService } from './gprc.service';
+import { GrpcFilter } from '../filter';
 
-@Controller('gprc')
+@Controller('authz')
+@UseFilters(GrpcFilter)
 export class GrpcController implements AuthZServiceController {
   constructor(private readonly grpcService: GrpcService) {}
   checkRelation(

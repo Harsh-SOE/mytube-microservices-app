@@ -165,6 +165,7 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
+      "^@app/cache(|/.*)$": "<rootDir>/libs/cache/src/$1",
       "^@app/clients(|/.*)$": "<rootDir>/libs/clients/src/$1",
       "^@app/contracts(|/.*)$": "<rootDir>/libs/contracts/src/$1",
       "^@app/counters(|/.*)$": "<rootDir>/libs/counters/src/$1",

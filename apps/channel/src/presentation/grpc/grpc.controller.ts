@@ -19,14 +19,13 @@ import {
   ChannelFoundResponse,
 } from '@app/contracts/channel';
 
-import { GrpcAppExceptionFilter } from '@app/utils';
-
 import { LOGGER_PORT, LoggerPort } from '@channel/application/ports';
 
 import { GrpcService } from './grpc.service';
+import { GrpcFilter } from '../filters';
 
 @Controller('channel')
-@UseFilters(GrpcAppExceptionFilter)
+@UseFilters(GrpcFilter)
 @ChannelServiceControllerMethods()
 export class GrpcController implements ChannelServiceController {
   constructor(

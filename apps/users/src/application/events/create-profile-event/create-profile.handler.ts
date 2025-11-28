@@ -7,7 +7,7 @@ import {
   MESSAGE_BROKER,
   MessageBrokerPort,
 } from '@users/application/ports';
-import { EVENTS } from '@app/clients';
+import { USERS } from '@app/clients';
 
 import { CreateProfileEvent } from './create-profile.event';
 
@@ -31,7 +31,7 @@ export class CompleteProfileEventHandler
     };
 
     await this.messageBroker.publishMessage(
-      EVENTS.USER_CREATED_EVENT,
+      USERS.USER_CREATED_EVENT,
       JSON.stringify(sendMailPayload),
     );
 

@@ -1,10 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 
 import { CommentVideoDto, CommentVideoResponse } from '@app/contracts/comments';
 
 import { GrpcService } from './grpc.service';
+import { GrpcFilter } from '../filters';
 
 @Controller('comments')
+@UseFilters(GrpcFilter)
 export class GrpcController {
   public constructor(private commentsService: GrpcService) {}
 

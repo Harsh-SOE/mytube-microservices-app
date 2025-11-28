@@ -6,7 +6,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "builder": "webpack",
-    "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+    "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
+    "webpack": true
   },
   "monorepo": true,
   "root": "apps/api-gateway",
@@ -41,6 +42,15 @@
         "webpack": true,
         "webpackConfigPath": "apps/authz/webpack.config.js",
         "tsConfigPath": "apps/authz/tsconfig.app.json"
+      }
+    },
+    "cache": {
+      "type": "library",
+      "root": "libs/cache",
+      "entryFile": "index",
+      "sourceRoot": "libs/cache/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cache/tsconfig.lib.json"
       }
     },
     "channel": {
@@ -176,18 +186,6 @@
         "webpack": true,
         "webpackConfigPath": "apps/reaction/webpack.config.js",
         "watchAssets": true
-      }
-    },
-    "saga": {
-      "type": "application",
-      "root": "apps/saga",
-      "sourceRoot": "apps/saga/src",
-      "entryFile": "main",
-      "compilerOptions": {
-        "tsConfigPath": "apps/saga/tsconfig.app.json",
-        "watchAssets": true,
-        "webpack": true,
-        "webpackConfigPath": "apps/saga/webpack.config.js"
       }
     },
     "subscribe": {

@@ -1,8 +1,6 @@
 import { Controller, UseFilters } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-import { GrpcAppExceptionFilter } from '@app/utils';
-
 import {
   ViewsVideoDto,
   ViewsVideoResponse,
@@ -11,9 +9,10 @@ import {
 } from '@app/contracts/views';
 
 import { GrpcService } from './grpc.service';
+import { GrpcFilter } from '../filters';
 
 @Controller()
-@UseFilters(GrpcAppExceptionFilter)
+@UseFilters(GrpcFilter)
 @ViewsServiceControllerMethods()
 export class GrpcController implements ViewsServiceController {
   public constructor(private readonly watchService: GrpcService) {}

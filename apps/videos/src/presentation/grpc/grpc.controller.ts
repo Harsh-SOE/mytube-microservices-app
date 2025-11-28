@@ -1,8 +1,6 @@
 import { Controller, UseFilters } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-import { GrpcAppExceptionFilter } from '@app/utils';
-
 import {
   GetPresignedUrlDto,
   GetPreSignedUrlResponse,
@@ -21,8 +19,9 @@ import {
 } from '@app/contracts/videos';
 
 import { GrpcService } from './grpc.service';
+import { GrpcFilter } from '../filters';
 
-@UseFilters(GrpcAppExceptionFilter)
+@UseFilters(GrpcFilter)
 @VideoServiceControllerMethods()
 @Controller()
 export class GrpcController implements VideoServiceController {

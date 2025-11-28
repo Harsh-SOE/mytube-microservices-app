@@ -310,8 +310,6 @@ services:
         condition: service_healthy
       email:
         condition: service_healthy
-      saga:
-        condition: service_healthy
 
   grafana:
     image: grafana/grafana-oss
@@ -512,8 +510,6 @@ services:
       comments:
         condition: service_healthy
       email:
-        condition: service_healthy
-      saga:
         condition: service_healthy
 
   users:
@@ -1038,24 +1034,6 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-
-  saga:
-    image: mytube/saga/development:latest
-    container_name: saga
-    build:
-      context: .
-      dockerfile: apps/saga/Dockerfile
-    env_file:
-      - apps/saga/.env
-    environment:
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-    networks:
-      - services
-      - cache
-      - message-broker
-      - observer
-    healthcheck: *grpc-healthcheck
-    deploy: *service_resources
 
 #-------------------------------------------------------------------------------------------------------------#
 #                                                  VOLUMES                                                    #
