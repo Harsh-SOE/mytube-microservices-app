@@ -50,22 +50,22 @@ export class RedisCacheAdapter
 
   public onModuleInit() {
     const likeScript = fs.readFileSync(
-      join(__dirname, '../scripts/like.lua'),
+      join(__dirname, 'scripts/like.lua'),
       'utf8',
     );
 
     const unlikeScript = fs.readFileSync(
-      join(__dirname, '../scripts/unlike.lua'),
+      join(__dirname, 'scripts/unlike.lua'),
       'utf8',
     );
 
     const dislikeScript = fs.readFileSync(
-      join(__dirname, '../scripts/dislike.lua'),
+      join(__dirname, 'scripts/dislike.lua'),
       'utf8',
     );
 
     const undislikeScript = fs.readFileSync(
-      join(__dirname, '../scripts/undislike.lua'),
+      join(__dirname, 'scripts/undislike.lua'),
       'utf8',
     );
 

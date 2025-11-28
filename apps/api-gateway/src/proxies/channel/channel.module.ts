@@ -34,4 +34,4 @@ import { ChannelController } from './channel.controller';
     { provide: LOGGER_PORT, useClass: WinstonLoggerAdapter },
   ],
 })
-export class VideoModule {}
+export class ChannelModule {}

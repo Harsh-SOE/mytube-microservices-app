@@ -1,3 +1,3 @@
 #!/bin/bash
-echo "[ENTRYPOINT] Starting Video service in dev mode."
-yarn start:dev video
+echo "[ENTRYPOINT] Starting Videos service in dev mode."
+yarn start:dev videos

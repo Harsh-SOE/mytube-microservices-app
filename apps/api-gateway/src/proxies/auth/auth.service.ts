@@ -13,6 +13,7 @@ import { UserAuthPayload } from '@app/contracts/auth';
 import { LOGGER_PORT, LoggerPort } from '@gateway/application/ports';
 import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
 import { Auth0ProfileUser } from '@gateway/proxies/auth/types';
+import { AppConfigService } from '@gateway/infrastructure/config';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -23,6 +24,7 @@ export class AuthService implements OnModuleInit {
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
     @InjectMetric(REQUESTS_COUNTER) private readonly counter: Counter,
     private readonly jwtService: JwtService,
+    private readonly configService: AppConfigService,
   ) {}
 
   onModuleInit() {
@@ -36,10 +38,6 @@ export class AuthService implements OnModuleInit {
     this.logger.info(
       `User Auth Credentials are: ${JSON.stringify(userAuthCredentials)}`,
     );
-
-    if (!userAuthCredentials.providerId) {
-      throw new Error(`No Provider was found...`);
-    }
 
     const response$ = this.userService.findUserByAuthId({
       authId: userAuthCredentials.providerId,
@@ -55,14 +53,15 @@ export class AuthService implements OnModuleInit {
         response:
           'Please complete your profile inorder to login to application [STATUS: Signup-SUCCESS]',
         token: undefined,
-        userAuthCred: {
+        userInfo: {
           email: userAuthCredentials.email,
           authId: userAuthCredentials.providerId,
         },
       };
       response.cookie('onboarding_info', JSON.stringify(cookiePayload), {
         httpOnly: false,
-        secure: false,
+        secure:
+          this.configService.NODE_ENVIRONMENT === 'production' ? true : false,
         sameSite: 'lax',
         path: '/',
         maxAge: 1000 * 60 * 5,
@@ -71,22 +70,30 @@ export class AuthService implements OnModuleInit {
       return response.redirect('http://localhost:4545/onboard');
     }
 
-    const authUserPayload: UserAuthPayload = {
+    // user exists...
+
+    const loggedInUserPayload: UserAuthPayload = {
       id: foundUser.id,
       authId: userAuthCredentials.providerId,
       email: foundUser.email,
       handle: foundUser.handle,
     };
 
-    const cookiePayload = {
-      response: 'user logged in successfully',
-      token: this.jwtService.sign(authUserPayload),
-      userAuthCred: userAuthCredentials,
-    };
+    const token = this.jwtService.sign(loggedInUserPayload);
 
-    response.cookie('user_info', JSON.stringify(cookiePayload), {
+    response.cookie('access_token', token, {
+      httpOnly: true,
+      secure:
+        this.configService.NODE_ENVIRONMENT === 'production' ? true : false,
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24,
+      path: '/',
+    });
+
+    response.cookie('user_meta', JSON.stringify(loggedInUserPayload), {
       httpOnly: false,
-      secure: false,
+      secure:
+        this.configService.NODE_ENVIRONMENT === 'production' ? true : false,
       sameSite: 'lax',
       path: '/',
       maxAge: 1000 * 60 * 5,

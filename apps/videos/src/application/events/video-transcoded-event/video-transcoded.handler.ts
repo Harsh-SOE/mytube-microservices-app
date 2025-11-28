@@ -20,7 +20,7 @@ export class VideoTranscodedEventHandler
 
     const videoAggregate = await this.videoRepoAdapter.findOneById(videoId);
 
-    videoAggregate.updateVideo({ newIdentifier: newIdentifier });
+    videoAggregate.updateVideo({ newFileIdentifier: newIdentifier });
 
     await this.videoRepoAdapter.updateOneById(videoId, videoAggregate);
   }

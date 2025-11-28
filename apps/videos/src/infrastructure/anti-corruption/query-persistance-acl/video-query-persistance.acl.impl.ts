@@ -33,13 +33,18 @@ export class VideoQueryPeristanceACL
     }
 
     return {
-      id: schema.id,
-      ownerId: schema.ownerId,
-      title: schema.title,
-      videoFileIdentifier: schema.videoFileUrl,
-      description: schema.description ?? undefined,
-      videoPublishStatus: videoPublishStatusForQuery,
-      videoVisibilityStatus: videoVisibilityStatusForQuery,
+      videoProps: {
+        id: schema.id,
+        ownerId: schema.ownerId,
+        channelId: schema.channelId,
+        title: schema.title,
+        videoFileIdentifier: schema.videoFileIdentifier,
+        videoThumbnailIdentifier: schema.videoThumbnailIdentifer,
+        description: schema.description ?? undefined,
+        categories: schema.categories,
+        videoPublishStatus: videoPublishStatusForQuery,
+        videoVisibilityStatus: videoVisibilityStatusForQuery,
+      },
     };
   }
   toPersistance(
@@ -48,12 +53,15 @@ export class VideoQueryPeristanceACL
     const {
       id,
       ownerId,
+      channelId,
       title,
       videoFileIdentifier,
+      videoThumbnailIdentifier,
+      categories,
       videoPublishStatus,
       videoVisibilityStatus,
       description,
-    } = model;
+    } = model.videoProps;
     const videoPublishStatusForPersistance =
       QueryToPersistancePublishEnumMapper.get(videoPublishStatus);
     const videoVisibilityStatusForPersistance =
@@ -69,9 +77,12 @@ export class VideoQueryPeristanceACL
     return {
       id,
       ownerId,
+      channelId,
       title,
       description: description ?? null,
-      videoFileUrl: videoFileIdentifier,
+      videoFileIdentifier: videoFileIdentifier,
+      videoThumbnailIdentifer: videoThumbnailIdentifier,
+      categories,
       videoPublishStatus: videoPublishStatusForPersistance,
       videoVisibiltyStatus: videoVisibilityStatusForPersistance,
     };

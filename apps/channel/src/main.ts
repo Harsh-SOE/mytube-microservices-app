@@ -14,6 +14,7 @@ async function bootstrap() {
 
 bootstrap()
   .then(() => {
+    console.log(`ENV: ${process.env.NODE_ENV ? `DEVELOPMENT` : `PRODUCTION`}`);
     console.log(`Channel service started successfully`);
   })
   .catch((err) => {

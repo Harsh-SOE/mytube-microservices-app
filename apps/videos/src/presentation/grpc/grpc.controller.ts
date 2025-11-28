@@ -8,6 +8,7 @@ import {
   GetPreSignedUrlResponse,
   VideoCreateDto,
   VideoFindDto,
+  VideoFindQueryDto,
   VideoFoundResponse,
   VideoPublishedResponse,
   VideoServiceController,
@@ -37,13 +38,22 @@ export class GrpcController implements VideoServiceController {
     return { status: 1 }; // 1 = SERVING
   }
 
-  getPresignedUrlForFileUpload(
+  getPresignedUrlForVideoFileUpload(
     getPresignedUrlDto: GetPresignedUrlDto,
   ):
     | Promise<GetPreSignedUrlResponse>
     | Observable<GetPreSignedUrlResponse>
     | GetPreSignedUrlResponse {
-    return this.videoService.generatePreSignedUrl(getPresignedUrlDto);
+    return this.videoService.generatePreSignedVideoUrl(getPresignedUrlDto);
+  }
+
+  getPresignedUrlForThumbnailFileUpload(
+    getPresignedUrlDto: GetPresignedUrlDto,
+  ):
+    | Promise<GetPreSignedUrlResponse>
+    | Observable<GetPreSignedUrlResponse>
+    | GetPreSignedUrlResponse {
+    return this.videoService.generatePreSignedVideoUrl(getPresignedUrlDto);
   }
 
   save(
@@ -61,6 +71,15 @@ export class GrpcController implements VideoServiceController {
 
   findOne(videoFindDto: VideoFindDto): Promise<VideoFoundResponse> {
     return this.videoService.findOne(videoFindDto);
+  }
+
+  findVideos(
+    videoFindQueryDto: VideoFindQueryDto,
+  ):
+    | Promise<VideosFoundResponse>
+    | Observable<VideosFoundResponse>
+    | VideosFoundResponse {
+    return this.videoService.findVideos(videoFindQueryDto);
   }
 
   update(videoUpdateDto: VideoUpdateDto): Promise<VideoUpdatedResponse> {

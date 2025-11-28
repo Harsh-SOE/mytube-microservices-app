@@ -11,7 +11,7 @@ import { AppConfigService } from '@channel/infrastructure/config';
 
 @Injectable()
 export class AwsS3StorageAdapter implements OnModuleInit, StoragePort {
-  private readonly AWS_S3_RAW_AVATAR_PATH = Symbol('raw-cover-image');
+  private readonly AWS_S3_RAW_AVATAR_PATH = 'raw-cover-image';
   private s3Client: S3Client;
 
   public constructor(
@@ -32,7 +32,7 @@ export class AwsS3StorageAdapter implements OnModuleInit, StoragePort {
   public async getPresignedUrlForChannelCoverImage(
     channelCoverImageFileName: string,
     expiresIn?: number,
-  ): Promise<string> {
+  ): Promise<{ fileIdentifier: string; presignedUrl: string }> {
     const key = `${this.AWS_S3_RAW_AVATAR_PATH.toString()}/${channelCoverImageFileName}`;
 
     const putObjectCommand = new PutObjectCommand({
@@ -40,6 +40,13 @@ export class AwsS3StorageAdapter implements OnModuleInit, StoragePort {
       Bucket: this.configService.AWS_BUCKET,
     });
 
-    return await getSignedUrl(this.s3Client, putObjectCommand, { expiresIn });
+    const presignedUrl = await getSignedUrl(this.s3Client, putObjectCommand, {
+      expiresIn,
+    });
+
+    return {
+      presignedUrl: presignedUrl,
+      fileIdentifier: key,
+    };
   }
 }

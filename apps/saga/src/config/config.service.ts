@@ -37,7 +37,7 @@ export class AppConfigService {
     const options: GrpcOptions = {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../proto/users.proto'),
+        protoPath: join(__dirname, 'proto/users.proto'),
         package: USER_PACKAGE_NAME,
         url: `${this.USER_SERVICE_HOST}:${this.USER_SERVICE_PORT}`,
       },
@@ -50,8 +50,8 @@ export class AppConfigService {
       transport: Transport.GRPC,
       options: {
         protoPath: [
-          join(__dirname, '../proto/saga.proto'),
-          join(__dirname, '../proto/health.proto'),
+          join(__dirname, 'proto/saga.proto'),
+          join(__dirname, 'proto/health.proto'),
         ],
         package: [SAGA_PACKAGE_NAME, GRPC_HEALTH_V1_PACKAGE_NAME],
         url: `0.0.0.0:${this.SERVICE_PORT}`,

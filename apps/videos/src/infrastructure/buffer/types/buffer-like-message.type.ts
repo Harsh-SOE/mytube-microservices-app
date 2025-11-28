@@ -6,10 +6,12 @@ import {
 export type VideoMessage = {
   id: string;
   ownerId: string;
-  videoId: string;
+  channelId: string;
   title: string;
   description: string;
-  videoUrl: string;
+  videoFileIdentifier: string;
+  videoThumbnailIdentifier: string;
+  videoCategories: string[];
   publishStatus: VideoDomainPublishStatus;
   visibilityStatus: VideoDomainVisibiltyStatus;
 };

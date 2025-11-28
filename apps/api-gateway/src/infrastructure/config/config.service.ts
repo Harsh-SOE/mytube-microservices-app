@@ -16,12 +16,12 @@ import { REACTION_PACKAGE_NAME } from '@app/contracts/reaction';
 export class AppConfigService {
   constructor(private readonly configService: ConfigService) {}
 
-  get PORT() {
-    return this.configService.getOrThrow<number>('PORT');
+  get NODE_ENVIRONMENT() {
+    return this.configService.getOrThrow<string>('NODE_ENVIRONMENT');
   }
 
-  get NODE_ENV() {
-    return this.configService.getOrThrow<string>('NODE_ENVIRONMENT');
+  get PORT() {
+    return this.configService.getOrThrow<number>('PORT');
   }
 
   get GRAFANA_LOKI_URL() {
@@ -139,7 +139,7 @@ export class AppConfigService {
     return {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../proto/reaction.proto'),
+        protoPath: join(__dirname, 'proto/reaction.proto'),
         package: REACTION_PACKAGE_NAME,
         url: `${this.REACTION_SERVICE_HOST}:${this.REACTION_SERVICE_PORT}`,
       },
@@ -150,7 +150,7 @@ export class AppConfigService {
     return {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../proto/videos.proto'),
+        protoPath: join(__dirname, 'proto/videos.proto'),
         package: VIDEO_PACKAGE_NAME,
         url: `${this.VIDEO_SERVICE_HOST}:${this.VIDEO_SERVICE_PORT}`,
       },
@@ -161,7 +161,7 @@ export class AppConfigService {
     return {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../proto/users.proto'),
+        protoPath: join(__dirname, 'proto/users.proto'),
         package: USER_PACKAGE_NAME,
         url: `${this.USER_SERVICE_HOST}:${this.USER_SERVICE_PORT}`,
       },
@@ -172,7 +172,7 @@ export class AppConfigService {
     return {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../proto/channel.proto'),
+        protoPath: join(__dirname, 'proto/channel.proto'),
         package: CHANNEL_PACKAGE_NAME,
         url: `${this.CHANNEL_SERVICE_HOST}:${this.CHANNEL_SERVICE_PORT}`,
       },
@@ -183,7 +183,7 @@ export class AppConfigService {
     return {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../proto/saga.proto'),
+        protoPath: join(__dirname, 'proto/saga.proto'),
         package: SAGA_PACKAGE_NAME,
         url: `${this.SAGA_SERVICE_HOST}:${this.SAGA_SERVICE_PORT}`,
       },
@@ -194,7 +194,7 @@ export class AppConfigService {
     return {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../proto/comments.proto'),
+        protoPath: join(__dirname, 'proto/comments.proto'),
         package: COMMENT_PACKAGE_NAME,
         url: `${this.COMMENT_SERVICE_HOST}:${this.COMMENT_SERVICE_PORT}`,
       },
@@ -206,7 +206,7 @@ export class AppConfigService {
       transport: Transport.GRPC,
       options: {
         package: VIEWS_PACKAGE_NAME,
-        protoPath: join(__dirname, '../proto/views.proto'),
+        protoPath: join(__dirname, 'proto/views.proto'),
         url: `${this.WATCH_SERVICE_HOST}:${this.WATCH_SERVICE_PORT}`,
       },
     };

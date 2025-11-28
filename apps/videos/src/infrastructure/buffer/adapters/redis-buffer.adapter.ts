@@ -116,15 +116,18 @@ export class RedisStreamBufferAdapter implements OnModuleInit, BufferPort {
 
   public async processMessages(ids: string[], messages: VideoMessage[]) {
     const models = messages.map((message) => {
-      return VideoAggregate.create(
-        message.id,
-        message.title,
-        message.ownerId,
-        message.videoUrl,
-        message.publishStatus,
-        message.visibilityStatus,
-        message.description,
-      );
+      return VideoAggregate.create({
+        id: message.id,
+        ownerId: message.ownerId,
+        channelId: message.channelId,
+        title: message.title,
+        videoThumbnailIdentifier: message.videoThumbnailIdentifier,
+        videoFileIdentifier: message.videoFileIdentifier,
+        categories: message.videoCategories,
+        publishStatus: message.publishStatus,
+        visibilityStatus: message.visibilityStatus,
+        description: message.description,
+      });
     });
 
     const processedMessagesNumber = await this.likesRepo.saveMany(models);

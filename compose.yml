@@ -393,12 +393,11 @@ services:
   #-------------------------------------------------------------------------------------------------------------#
 
   gateway:
-    image: mytube/gateway/production:latest
+    image: mytube/gateway/development:latest
     container_name: gateway
     build:
       context: .
       dockerfile: apps/api-gateway/Dockerfile
-      target: production
     env_file:
       - apps/api-gateway/.env
     ports:
@@ -414,7 +413,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 1m
     deploy: &service_resources
       resources:
         reservations:
@@ -446,12 +445,11 @@ services:
         condition: service_healthy
 
   users:
-    image: mytube/users/production:latest
+    image: mytube/users/development:latest
     container_name: users
     build:
       context: .
       dockerfile: apps/users/Dockerfile
-      target: production
     env_file:
       - apps/users/.env
     environment:
@@ -466,8 +464,8 @@ services:
       test: ["CMD", "grpc_health_probe", "-addr=:5000"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 15s
+      retries: 12
+      start_period: 180s
     deploy: *service_resources
     depends_on:
       users-database:
@@ -482,12 +480,11 @@ services:
         condition: service_healthy
 
   authz:
-    image: mytube/authz/production:latest
+    image: mytube/authz/development:latest
     container_name: authz
     build:
       context: .
       dockerfile: apps/authz/Dockerfile
-      target: production
     env_file:
       - apps/authz/.env
     networks:
@@ -500,7 +497,7 @@ services:
     healthcheck: *grpc-healthcheck
 
   users-migrate:
-    image: mytube/users/production:latest
+    image: mytube/users/development:latest
     container_name: users-database-migrate
     env_file:
       - apps/users/.env
@@ -511,18 +508,24 @@ services:
       - observer
       - users-database-network
     entrypoint:
-      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "apps/users/prisma/schema.prisma",
+      ]
     depends_on:
       users-database:
         condition: service_healthy
 
   channel:
-    image: mytube/channel/production:latest
+    image: mytube/channel/development:latest
     container_name: channel
     build:
       context: .
       dockerfile: apps/channel/Dockerfile
-      target: production
     env_file:
       - apps/channel/.env
     environment:
@@ -548,8 +551,11 @@ services:
         condition: service_healthy
 
   channel-migrate:
-    image: mytube/channel/production:latest
+    image: mytube/channel/development:latest
     container_name: channel-database-migrate
+    build:
+      context: .
+      dockerfile: apps/channel/Dockerfile
     env_file:
       - apps/channel/.env
     networks:
@@ -559,18 +565,24 @@ services:
       - observer
       - channel-database-network
     entrypoint:
-      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "apps/channel/prisma/schema.prisma",
+      ]
     depends_on:
       channel-database:
         condition: service_healthy
 
   videos:
-    image: mytube/videos/production:latest
+    image: mytube/videos/development:latest
     container_name: videos
     build:
       context: .
       dockerfile: apps/videos/Dockerfile
-      target: production
     env_file:
       - apps/videos/.env
     environment:
@@ -596,7 +608,7 @@ services:
         condition: service_healthy
 
   videos-migrate:
-    image: mytube/videos/production:latest
+    image: mytube/videos/development:latest
     container_name: videos-database-migrate
     env_file:
       - apps/videos/.env
@@ -607,18 +619,24 @@ services:
       - observer
       - videos-database-network
     entrypoint:
-      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "apps/videos/prisma/schema.prisma",
+      ]
     depends_on:
       videos-database:
         condition: service_healthy
 
   video-transcoder:
-    image: mytube/video-transcoder/production:latest
+    image: mytube/video-transcoder/development:latest
     container_name: video-transcoder
     build:
       context: .
       dockerfile: apps/video-transcoder/Dockerfile
-      target: production
     env_file:
       - apps/video-transcoder/.env
     environment:
@@ -634,7 +652,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 12
+      start_period: 180s
     deploy: *service_resources
     depends_on:
       videos:
@@ -645,12 +664,11 @@ services:
         condition: service_healthy
 
   views:
-    image: mytube/views/production:latest
+    image: mytube/views/development:latest
     container_name: views
     build:
       context: .
       dockerfile: apps/views/Dockerfile
-      target: production
     env_file:
       - apps/views/.env
     environment:
@@ -674,7 +692,7 @@ services:
         condition: service_healthy
 
   views-migrate:
-    image: mytube/views/production:latest
+    image: mytube/views/development:latest
     container_name: views-migrate
     env_file:
       - apps/views/.env
@@ -685,18 +703,24 @@ services:
       - observer
       - views-database-network
     entrypoint:
-      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "apps/views/prisma/schema.prisma",
+      ]
     depends_on:
       views-database:
         condition: service_healthy
 
   reaction:
-    image: mytube/reaction/production:latest
+    image: mytube/reaction/development:latest
     container_name: reaction
     build:
       context: .
       dockerfile: apps/reaction/Dockerfile
-      target: production
     env_file:
       - apps/reaction/.env
     environment:
@@ -715,12 +739,11 @@ services:
         condition: service_healthy
 
   comments:
-    image: mytube/comments/production:latest
+    image: mytube/comments/development:latest
     container_name: comments
     build:
       context: .
       dockerfile: apps/comments/Dockerfile
-      target: production
     env_file:
       - apps/comments/.env
     environment:
@@ -744,7 +767,7 @@ services:
         condition: service_healthy
 
   comments-migrate:
-    image: mytube/comments/production:latest
+    image: mytube/comments/development:latest
     container_name: comments-database-migrate
     env_file:
       - apps/comments/.env
@@ -755,18 +778,24 @@ services:
       - observer
       - comments-database-network
     entrypoint:
-      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "apps/comments/prisma/schema.prisma",
+      ]
     depends_on:
       comments-database:
         condition: service_healthy
 
   email:
-    image: mytube/email/production:latest
+    image: mytube/email/development:latest
     container_name: email
     build:
       context: .
       dockerfile: apps/email/Dockerfile
-      target: production
     env_file:
       - apps/email/.env
     environment:
@@ -783,12 +812,11 @@ services:
         condition: service_healthy
 
   saga:
-    image: mytube/saga/production:latest
+    image: mytube/saga/development:latest
     container_name: saga
     build:
       context: .
       dockerfile: apps/saga/Dockerfile
-      target: production
     env_file:
       - apps/saga/.env
     environment:

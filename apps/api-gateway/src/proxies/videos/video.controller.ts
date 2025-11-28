@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
   Version,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { User } from '@gateway/proxies/auth/decorators';
 
 import {
   CreateVideoRequestDto,
+  ListVideosQueryDto,
   PreSignedUrlRequestDto,
   UpdateVideoRequestDto,
 } from './request';
@@ -35,11 +37,26 @@ export class VideoController {
 
   @Post(VIDEO_API.PRESIGNED_URL_FOR_VIDEO_FILE)
   @Version(VIDEO_API_VERSION.V1)
-  getPresignedUrl(
+  getPresignedUrlForVideoFile(
     @Body() FileMetaDataDto: PreSignedUrlRequestDto,
     @User('id') userId: string,
   ): Promise<PreSignedUrlRequestResponse> {
-    return this.videoService.getPresignedUploadUrl(FileMetaDataDto, userId);
+    return this.videoService.getPresignedUploadVideoUrl(
+      FileMetaDataDto,
+      userId,
+    );
+  }
+
+  @Post(VIDEO_API.PRESIGNED_URL_FOR_VIDEO_THUMBNAIL)
+  @Version(VIDEO_API_VERSION.V1)
+  getPresignedUrlForVideoThumbnail(
+    @Body() FileMetaDataDto: PreSignedUrlRequestDto,
+    @User('id') userId: string,
+  ): Promise<PreSignedUrlRequestResponse> {
+    return this.videoService.getPresignedUploadThumbnailUrl(
+      FileMetaDataDto,
+      userId,
+    );
   }
 
   @Get(VIDEO_API.FIND_A_VIDEO)
@@ -67,5 +84,10 @@ export class VideoController {
     @Param('id') videoId: string,
   ): Promise<UpdatedVideoRequestResponse> {
     return this.videoService.updateOneVideo(videoUpdateDto, videoId);
+  }
+
+  @Get()
+  findVideos(@Query() listVideosQueryDto: ListVideosQueryDto) {
+    return this.videoService.findVideos(listVideosQueryDto);
   }
 }

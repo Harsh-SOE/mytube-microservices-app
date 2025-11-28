@@ -89,15 +89,18 @@ export class KafkaBufferAdapter
           );
 
         const models = messages.map((message) => {
-          return VideoAggregate.create(
-            message.id,
-            message.title,
-            message.ownerId,
-            message.videoUrl,
-            message.publishStatus,
-            message.visibilityStatus,
-            message.description,
-          );
+          return VideoAggregate.create({
+            id: message.id,
+            ownerId: message.ownerId,
+            channelId: message.channelId,
+            title: message.title,
+            videoThumbnailIdentifier: message.videoThumbnailIdentifier,
+            videoFileIdentifier: message.videoFileIdentifier,
+            categories: message.videoCategories,
+            publishStatus: message.publishStatus,
+            visibilityStatus: message.visibilityStatus,
+            description: message.description,
+          });
         });
 
         this.logger.info(`Saving ${models.length} likes in database`);

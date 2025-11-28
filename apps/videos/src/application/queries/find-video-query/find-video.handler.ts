@@ -8,9 +8,9 @@ import {
   VideoQueryRepositoryPort,
 } from '@videos/application/ports';
 import {
-  QueryToGrpcPublishEnumMapper,
-  QueryToGrpcVisibilityEnumMapper,
-} from '@videos/infrastructure/anti-corruption/enums/to-grpc';
+  QueryToTransportPublishEnumMapper,
+  QueryToTransportVisibilityEnumMapper,
+} from '@videos/infrastructure/anti-corruption/enums/to-transport';
 
 import { FindVideoQuery } from './find-video.query';
 
@@ -25,21 +25,22 @@ export class FindVideoHandler implements IQueryHandler<FindVideoQuery> {
     const { id } = videoFindDto;
     const video = await this.video.findOneByid(id);
 
-    const videoPublishStatusForGrpc = QueryToGrpcPublishEnumMapper.get(
-      video.videoPublishStatus,
+    const videoPublishStatusForGrpc = QueryToTransportPublishEnumMapper.get(
+      video.videoProps.videoPublishStatus,
     );
-    const videoVisibilityStatusForGrpc = QueryToGrpcVisibilityEnumMapper.get(
-      video.videoVisibilityStatus,
-    );
+    const videoVisibilityStatusForGrpc =
+      QueryToTransportVisibilityEnumMapper.get(
+        video.videoProps.videoVisibilityStatus,
+      );
 
     if (!videoPublishStatusForGrpc || !videoVisibilityStatusForGrpc) {
       throw new Error();
     }
 
     return {
-      ...video,
-      videoPublishStatus: videoPublishStatusForGrpc,
-      videoVisibilityStatus: videoVisibilityStatusForGrpc,
+      ...video.videoProps,
+      videoTransportPublishStatus: videoPublishStatusForGrpc,
+      videoTransportVisibilityStatus: videoVisibilityStatusForGrpc,
     };
   }
 }

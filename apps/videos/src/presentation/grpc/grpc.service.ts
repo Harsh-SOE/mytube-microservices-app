@@ -6,6 +6,7 @@ import {
   GetPreSignedUrlResponse,
   VideoCreateDto,
   VideoFindDto,
+  VideoFindQueryDto,
   VideoFoundResponse,
   VideoPublishedResponse,
   VideosFoundResponse,
@@ -16,9 +17,11 @@ import {
 import {
   EditVideoCommand,
   PublishVideoCommand,
-  GeneratePreSignedUrlCommand,
+  GeneratePreSignedUrlVideoCommand,
+  GeneratePreSignedUrlThumbnailCommand,
 } from '@videos/application/commands';
 import { FindVideoQuery } from '@videos/application/queries';
+import { QueryVideo } from '@videos/application/queries/query-video/query-video.query';
 import { LOGGER_PORT, LoggerPort } from '@videos/application/ports';
 
 @Injectable()
@@ -29,13 +32,26 @@ export class GrpcService {
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
   ) {}
 
-  async generatePreSignedUrl(
+  async generatePreSignedVideoUrl(
     getPresignedUrlDto: GetPresignedUrlDto,
   ): Promise<GetPreSignedUrlResponse> {
-    return this.commandBus.execute<
-      GeneratePreSignedUrlCommand,
+    const result = await this.commandBus.execute<
+      GeneratePreSignedUrlVideoCommand,
       GetPreSignedUrlResponse
-    >(new GeneratePreSignedUrlCommand(getPresignedUrlDto));
+    >(new GeneratePreSignedUrlVideoCommand(getPresignedUrlDto));
+    this.logger.info(`Result in video is: `, result);
+    return result;
+  }
+
+  async generatePreSignedThumbnailUrl(
+    getPresignedUrlDto: GetPresignedUrlDto,
+  ): Promise<GetPreSignedUrlResponse> {
+    const result = await this.commandBus.execute<
+      GeneratePreSignedUrlVideoCommand,
+      GetPreSignedUrlResponse
+    >(new GeneratePreSignedUrlThumbnailCommand(getPresignedUrlDto));
+    this.logger.info(`Result in video is: `, result);
+    return result;
   }
 
   async create(
@@ -54,6 +70,12 @@ export class GrpcService {
   findOne(videoFindDto: VideoFindDto): Promise<VideoFoundResponse> {
     return this.queryBus.execute<FindVideoQuery, VideoFoundResponse>(
       new FindVideoQuery(videoFindDto),
+    );
+  }
+
+  findVideos(videoFindDto: VideoFindQueryDto): Promise<VideosFoundResponse> {
+    return this.queryBus.execute<QueryVideo, VideosFoundResponse>(
+      new QueryVideo(videoFindDto),
     );
   }
 

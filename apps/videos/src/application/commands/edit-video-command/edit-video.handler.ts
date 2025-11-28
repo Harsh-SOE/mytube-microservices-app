@@ -10,8 +10,8 @@ import {
   VideoQueryRepositoryPort,
 } from '@videos/application/ports';
 import {
-  GrpcToDomainPublishEnumMapper,
-  GrpcToDomainVisibilityEnumMapper,
+  TransportToDomainPublishEnumMapper,
+  TransportToDomainVisibilityEnumMapper,
 } from '@videos/infrastructure/anti-corruption';
 
 import { EditVideoCommand } from './edit-video.command';
@@ -32,15 +32,20 @@ export class EditVideoHandler implements ICommandHandler<EditVideoCommand> {
       id,
       title,
       description,
-      videoPublishStatus,
-      videoVisibilityStatus,
+      categories,
+      videoFileIdentifier,
+      videoThumbnailIdentifier,
+      videoTransportPublishStatus,
+      videoTransportVisibilityStatus,
     } = updateVideoDto;
 
-    const domainPublishStatus = videoPublishStatus
-      ? GrpcToDomainPublishEnumMapper.get(videoPublishStatus)
+    const domainPublishStatus = videoTransportPublishStatus
+      ? TransportToDomainPublishEnumMapper.get(videoTransportPublishStatus)
       : undefined;
-    const domainVisibiltyStatus = videoVisibilityStatus
-      ? GrpcToDomainVisibilityEnumMapper.get(videoVisibilityStatus)
+    const domainVisibiltyStatus = videoTransportVisibilityStatus
+      ? TransportToDomainVisibilityEnumMapper.get(
+          videoTransportVisibilityStatus,
+        )
       : undefined;
 
     const videoAggregate = await this.videoCommandAdapter.findOneById(id);
@@ -50,6 +55,9 @@ export class EditVideoHandler implements ICommandHandler<EditVideoCommand> {
       newDescription: description,
       newPublishStatus: domainPublishStatus,
       newVisibilityStatus: domainVisibiltyStatus,
+      newCategories: categories,
+      newFileIdentifier: videoFileIdentifier,
+      newThumbnailIdentifier: videoThumbnailIdentifier,
     });
 
     await this.videoCommandAdapter.updateOneById(id, videoAggregate);

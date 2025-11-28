@@ -7,6 +7,7 @@ import {
 import { ClientGrpc } from '@nestjs/microservices';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Request } from 'express';
 import { firstValueFrom } from 'rxjs';
 
 import { USER_SERVICE_NAME, UserServiceClient } from '@app/contracts/users';
@@ -28,7 +29,12 @@ export class JwtStrategy
     @Inject(CLIENT_PROVIDER.USER) private readonly userClient: ClientGrpc,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request): string | null => {
+          const data = request?.cookies as Record<string, string> | undefined;
+          return data?.access_token || null;
+        },
+      ]),
       ignoreExpiration: false,
       algorithms: ['HS256'],
       secretOrKey: configService.JWT_ACCESS_TOKEN_SECRET,

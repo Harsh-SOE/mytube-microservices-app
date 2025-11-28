@@ -18,6 +18,14 @@ export class AppConfigService {
     return this.configService.getOrThrow<number>('MESSAGE_BROKER_PORT');
   }
 
+  get REDIS_HOST() {
+    return this.configService.getOrThrow<string>('REDIS_HOST');
+  }
+
+  get REDIS_PORT() {
+    return this.configService.getOrThrow<number>('REDIS_PORT');
+  }
+
   get GRAFANA_LOKI_URL() {
     return this.configService.getOrThrow<string>('GRAFANA_LOKI_URL');
   }

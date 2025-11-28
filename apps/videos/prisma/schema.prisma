@@ -30,13 +30,21 @@ enum VideoPersistanceVisibilityStatus {
 }
 
 model Video {
-  id                   String                           @id @default(uuid())
-  title                String
-  videoFileUrl         String
-  description          String?
-  videoPublishStatus   VideoPersistancePublishStatus    @default(PENDING)
-  videoVisibiltyStatus VideoPersistanceVisibilityStatus @default(PRIVATE)
-  ownerId              String
-  publishedAt          DateTime                         @default(now())
-  updatedAt            DateTime                         @updatedAt
+  id                      String                           @id @default(uuid())
+  ownerId                 String
+  channelId               String
+  title                   String
+  videoThumbnailIdentifer String
+  videoFileIdentifier     String
+  description             String?
+  categories              String[]
+  videoPublishStatus      VideoPersistancePublishStatus    @default(PENDING)
+  videoVisibiltyStatus    VideoPersistanceVisibilityStatus @default(PRIVATE)
+  publishedAt             DateTime                         @default(now())
+  updatedAt               DateTime                         @updatedAt
+
+  @@index([ownerId])
+  @@index([channelId])
+  @@index([categories], type: Gin)
+  @@index([publishedAt])
 }

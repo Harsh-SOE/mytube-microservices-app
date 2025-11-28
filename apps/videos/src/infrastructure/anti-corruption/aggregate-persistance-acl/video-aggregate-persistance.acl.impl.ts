@@ -6,11 +6,15 @@ import { VideoAggregate } from '@videos/domain/aggregates';
 import { VideoEntity } from '@videos/domain/entities';
 import {
   VideoDescription,
-  VideoOwner,
+  VideoOwnerId,
   VideoPublish,
   VideoTitle,
   VideoFileIdentifier,
   VideoVisibilty,
+  VideoThumbnailFileIdentifier,
+  VideoCategories,
+  VideoChannelId,
+  VideoId,
 } from '@videos/domain/value-objects';
 
 import { Video } from '@peristance/videos';
@@ -26,15 +30,28 @@ export class VideoAggregatePersistanceACL
   public toAggregate(
     persistance: Omit<Video, 'publishedAt' | 'updatedAt'>,
   ): VideoAggregate {
-    const videoEntity = new VideoEntity(
-      persistance.id,
-      VideoTitle.create(persistance.title),
-      VideoFileIdentifier.create(persistance.videoFileUrl),
-      VideoPublish.create(persistance.videoPublishStatus.toString()),
-      VideoVisibilty.create(persistance.videoVisibiltyStatus.toString()),
-      VideoOwner.create(persistance.ownerId),
-      VideoDescription.create(persistance.description ?? undefined),
-    );
+    const videoEntity = new VideoEntity({
+      id: VideoId.create(persistance.id),
+      ownerId: VideoOwnerId.create(persistance.ownerId),
+      channelId: VideoChannelId.create(persistance.channelId),
+      title: VideoTitle.create(persistance.title),
+      videoThumbnailIdentifer: VideoThumbnailFileIdentifier.create(
+        persistance.videoThumbnailIdentifer,
+      ),
+      videoFileIdentifier: VideoFileIdentifier.create(
+        persistance.videoFileIdentifier,
+      ),
+      categories: VideoCategories.create(persistance.categories),
+      publishStatus: VideoPublish.create(
+        persistance.videoPublishStatus.toString(),
+      ),
+      visibilityStatus: VideoVisibilty.create(
+        persistance.videoVisibiltyStatus.toString(),
+      ),
+      description: VideoDescription.create(
+        persistance.description ?? undefined,
+      ),
+    });
 
     return new VideoAggregate(videoEntity);
   }
@@ -44,10 +61,15 @@ export class VideoAggregatePersistanceACL
   ): Omit<Video, 'publishedAt' | 'updatedAt'> {
     return {
       id: aggregate.getVideo().getId(),
-      title: aggregate.getVideo().getTitle(),
-      description: aggregate.getVideo().getDescription() ?? null,
       ownerId: aggregate.getVideo().getOwnerId(),
-      videoFileUrl: aggregate.getVideo().getVideoFileIdentifier(),
+      channelId: aggregate.getVideo().getChannelId(),
+      title: aggregate.getVideo().getTitle(),
+      videoFileIdentifier: aggregate.getVideo().getVideoFileIdentifier(),
+      videoThumbnailIdentifer: aggregate
+        .getVideo()
+        .getVideoThumbnailIdentifier(),
+      categories: aggregate.getVideo().getCategories(),
+      description: aggregate.getVideo().getDescription() ?? null,
       videoPublishStatus: aggregate.getVideo().getPublishStatus(),
       videoVisibiltyStatus: aggregate.getVideo().getVisibiltyStatus(),
     };

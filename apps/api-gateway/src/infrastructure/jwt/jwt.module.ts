@@ -14,13 +14,13 @@ import { JwtStrategy } from './jwt-strategies';
 @Global()
 @Module({
   imports: [
+    AppConfigModule,
     JwtModule.registerAsync({
       inject: [AppConfigService],
       imports: [AppConfigModule],
       useFactory: (configService: AppConfigService) =>
         configService.JWT_TOKEN_OPTIONS,
     }),
-    AppConfigModule,
     ClientsModule.registerAsync([
       {
         imports: [AppConfigModule],

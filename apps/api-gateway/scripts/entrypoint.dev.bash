@@ -1,3 +1,3 @@
 #!/bin/bash
-echo "[ENTRYPOINT] Starting Comments service in dev mode."
-yarn start:dev comments
+echo "[ENTRYPOINT] Starting API-Gateway service in dev mode."
+yarn start:dev api-gateway

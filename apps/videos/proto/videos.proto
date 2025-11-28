@@ -2,18 +2,24 @@ syntax = "proto3";
 
 package Video;
 
-enum VideoGrpcPublishStatus {
-  GRPC_PENDING = 0;
-  GRPC_PROCESSING = 1;
-  GRPC_PROCESSED = 2;
-  GRPC_PUBLISHED = 3;
-  GRPC_FAILED = 4;
+enum VideoTransportPublishStatus {
+  TRANSPORT_PENDING = 0;
+  TRANSPORT_PROCESSING = 1;
+  TRANSPORT_PROCESSED = 2;
+  TRANSPORT_PUBLISHED = 3;
+  TRANSPORT_FAILED = 4;
 }
 
-enum VideoGrpcVisibilityStatus {
-  GRPC_PRIVATE = 0;
-  GRPC_PUBLIC = 1;
-  GRPC_UNLISTED = 2;
+enum VideoTransportVisibilityStatus {
+  TRANSPORT_PRIVATE = 0;
+  TRANSPORT_PUBLIC = 1;
+  TRANSPORT_UNLISTED = 2;
+}
+
+enum VideoTransportSortOption {
+  TRANSPORT_NEWEST = 0;
+  TRANSPORT_OLDEST = 1;
+  TRANSPORT_POPULAR = 2;
 }
 
 message GetPresignedUrlDto {
@@ -22,12 +28,15 @@ message GetPresignedUrlDto {
 }
 
 message VideoCreateDto {
-  string ownerId = 2;
+  string ownerId = 1;
+  string channelId = 2;
   string title = 3;
   string videoFileIdentifier = 4;
-  optional string description = 5;
-  VideoGrpcPublishStatus videoPublishStatus = 6;
-  VideoGrpcVisibilityStatus videoVisibilityStatus = 7;
+  string videoThumbnailIdentifier = 5;
+  repeated string categories = 6;
+  optional string description = 7;
+  VideoTransportPublishStatus videoTransportPublishStatus = 8;
+  VideoTransportVisibilityStatus videoTransportVisibilityStatus = 9;
 }
 
 message VideoFindDto {
@@ -36,16 +45,29 @@ message VideoFindDto {
 
 message VideoUpdateDto {
   string id = 1;
-  optional string title = 3;
-  optional string videoFileIdentifier = 4;
-  optional string description = 5;
-  optional VideoGrpcPublishStatus videoPublishStatus = 6;
-  optional VideoGrpcVisibilityStatus videoVisibilityStatus = 7;
+  optional string title = 2;
+  optional string videoFileIdentifier = 3;
+  optional string videoThumbnailIdentifier = 4;
+  repeated string categories = 5;
+  optional string description = 6;
+  optional VideoTransportPublishStatus videoTransportPublishStatus = 7;
+  optional VideoTransportVisibilityStatus videoTransportVisibilityStatus = 8;
+}
+
+message VideoFindQueryDto {
+  optional int32 limit = 1;
+  optional int32 skip = 2;
+  repeated string categories = 3;
+  optional string channelId = 4;
+  optional string userId = 5;
+  optional string search = 6;
+  optional VideoTransportSortOption videoTransportSortOption = 7;  
 }
 
 message GetPreSignedUrlResponse {
   string response = 1;
-  string fileIdentifier = 2;
+  string presignedUrl = 2;
+  string fileIdentifier = 3;
 }
 
 message VideoPublishedResponse {
@@ -55,11 +77,15 @@ message VideoPublishedResponse {
 
 message VideoFoundResponse {
   string id = 1;
-  string title = 2;
-  string videoFileIdentifier = 3;
-  optional string description = 4;
-  VideoGrpcPublishStatus videoPublishStatus = 5;
-  VideoGrpcVisibilityStatus videoVisibilityStatus = 6;
+  string ownerId = 2;
+  string channelId = 3;
+  string title = 4;
+  string videoFileIdentifier = 5;
+  string videoThumbnailIdentifier = 6;
+  repeated string categories = 7;
+  optional string description = 8;
+  VideoTransportPublishStatus videoTransportPublishStatus = 9;
+  VideoTransportVisibilityStatus videoTransportVisibilityStatus = 10;
 }
 
 message VideosFoundResponse {
@@ -88,10 +114,12 @@ message VideosHealthCheckResponse {
 }
 
 service VideoService {
-  rpc getPresignedUrlForFileUpload(GetPresignedUrlDto) returns (GetPreSignedUrlResponse) {}
+  rpc getPresignedUrlForVideoFileUpload(GetPresignedUrlDto) returns (GetPreSignedUrlResponse) {}
+  rpc getPresignedUrlForThumbnailFileUpload(GetPresignedUrlDto) returns (GetPreSignedUrlResponse) {}
   rpc save(VideoCreateDto) returns (VideoPublishedResponse) {}
   rpc findOne(VideoFindDto) returns (VideoFoundResponse) {}
   rpc findAll(Empty) returns (VideosFoundResponse) {}
   rpc update(VideoUpdateDto) returns (VideoUpdatedResponse) {}
+  rpc findVideos(VideoFindQueryDto) returns (VideosFoundResponse) {}
   rpc Check(VideosHealthCheckRequest) returns (VideosHealthCheckResponse) {}
 }

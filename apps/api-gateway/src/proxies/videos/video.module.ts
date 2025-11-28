@@ -27,6 +27,13 @@ import { VideoController } from './video.controller';
         useFactory: (configService: AppConfigService) =>
           configService.VIDEO_SERVICE_OPTIONS,
       },
+      {
+        name: CLIENT_PROVIDER.CHANNEL,
+        imports: [AppConfigModule],
+        inject: [AppConfigService],
+        useFactory: (configService: AppConfigService) =>
+          configService.CHANNEL_SERVICE_OPTIONS,
+      },
     ]),
   ],
   providers: [

@@ -12,6 +12,23 @@ FROM base AS build-dependencies
 
 RUN yarn install --frozen-lockfile --production=false
 
+FROM base AS development
+
+ENV NODE_ENV=development
+
+COPY --from=build-dependencies /@streamforge/node_modules ./node_modules
+
+COPY apps/authz ./apps/authz
+COPY libs ./libs
+COPY nest-cli.json ./nest-cli.json
+COPY tsconfig.json ./tsconfig.json
+COPY tsconfig.build.json ./tsconfig.build.json
+
+RUN chmod +x apps/authz/scripts/entrypoint.dev.bash
+RUN chmod +x apps/authz/scripts/openfga.dev.bash
+
+ENTRYPOINT [ "apps/authz/scripts/entrypoint.dev.bash" ]
+
 FROM base AS builder
 
 COPY --from=build-dependencies /@streamforge/node_modules ./node_modules
@@ -23,19 +40,6 @@ COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.build.json ./tsconfig.build.json
 
 RUN npx nest build authz
-
-FROM base AS development
-
-ENV NODE_ENV=development
-
-COPY --from=build-dependencies /@streamforge/node_modules ./node_modules
-
-RUN chmod +x apps/authz/scripts/entrypoint.bash
-RUN chmod +x apps/authz/scripts/openfga.bash
-
-ENTRYPOINT [ "apps/authz/scripts/entrypoint.bash" ]
-
-CMD [ "yarn", "start:dev", "authz" ]
 
 FROM base AS production-dependencies
 
@@ -50,14 +54,14 @@ ENV NODE_ENV=${NODE_ENV}
 
 COPY --from=base /@streamforge/package.json /@streamforge/yarn.lock ./
 COPY --from=production-dependencies /@streamforge/node_modules ./node_modules
-COPY --from=builder /@streamforge/dist/apps/authz/main.js ./src/main.js
+COPY --from=builder /@streamforge/dist/apps/authz/main.js ./main.js
 COPY --from=builder /@streamforge/dist/apps/authz/proto ./proto
 COPY --from=builder /@streamforge/dist/apps/authz/scripts ./scripts
 
 
-RUN chmod +x ./scripts/openfga.bash
-RUN chmod +x ./scripts/entrypoint.bash
+RUN chmod +x ./scripts/openfga.prod.bash
+RUN chmod +x ./scripts/entrypoint.prod.bash
 
-ENTRYPOINT [ "scripts/entrypoint.bash" ]
+ENTRYPOINT [ "scripts/entrypoint.prod.bash" ]
 
 CMD ["node", "src/main"]

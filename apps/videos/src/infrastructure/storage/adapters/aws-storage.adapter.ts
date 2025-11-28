@@ -11,7 +11,8 @@ import { AppConfigService } from '@videos/infrastructure/config';
 
 @Injectable()
 export class AwsS3StorageAdapter implements OnModuleInit, StoragePort {
-  private readonly AWS_S3_RAW_VIDEOS_PATH = Symbol('raw-videos');
+  private readonly AWS_S3_RAW_VIDEOS_PATH = 'raw-videos';
+  private readonly AWS_S3_RAW_THUMBNAIL_PATH = 'raw-thumbnail';
   private s3Client: S3Client;
 
   public constructor(
@@ -29,17 +30,41 @@ export class AwsS3StorageAdapter implements OnModuleInit, StoragePort {
     });
   }
 
-  public async getPresignedUrl(
+  public async getPresignedUrlForVideo(
     videoFileName: string,
     expiresIn?: number,
-  ): Promise<string> {
+  ): Promise<{ presignedUrl: string; fileIdentifier: string }> {
     const key = `${this.AWS_S3_RAW_VIDEOS_PATH.toString()}/${videoFileName}`;
+
+    this.logger.info(`Generating presigned url for key:${key}`);
 
     const putObjectCommand = new PutObjectCommand({
       Key: key,
       Bucket: this.configService.AWS_BUCKET,
     });
 
-    return await getSignedUrl(this.s3Client, putObjectCommand, { expiresIn });
+    const presignedUrl = await getSignedUrl(this.s3Client, putObjectCommand, {
+      expiresIn,
+    });
+    return { presignedUrl, fileIdentifier: key };
+  }
+
+  async getPresignedUrlForThumbnail(
+    thumbnailFileIdentifier: string,
+    expiresIn?: number,
+  ): Promise<{ presignedUrl: string; fileIdentifier: string }> {
+    const key = `${this.AWS_S3_RAW_THUMBNAIL_PATH.toString()}/${thumbnailFileIdentifier}`;
+
+    this.logger.info(`Generating presigned url for key:${key}`);
+
+    const putObjectCommand = new PutObjectCommand({
+      Key: key,
+      Bucket: this.configService.AWS_BUCKET,
+    });
+
+    const presignedUrl = await getSignedUrl(this.s3Client, putObjectCommand, {
+      expiresIn,
+    });
+    return { presignedUrl, fileIdentifier: key };
   }
 }

@@ -41,8 +41,8 @@ export class AppConfigService {
       options: {
         package: [AUTH_Z_PACKAGE_NAME, GRPC_HEALTH_V1_PACKAGE_NAME],
         protoPath: [
-          join(__dirname, '../proto/authz.proto'),
-          join(__dirname, '../proto/health.proto'),
+          join(__dirname, 'proto/authz.proto'),
+          join(__dirname, 'proto/health.proto'),
         ],
         url: `0.0.0.0:${this.SERVICE_PORT}`,
         onLoadPackageDefinition(pkg, server) {

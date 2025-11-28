@@ -5,6 +5,7 @@ import { UserNotFoundGrpcException } from '@app/errors';
 
 import {
   DatabaseFilter,
+  DatabaseQueryFilter,
   VideoQueryRepositoryPort,
 } from '@videos/application/ports';
 import { VideoQueryModel } from '@videos/query';
@@ -92,19 +93,25 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
     return this.videoQueryPersistanceACL.toQueryModel(foundVideo);
   }
 
-  async findMany(filter: DatabaseFilter<Video>): Promise<VideoQueryModel[]> {
+  async QueryVideos(
+    filter: DatabaseFilter<Video>,
+    queryOptions?: DatabaseQueryFilter<Video>,
+  ): Promise<VideoQueryModel[]> {
     const findVideosOperation = async () => {
       return await this.persistanceService.video.findMany({
         where: this.toPrismaFilter(
           filter,
           'unique',
         ) as Prisma.VideoWhereUniqueInput,
+        take: queryOptions?.limit,
+        skip: queryOptions?.skip,
+        orderBy: queryOptions?.orderBy,
       });
     };
 
     const foundVideos = await this.videoRepoFilter.filter(findVideosOperation, {
-      operationType: 'CREATE',
-      entry: {},
+      operationType: 'READ',
+      filter,
     });
 
     if (!foundVideos) {

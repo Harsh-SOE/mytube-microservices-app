@@ -8,6 +8,8 @@ export class FoundVideoRequestResponse {
   title: string;
   videoFileIdentifier: string;
   description?: string | undefined;
+  thumbnail: string;
+  categories: string[];
   videoPublishStatus: VideoRequestPublishStatus;
   videoVisibilityStatus: VideoRequestVisibilityStatus;
 }

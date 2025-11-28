@@ -22,6 +22,8 @@ import { AppConfigService } from './config.service';
         VIDEO_TRANSCODER_CLIENT_ID: joi.string().required(),
         VIDEO_TRANSCODER_CONSUMER_ID: joi.string().required(),
         GRAFANA_LOKI_URL: joi.string().required(),
+        REDIS_HOST: joi.string().required(),
+        REDIS_PORT: joi.number().required(),
       }),
     }),
   ],

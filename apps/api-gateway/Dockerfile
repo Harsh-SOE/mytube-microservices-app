@@ -2,25 +2,32 @@ FROM node:24-alpine AS base
 
 WORKDIR /@streamforge
 
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl bash
 
 COPY package.json yarn.lock ./
 
 FROM base AS build-dependencies
 
-# installs at /@streamforge/node_modules
-
 RUN yarn install --frozen-lockfile --production=false
 
-FROM base AS builder
+FROM base AS development
 
-# file structure of builder:
-  # /@streamforge:
-    # apps/api-gateway
-    # node_modules
-    # libs
-    # nest-cli.json
-    # tsconfig.json
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
+
+COPY --from=build-dependencies /@streamforge/node_modules ./node_modules
+
+COPY apps/api-gateway ./apps/api-gateway
+COPY libs ./libs
+COPY nest-cli.json ./nest-cli.json
+COPY tsconfig.json ./tsconfig.json
+COPY tsconfig.build.json ./tsconfig.build.json
+
+RUN chmod +x apps/api-gateway/scripts/entrypoint.dev.bash
+
+CMD ["apps/api-gateway/scripts/entrypoint.dev.bash"]
+
+FROM base AS builder
 
 COPY --from=build-dependencies /@streamforge/node_modules ./node_modules
 
@@ -31,22 +38,6 @@ COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.build.json ./tsconfig.build.json
 
 RUN npx nest build api-gateway
-
-# dist generated at /@streamforge/dist and contains:
-  # apps/api-gateway:
-    # src/main.js
-    # proto/*
-
-FROM base AS development
-
-ARG NODE_ENV=development
-ENV NODE_ENV=${NODE_ENV}
-
-COPY --from=builder /@streamforge/node_modules ./node_modules
-
-RUN chmod +x apps/api-gateway/scripts/entrypoint.dev.bash
-
-CMD ["apps/api-gateway/scripts/entrypoint.dev.bash"]
 
 FROM base AS production-dependencies
 
@@ -59,18 +50,9 @@ WORKDIR /@streamforge
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-# file structure of production stage:
-  # /@streamforge:
-    # package.json
-    # yarn.lock
-    # node_modules
-    # src/main.js
-    # proto
-    # scripts
-
 COPY --from=base /@streamforge/package.json /@streamforge/yarn.lock ./
 COPY --from=production-dependencies /@streamforge/node_modules ./node_modules
-COPY --from=builder /@streamforge/dist/apps/api-gateway/main.js ./src/main.js
+COPY --from=builder /@streamforge/dist/apps/api-gateway/main.js ./main.js
 COPY --from=builder /@streamforge/dist/apps/api-gateway/proto ./proto
 COPY --from=builder /@streamforge/dist/apps/api-gateway/scripts/entrypoint.prod.bash ./scripts/entrypoint.prod.bash
 

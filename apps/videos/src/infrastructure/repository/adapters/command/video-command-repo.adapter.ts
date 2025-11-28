@@ -81,6 +81,7 @@ export class VideoCommandRepositoryAdapter
       await this.persistanceService.video.create({
         data: this.videoPersistanceACL.toPersistance(model),
       });
+    this.logger.info(`Creating video:`, model.getSnapshot());
     const createdEntity = await this.videoRepoFilter.filter(createdEntityFunc, {
       operationType: 'CREATE',
       entry: this.videoPersistanceACL.toPersistance(model),
@@ -169,9 +170,13 @@ export class VideoCommandRepositoryAdapter
       await this.persistanceService.video.updateMany({
         where: this.toPrismaFilter(filter, 'many') as Prisma.VideoWhereInput,
         data: {
-          id: newVideoModel.getVideo().getId(),
-          ownerId: newVideoModel.getVideo().getOwnerId(),
-          videoFileUrl: newVideoModel.getVideo().getVideoFileIdentifier(),
+          videoFileIdentifier: newVideoModel
+            .getVideo()
+            .getVideoFileIdentifier(),
+          videoThumbnailIdentifer: newVideoModel
+            .getVideo()
+            .getVideoThumbnailIdentifier(),
+          categories: newVideoModel.getVideo().getCategories(),
           description: newVideoModel.getVideo().getDescription(),
           videoPublishStatus: newVideoModel.getVideo().getPublishStatus(),
           videoVisibiltyStatus: newVideoModel.getVideo().getVisibiltyStatus(),
@@ -223,9 +228,13 @@ export class VideoCommandRepositoryAdapter
           'unique',
         ) as Prisma.VideoWhereUniqueInput,
         data: {
-          id: newVideoModel.getVideo().getId(),
-          ownerId: newVideoModel.getVideo().getOwnerId(),
-          videoFileUrl: newVideoModel.getVideo().getVideoFileIdentifier(),
+          videoFileIdentifier: newVideoModel
+            .getVideo()
+            .getVideoFileIdentifier(),
+          videoThumbnailIdentifer: newVideoModel
+            .getVideo()
+            .getVideoThumbnailIdentifier(),
+          categories: newVideoModel.getVideo().getCategories(),
           description: newVideoModel.getVideo().getDescription(),
           videoPublishStatus: newVideoModel.getVideo().getPublishStatus(),
           videoVisibiltyStatus: newVideoModel.getVideo().getVisibiltyStatus(),
@@ -256,9 +265,13 @@ export class VideoCommandRepositoryAdapter
           'unique',
         ) as Prisma.VideoWhereUniqueInput,
         data: {
-          id: newVideoModel.getVideo().getId(),
-          ownerId: newVideoModel.getVideo().getOwnerId(),
-          videoFileUrl: newVideoModel.getVideo().getVideoFileIdentifier(),
+          videoFileIdentifier: newVideoModel
+            .getVideo()
+            .getVideoFileIdentifier(),
+          videoThumbnailIdentifer: newVideoModel
+            .getVideo()
+            .getVideoThumbnailIdentifier(),
+          categories: newVideoModel.getVideo().getCategories(),
           description: newVideoModel.getVideo().getDescription(),
           videoPublishStatus: newVideoModel.getVideo().getPublishStatus(),
           videoVisibiltyStatus: newVideoModel.getVideo().getVisibiltyStatus(),

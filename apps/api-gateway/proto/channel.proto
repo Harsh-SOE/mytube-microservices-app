@@ -1,6 +1,11 @@
 syntax = "proto3";
 package Channel;
 
+message GetPresignedUrlDto {
+  optional string fileName = 1;
+  string userId = 2;
+}
+
 message ChannelCreateDto {
   string userId = 1;
   optional string channelBio = 3;
@@ -17,6 +22,10 @@ message ChannelFindByIdDto {
   string id = 1;
 }
 
+message ChannelFindByUserIdDto {
+  string userId = 1;
+}
+
 message ChannelUpdateByIdDto {
   string id = 1;
   optional string channelBio = 2;
@@ -25,6 +34,12 @@ message ChannelUpdateByIdDto {
 
 message ChannelVerifyByIdDto {
   string id = 1;
+}
+
+message GetPreSignedUrlResponse {
+  string response = 1;
+  string fileIdentifier = 2;
+  string presignedUrl = 3;
 }
 
 message ChannelCreatedResponse {
@@ -37,13 +52,17 @@ message ChannelMonitizationActivatedResponse {
   bool isMonitized = 2;
 }
 
-message ChannelFindByIdResponse {
+message ChannelPayload {
   string id = 1;
   string userId = 2;
   optional string bio = 3;
   optional bool isChannelMonitized = 4;
   optional bool isChannelVerified = 5;
   optional string channelCoverImage = 6;
+}
+
+message ChannelFoundResponse {
+  optional ChannelPayload channel = 1;
 }
 
 message ChannelUpdateByIdResponse {
@@ -55,9 +74,11 @@ message ChannelVerifyByIdResponse {
 }
 
 service ChannelService {
+  rpc getPresignedUrlForFileUpload(GetPresignedUrlDto) returns (GetPreSignedUrlResponse) {}
   rpc createChannel(ChannelCreateDto) returns (ChannelCreatedResponse) {}
   rpc activateMonitization(ChannelActivateMonitizationDto) returns (ChannelMonitizationActivatedResponse) {}
-  rpc findChannelById(ChannelFindByIdDto) returns (ChannelFindByIdResponse) {}
+  rpc findChannelById(ChannelFindByIdDto) returns (ChannelFoundResponse) {}
+  rpc findChannelByUserId(ChannelFindByUserIdDto) returns (ChannelFoundResponse) {}
   rpc channelUpdateById(ChannelUpdateByIdDto) returns (ChannelUpdateByIdResponse) {}
   rpc channelVerify(ChannelVerifyByIdDto) returns (ChannelVerifyByIdResponse) {}
 }

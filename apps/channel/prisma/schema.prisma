@@ -19,9 +19,11 @@ model Channel {
   id                 String   @id @default(uuid())
   userId             String   @unique
   bio                String?
-  isChannelMonitized Boolean? @default(false) @map("isHubMonitized")
-  isChannelVerified  Boolean? @default(false) @map("isHubVerified")
-  channelCoverImage  String?  @map("hubCoverImage")
+  isChannelMonitized Boolean? @default(false)
+  isChannelVerified  Boolean? @default(false)
+  channelCoverImage  String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+
+  @@index([userId])
 }

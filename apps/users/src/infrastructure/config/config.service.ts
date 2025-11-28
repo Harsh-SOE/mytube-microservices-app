@@ -97,8 +97,8 @@ export class AppConfigService {
       transport: Transport.GRPC,
       options: {
         protoPath: [
-          join(__dirname, '../proto/users.proto'),
-          join(__dirname, '../proto/health.proto'),
+          join(__dirname, 'proto/users.proto'),
+          join(__dirname, 'proto/health.proto'),
         ],
         package: [USER_PACKAGE_NAME, GRPC_HEALTH_V1_PACKAGE_NAME],
         url: `0.0.0.0:${this.GRPC_PORT}`,

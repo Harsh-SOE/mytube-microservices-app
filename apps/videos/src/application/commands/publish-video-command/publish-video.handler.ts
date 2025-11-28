@@ -10,8 +10,8 @@ import {
 } from '@videos/application/ports';
 import { VideoAggregate } from '@videos/domain/aggregates';
 import {
-  GrpcToDomainPublishEnumMapper,
-  GrpcToDomainVisibilityEnumMapper,
+  TransportToDomainPublishEnumMapper,
+  TransportToDomainVisibilityEnumMapper,
 } from '@videos/infrastructure/anti-corruption';
 
 import { PublishVideoCommand } from './publish-video.command';
@@ -30,36 +30,42 @@ export class PublishVideoHandler
     videoCreateDto,
   }: PublishVideoCommand): Promise<VideoPublishedResponse> {
     const {
-      title,
       ownerId,
-      description,
+      channelId,
+      title,
+      videoThumbnailIdentifier,
       videoFileIdentifier,
-      videoPublishStatus,
-      videoVisibilityStatus,
+      categories,
+      description,
+      videoTransportPublishStatus,
+      videoTransportVisibilityStatus,
     } = videoCreateDto;
     const id = uuidv4();
 
-    const videoDomainPublishStatus =
-      GrpcToDomainPublishEnumMapper.get(videoPublishStatus);
-
-    const videoDomainVisibilityStatus = GrpcToDomainVisibilityEnumMapper.get(
-      videoVisibilityStatus,
+    const videoDomainPublishStatus = TransportToDomainPublishEnumMapper.get(
+      videoTransportPublishStatus,
     );
+
+    const videoDomainVisibilityStatus =
+      TransportToDomainVisibilityEnumMapper.get(videoTransportVisibilityStatus);
 
     if (!videoDomainPublishStatus || !videoDomainVisibilityStatus) {
       throw Error();
     }
 
     const videoAggregate = this.eventPublisher.mergeObjectContext(
-      VideoAggregate.create(
+      VideoAggregate.create({
         id,
-        title,
         ownerId,
+        channelId,
+        title,
         videoFileIdentifier,
-        videoDomainPublishStatus,
-        videoDomainVisibilityStatus,
-        description ?? undefined,
-      ),
+        videoThumbnailIdentifier,
+        categories,
+        publishStatus: videoDomainPublishStatus,
+        visibilityStatus: videoDomainVisibilityStatus,
+        description,
+      }),
     );
 
     await this.video.save(videoAggregate);

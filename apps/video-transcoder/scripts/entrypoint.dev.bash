@@ -1,3 +1,3 @@
 #!/bin/bash
-echo "[ENTRYPOINT] Starting Views service in dev mode."
-yarn start:dev views
+echo "[ENTRYPOINT] Starting Video Transcoder service in dev mode."
+yarn start:dev video-transcoder

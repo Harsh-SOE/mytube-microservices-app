@@ -1,8 +1,5 @@
+import { TranscodeVideoMessage } from '@app/contracts/video-transcoder';
+
 export class VideoCreatedEvent {
-  constructor(
-    public readonly videoCreatedEventDto: {
-      fileIdentifier: string;
-      videoId: string;
-    },
-  ) {}
+  constructor(public readonly transcodeVideoMessage: TranscodeVideoMessage) {}
 }

@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { ICommandHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { ChannelFindByIdResponse } from '@app/contracts/channel';
+import { ChannelFoundResponse } from '@app/contracts/channel';
 
 import {
   CHANNEL_QUERY_REPOSITORY,
@@ -21,17 +21,20 @@ export class FindChannelByIdQueryHandler
 
   async execute({
     findChannelById: findChannelById,
-  }: FindChannelByIdQuery): Promise<ChannelFindByIdResponse> {
+  }: FindChannelByIdQuery): Promise<ChannelFoundResponse> {
     const { id } = findChannelById;
     const channel = await this.channelRespository.findById(id);
-    if (!channel) throw new Error();
 
     return {
-      ...channel,
-      bio: channel.bio ?? undefined,
-      channelCoverImage: channel.ChannelCoverImage ?? undefined,
-      isChannelMonitized: channel.isChannelMonitized ?? undefined,
-      isChannelVerified: channel.isChannelVerified ?? undefined,
+      channel: channel
+        ? {
+            ...channel,
+            bio: channel.bio ?? undefined,
+            channelCoverImage: channel.ChannelCoverImage ?? undefined,
+            isChannelMonitized: channel.isChannelMonitized ?? undefined,
+            isChannelVerified: channel.isChannelVerified ?? undefined,
+          }
+        : undefined,
     };
   }
 }

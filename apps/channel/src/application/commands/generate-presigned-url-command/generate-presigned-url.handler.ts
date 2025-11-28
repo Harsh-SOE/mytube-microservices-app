@@ -26,12 +26,13 @@ export class GeneratePreSignedUrlHandler
       fileName = `cover-image-${new Date().toISOString()}-${userId}.mp4`;
     }
 
-    const presignedUrl =
+    const storageIdentifierResponse =
       await this.storageAdapter.getPresignedUrlForChannelCoverImage(fileName);
 
     return {
       response: 'Presigned url generated successfully',
-      fileIdentifier: presignedUrl,
+      fileIdentifier: storageIdentifierResponse.fileIdentifier,
+      presignedUrl: storageIdentifierResponse.presignedUrl,
     };
   }
 }

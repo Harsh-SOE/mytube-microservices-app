@@ -2,6 +2,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import session from 'express-session';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { AppConfigService } from './infrastructure/config/config.service';
@@ -10,6 +11,8 @@ import { GatewayExceptionFilter } from './persentation/filters';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(AppConfigService);
+
+  app.use(cookieParser());
 
   app.useGlobalFilters(new GatewayExceptionFilter());
 

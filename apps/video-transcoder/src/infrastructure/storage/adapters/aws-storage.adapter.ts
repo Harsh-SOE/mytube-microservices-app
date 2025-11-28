@@ -42,11 +42,11 @@ export class AwsS3StorageAdapter implements OnModuleInit, StoragePort {
   public async getRawVideoFileAsReadableStream(
     fileIdentifier: string,
   ): Promise<Readable> {
-    const VideoFileKey = `${this.AWS_RAW_VIDEOS_KEY}/${fileIdentifier}`;
+    this.logger.alert(`Downloading ${fileIdentifier} file as stream...`);
 
     const getObjectCommand = new GetObjectCommand({
       Bucket: this.configService.AWS_BUCKET,
-      Key: VideoFileKey,
+      Key: fileIdentifier,
     });
     const data = await this.s3Client.send(getObjectCommand);
 

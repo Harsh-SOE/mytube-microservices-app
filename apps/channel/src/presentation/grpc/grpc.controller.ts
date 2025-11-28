@@ -1,4 +1,4 @@
-import { Controller, UseFilters } from '@nestjs/common';
+import { Controller, Inject, UseFilters } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 import {
@@ -6,7 +6,6 @@ import {
   ChannelCreatedResponse,
   ChannelCreateDto,
   ChannelFindByIdDto,
-  ChannelFindByIdResponse,
   ChannelMonitizationActivatedResponse,
   ChannelServiceController,
   ChannelServiceControllerMethods,
@@ -16,9 +15,13 @@ import {
   ChannelVerifyByIdDto,
   GetPresignedUrlDto,
   GetPreSignedUrlResponse,
+  ChannelFindByUserIdDto,
+  ChannelFoundResponse,
 } from '@app/contracts/channel';
 
 import { GrpcAppExceptionFilter } from '@app/utils';
+
+import { LOGGER_PORT, LoggerPort } from '@channel/application/ports';
 
 import { GrpcService } from './grpc.service';
 
@@ -26,7 +29,10 @@ import { GrpcService } from './grpc.service';
 @UseFilters(GrpcAppExceptionFilter)
 @ChannelServiceControllerMethods()
 export class GrpcController implements ChannelServiceController {
-  constructor(private readonly grpcService: GrpcService) {}
+  constructor(
+    private readonly grpcService: GrpcService,
+    @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
+  ) {}
 
   getPresignedUrlForFileUpload(
     getPresignedUrlDto: GetPresignedUrlDto,
@@ -60,9 +66,9 @@ export class GrpcController implements ChannelServiceController {
   findChannelById(
     channelFindByIdDto: ChannelFindByIdDto,
   ):
-    | Promise<ChannelFindByIdResponse>
-    | Observable<ChannelFindByIdResponse>
-    | ChannelFindByIdResponse {
+    | Promise<ChannelFoundResponse>
+    | Observable<ChannelFoundResponse>
+    | ChannelFoundResponse {
     return this.grpcService.findChannelById(channelFindByIdDto);
   }
 
@@ -82,5 +88,15 @@ export class GrpcController implements ChannelServiceController {
     | Observable<ChannelVerifyByIdResponse>
     | ChannelVerifyByIdResponse {
     return this.grpcService.channelVerify(channelVerifyByIdDto);
+  }
+
+  findChannelByUserId(
+    channelFindByUserIdDto: ChannelFindByUserIdDto,
+  ):
+    | Promise<ChannelFoundResponse>
+    | Observable<ChannelFoundResponse>
+    | ChannelFoundResponse {
+    this.logger.info(`Request recieved`, channelFindByUserIdDto);
+    return this.grpcService.findChannelByUserId(channelFindByUserIdDto);
   }
 }

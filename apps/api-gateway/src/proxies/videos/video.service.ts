@@ -13,6 +13,7 @@ import { REQUESTS_COUNTER } from '@gateway/infrastructure/measure';
 
 import {
   CreateVideoRequestDto,
+  ListVideosQueryDto,
   PreSignedUrlRequestDto,
   UpdateVideoRequestDto,
 } from './request';
@@ -23,37 +24,63 @@ import {
   UpdatedVideoRequestResponse,
 } from './response';
 import {
-  ClientGrpcVideoPublishEnumMapper,
-  ClientGrpcVideoVisibilityEnumMapper,
-  GrpcClientVideoPublishEnumMapper,
-  GrpcClientVideoVisibilityEnumMapper,
+  ClientTransportVideoPublishEnumMapper,
+  ClientTransportVideoVisibilityEnumMapper,
+  TransportClientVideoPublishEnumMapper,
+  TransportClientVideoVisibilityEnumMapper,
 } from './mappers';
+import {
+  CHANNEL_SERVICE_NAME,
+  ChannelServiceClient,
+} from '@app/contracts/channel';
 
 @Injectable()
 export class VideoService implements OnModuleInit {
   private videoService: VideoServiceClient;
+  private channelService: ChannelServiceClient;
 
   constructor(
     @Inject(CLIENT_PROVIDER.VIDEO) private readonly videoClient: ClientGrpc,
+    @Inject(CLIENT_PROVIDER.CHANNEL) private readonly channelClient: ClientGrpc,
     @Inject(LOGGER_PORT) private readonly logger: LoggerPort,
     @InjectMetric(REQUESTS_COUNTER) private readonly counter: Counter,
   ) {}
 
   onModuleInit() {
     this.videoService = this.videoClient.getService(VIDEO_SERVICE_NAME);
+    this.channelService = this.channelClient.getService(CHANNEL_SERVICE_NAME);
   }
 
-  async getPresignedUploadUrl(
+  async getPresignedUploadVideoUrl(
     preSignedUrlRequestDto: PreSignedUrlRequestDto,
     userId: string,
   ): Promise<PreSignedUrlRequestResponse> {
     this.counter.inc();
 
-    const result$ = this.videoService.getPresignedUrlForFileUpload({
+    const result$ = this.videoService.getPresignedUrlForVideoFileUpload({
       ...preSignedUrlRequestDto,
       userId,
     });
-    return await firstValueFrom(result$);
+
+    const result = await firstValueFrom(result$);
+    this.logger.info(`Gateway result is: `, result);
+    return result;
+  }
+
+  async getPresignedUploadThumbnailUrl(
+    preSignedUrlRequestDto: PreSignedUrlRequestDto,
+    userId: string,
+  ): Promise<PreSignedUrlRequestResponse> {
+    this.counter.inc();
+
+    const result$ = this.videoService.getPresignedUrlForThumbnailFileUpload({
+      ...preSignedUrlRequestDto,
+      userId,
+    });
+
+    const result = await firstValueFrom(result$);
+    this.logger.info(`Gateway result is: `, result);
+    return result;
   }
 
   async createVideo(
@@ -62,12 +89,27 @@ export class VideoService implements OnModuleInit {
   ): Promise<PublishedVideoRequestResponse> {
     this.logger.info(`Request recieved:${JSON.stringify(video)}`);
 
-    const videoServiceVisibilityStatus =
-      ClientGrpcVideoVisibilityEnumMapper.get(video.visibility);
+    // check if a channel exists with given userId or not...
+    const channel$ = this.channelService.findChannelByUserId({
+      userId: user.id,
+    });
 
-    const videoServicePublishStatus = ClientGrpcVideoPublishEnumMapper.get(
+    const channel = await firstValueFrom(channel$);
+    this.logger.info(`Channel is`, channel);
+    if (!channel || !channel.channel) {
+      this.logger.info(`No channel was found`);
+      throw new Error(`Channel not found`);
+    }
+
+    const videoServiceVisibilityStatus =
+      ClientTransportVideoVisibilityEnumMapper.get(video.visibility);
+
+    const videoServicePublishStatus = ClientTransportVideoPublishEnumMapper.get(
       video.status,
     );
+
+    console.log(videoServicePublishStatus);
+    console.log(videoServiceVisibilityStatus);
 
     if (
       videoServiceVisibilityStatus === undefined ||
@@ -75,11 +117,12 @@ export class VideoService implements OnModuleInit {
     ) {
       throw new Error(`Invalid Video visibility or publish status`);
     }
-    this.counter.inc();
+    // this.counter.inc();
     const response$ = this.videoService.save({
       ownerId: user.id,
-      videoPublishStatus: videoServicePublishStatus,
-      videoVisibilityStatus: videoServiceVisibilityStatus,
+      channelId: channel.channel.id,
+      videoTransportPublishStatus: videoServicePublishStatus,
+      videoTransportVisibilityStatus: videoServiceVisibilityStatus,
       ...video,
     });
     return await firstValueFrom(response$);
@@ -92,11 +135,14 @@ export class VideoService implements OnModuleInit {
     this.counter.inc();
     const response$ = this.videoService.findOne({ id });
     const response = await firstValueFrom(response$);
-    const videoPublishStatusResponse = GrpcClientVideoPublishEnumMapper.get(
-      response.videoPublishStatus,
-    );
+    const videoPublishStatusResponse =
+      TransportClientVideoPublishEnumMapper.get(
+        response.videoTransportPublishStatus,
+      );
     const videoVisibilityStatusResponse =
-      GrpcClientVideoVisibilityEnumMapper.get(response.videoVisibilityStatus);
+      TransportClientVideoVisibilityEnumMapper.get(
+        response.videoTransportVisibilityStatus,
+      );
 
     if (!videoPublishStatusResponse || !videoVisibilityStatusResponse) {
       throw new Error(
@@ -106,6 +152,8 @@ export class VideoService implements OnModuleInit {
     return {
       id: response.id,
       title: response.title,
+      thumbnail: response.videoThumbnailIdentifier,
+      categories: response.categories,
       videoFileIdentifier: response.videoFileIdentifier,
       videoPublishStatus: videoPublishStatusResponse,
       videoVisibilityStatus: videoVisibilityStatusResponse,
@@ -121,8 +169,18 @@ export class VideoService implements OnModuleInit {
 
     const response$ = this.videoService.update({
       id: videoId,
+      categories: updateVideoDto.categories || [],
       ...updateVideoDto,
     });
     return await firstValueFrom(response$);
+  }
+
+  findVideos(listVideosQueryDto: ListVideosQueryDto) {
+    return this.videoService.findVideos({
+      limit: listVideosQueryDto.limit,
+      skip: listVideosQueryDto.cursor,
+      channelId: listVideosQueryDto.channelId,
+      categories: listVideosQueryDto.categories || [],
+    });
   }
 }
