@@ -7,7 +7,7 @@ until curl -s http://openfga:8080/healthz > /dev/null; do
 done
 echo "[BOOTSTRAP] OpenFGA ready."
 
-scripts/openfga.bash
+scripts/openfga.prod.bash
 
 STORE_ID=$(jq -r '.storeId' openfga.json)
 MODEL_ID=$(jq -r '.modelId' openfga.json)

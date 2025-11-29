@@ -1,7 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 
 import { LogExecutionTime } from '@app/utils';
-import { UserNotFoundGrpcException } from '@app/errors';
 
 import {
   DatabaseFilter,
@@ -11,6 +10,7 @@ import {
 import { VideoQueryModel } from '@videos/query';
 import { PersistanceService } from '@videos/infrastructure/persistance/adapter';
 import { VideoQueryPeristanceACL } from '@videos/infrastructure/anti-corruption';
+import { VideoNotFoundException } from '@videos/application/exceptions';
 
 import { Prisma, Video } from '@peristance/videos';
 
@@ -85,9 +85,9 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
     });
 
     if (!foundVideo) {
-      throw new UserNotFoundGrpcException(
-        `Video with filter: ${JSON.stringify(filter)} was not found in the database`,
-      );
+      throw new VideoNotFoundException({
+        message: `Video with filter: ${JSON.stringify(filter)} was not found in the database`,
+      });
     }
 
     return this.videoQueryPersistanceACL.toQueryModel(foundVideo);
@@ -115,9 +115,9 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
     });
 
     if (!foundVideos) {
-      throw new UserNotFoundGrpcException(
-        `Video with filter: ${JSON.stringify(filter)} was not found in the database`,
-      );
+      throw new VideoNotFoundException({
+        message: `Video with filter: ${JSON.stringify(filter)} was not found in the database`,
+      });
     }
 
     return foundVideos.map((video) =>
@@ -138,9 +138,9 @@ export class VideoQueryRepositoryAdapter implements VideoQueryRepositoryPort {
     });
 
     if (!foundVideo) {
-      throw new UserNotFoundGrpcException(
-        `Video with id: ${id} was not found in the database`,
-      );
+      throw new VideoNotFoundException({
+        message: `Video with id: ${id} was not found in the database`,
+      });
     }
 
     return this.videoQueryPersistanceACL.toQueryModel(foundVideo);

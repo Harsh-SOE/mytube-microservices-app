@@ -63,4 +63,4 @@ RUN chown -R node:node /@streamforge/transcoded-videos
 
 USER node
 
-CMD ["node", "src/main"]
+CMD ["node", "main"]

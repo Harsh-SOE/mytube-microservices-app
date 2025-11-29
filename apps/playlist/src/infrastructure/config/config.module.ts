@@ -10,10 +10,10 @@ import { AppConfigService } from './config.service';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: path.join(__dirname, '../../.env'),
-      validationSchema: {
+      validationSchema: joi.object({
         HTTP_PORT: joi.string().required(),
         GRPC_PORT: joi.string().required(),
-      },
+      }),
     }),
   ],
   providers: [AppConfigService],

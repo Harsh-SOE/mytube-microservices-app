@@ -1,8 +1,7 @@
 import { Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { status as GrpcStatus } from '@grpc/grpc-js';
 
-import { DomainException } from '@channel/domain/exceptions';
-import { InfrastructureException } from '@channel/infrastructure/exceptions';
+import { InfrastructureException } from '@authz/infrastructure/exceptions';
 
 import { ErrorPayload } from '../types';
 import { GrpcApplicationException } from '../exceptions';
@@ -20,18 +19,6 @@ export class GrpcFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       severity: 'ERROR',
     };
-
-    if (exception instanceof DomainException) {
-      code = GrpcStatus.FAILED_PRECONDITION;
-      payload = {
-        severity: 'CLIENT_ERROR',
-        statusCode: exception.code,
-        timestamp: exception.timestamp.toISOString(),
-        serviceExceptionCode: GrpcStatus.FAILED_PRECONDITION,
-        httpExceptionCode: HttpStatus.NOT_ACCEPTABLE,
-        message: exception.message ?? `Client provided incorrect information`,
-      };
-    }
 
     if (exception instanceof InfrastructureException) {
       code = GrpcStatus.INTERNAL;

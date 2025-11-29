@@ -1,1 +1,1 @@
-export * from './adapters/resend-email.adapter';
+export * from './adapters/mailer-send-email.adapter';

@@ -37,6 +37,6 @@ export class MailerSendEmailAdapter implements EmailPort {
 
     const response = await this.client.email.send(emailParams);
 
-    this.logger.info(`Email sent...`, response);
+    this.logger.info(`Email sent to ${to}...`, response);
   }
 }

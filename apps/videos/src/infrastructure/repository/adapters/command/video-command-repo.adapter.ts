@@ -1,7 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 
-import { UserNotFoundGrpcException } from '@app/errors';
-
 import {
   LOGGER_PORT,
   LoggerPort,
@@ -16,6 +14,7 @@ import {
 import { PersistanceService } from '@videos/infrastructure/persistance/adapter';
 import { VideoAggregatePersistanceACL } from '@videos/infrastructure/anti-corruption';
 import { Components } from '@videos/infrastructure/config';
+import { VideoNotFoundException } from '@videos/application/exceptions';
 
 import { Prisma, Video } from '@peristance/videos';
 
@@ -209,9 +208,9 @@ export class VideoCommandRepositoryAdapter
     });
 
     if (!foundVideo) {
-      throw new UserNotFoundGrpcException(
-        `Video with id: ${id} was not found in the database`,
-      );
+      throw new VideoNotFoundException({
+        message: `Video with id: ${id} was not found in the database`,
+      });
     }
 
     return this.videoPersistanceACL.toAggregate(foundVideo);

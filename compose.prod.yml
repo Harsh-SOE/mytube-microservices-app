@@ -202,6 +202,17 @@ services:
     deploy: *postgres-resources
     logging: *logging
 
+  analytics-database:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - analytics_data:/var/lib/clickhouse
+      - analytics_logs:/var/log/clickhouse-server
+    networks:
+      - analytics-database-network
+
   #-------------------------------------------------------------------------------------------------------------#
   #                                            MESSAGE BROKER                                                   #
   #-------------------------------------------------------------------------------------------------------------#
@@ -576,14 +587,7 @@ services:
       - observer
       - users-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/users/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       users-database:
         condition: service_healthy
@@ -633,14 +637,7 @@ services:
       - observer
       - channel-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/channel/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       channel-database:
         condition: service_healthy
@@ -687,14 +684,7 @@ services:
       - observer
       - videos-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/videos/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       videos-database:
         condition: service_healthy
@@ -771,14 +761,7 @@ services:
       - observer
       - views-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/views/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       views-database:
         condition: service_healthy
@@ -846,14 +829,7 @@ services:
       - observer
       - comments-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/comments/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       comments-database:
         condition: service_healthy
@@ -898,14 +874,7 @@ services:
       - observer
       - playlist-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/playlist/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       playlist-database:
         condition: service_healthy
@@ -950,14 +919,7 @@ services:
       - observer
       - subscribe-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/subscribe/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       subscribe-database:
         condition: service_healthy
@@ -1002,14 +964,7 @@ services:
       - observer
       - history-database-network
     entrypoint:
-      [
-        "npx",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        "apps/history/prisma/schema.prisma",
-      ]
+      ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
     depends_on:
       history-database:
         condition: service_healthy
@@ -1051,6 +1006,8 @@ volumes:
   subscribe-database-volume: {}
   playlist-database-volume: {}
   history-database-volume: {}
+  analytics_data: {}
+  analytics_logs: {}
 
 #-------------------------------------------------------------------------------------------------------------#
 #                                                 NETWORKS                                                    #
@@ -1070,3 +1027,4 @@ networks:
   subscribe-database-network: {}
   playlist-database-network: {}
   history-database-network: {}
+  analytics-database-network: {}

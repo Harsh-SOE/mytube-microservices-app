@@ -63,4 +63,4 @@ RUN chmod +x scripts/entrypoint.prod.bash
 
 USER node
 
-CMD ["node", "src/main"]
+CMD ["node", "main"]

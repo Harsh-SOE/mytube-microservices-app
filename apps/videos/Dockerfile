@@ -72,4 +72,4 @@ RUN chown -R node:node /@streamforge/prisma
 
 USER node
 
-CMD ["node", "src/main"]
+CMD ["node", "main"]

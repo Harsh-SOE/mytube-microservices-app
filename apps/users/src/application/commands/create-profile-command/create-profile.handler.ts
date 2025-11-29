@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -19,6 +19,7 @@ export class CompleteSignupCommandHandler
   constructor(
     @Inject(USER_COMMAND_REROSITORY)
     private readonly userRepository: UserCommandRepositoryPort,
+    private readonly eventPublisher: EventPublisher,
   ) {}
 
   async execute({
@@ -28,9 +29,13 @@ export class CompleteSignupCommandHandler
 
     const id = uuidv4();
 
-    const userAggregate = UserAggregate.create(id, authId, handle, email);
+    const userAggregate = this.eventPublisher.mergeObjectContext(
+      UserAggregate.create(id, authId, handle, email),
+    );
 
     await this.userRepository.save(userAggregate);
+
+    userAggregate.commit();
 
     return {
       response: 'User signup successful',

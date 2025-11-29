@@ -202,6 +202,17 @@ services:
     deploy: *postgres-resources
     logging: *logging
 
+  analytics-database:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - analytics_data:/var/lib/clickhouse
+      - analytics_logs:/var/log/clickhouse-server
+    networks:
+      - analytics-database-network
+
   #-------------------------------------------------------------------------------------------------------------#
   #                                            MESSAGE BROKER                                                   #
   #-------------------------------------------------------------------------------------------------------------#
@@ -1051,6 +1062,8 @@ volumes:
   subscribe-database-volume: {}
   playlist-database-volume: {}
   history-database-volume: {}
+  analytics_data: {}
+  analytics_logs: {}
 
 #-------------------------------------------------------------------------------------------------------------#
 #                                                 NETWORKS                                                    #
@@ -1070,3 +1083,4 @@ networks:
   subscribe-database-network: {}
   playlist-database-network: {}
   history-database-network: {}
+  analytics-database-network: {}
